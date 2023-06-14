@@ -1,4 +1,4 @@
-#**The Legend's Calling**
+# **The Legend's Calling**
 
 Welcome to The Legend's Calling, a captivating text-based adventure game where you embark on an epic journey through a world filled with danger and mystery. As the protagonist, you will navigate various environments, engage in thrilling combat using a variety of weapons and spells, and unravel the secrets of the realm.
 

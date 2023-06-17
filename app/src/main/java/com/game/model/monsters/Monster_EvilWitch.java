@@ -4,7 +4,7 @@ import com.game.model.Monster;
 
 public class Monster_EvilWitch extends Monster {
     public Monster_EvilWitch(double difficultRate) {
-        super("Evil Witch", 10, 0, 1, difficultRate);
+        super("Evil Witch", 9, 0, 1, difficultRate);
     }
 
     @Override

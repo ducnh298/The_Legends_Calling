@@ -9,9 +9,7 @@ import com.game.R;
 import com.game.view.GameScreen;
 import com.game.view.TitleScreen;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -19,17 +17,16 @@ public class SoundManager {
     private GameScreen gameScreen;
     private SoundPool soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
     public MediaPlayer titleMusic;
-    private MediaPlayer bgMusic, battleMusic, drivingHighWaySound, openDoorSound, rainingSound, windySound;
+    private MediaPlayer bgMusic, battleMusic, drivingHighWaySound, openDoorSound, rainingSound, windySound, insideCaveSound, demonHideoutSound;
     private int[] battleMusicList = {R.raw.battle_music_1, R.raw.battle_music_2};
     private int[] backGroundMusicList = {R.raw.back_ground_music_1, R.raw.back_ground_music_2};
     private int positionBgMusic = 0, positionBattleMusic = 0;
     public Integer clickSoundId, obtainWeaponSoundId, healthUpSoundId,
             takeShoeOffSoundId, dropBagSoundId, lyingBedSoundId, wakeUpVoiceId,
             horseWagonSoundId, runningInGrassSoundId, horseSoundId,
-            anvilSoundId, hitTreeSoundId, eatingAppleSoundId,
-            goblinSoundId, riverMonsterSoundId, evilWitchSound;
-    private List<Integer> playingSoundEffect = new ArrayList<>();
-    private Map<Integer, Boolean> soundEffectState = new HashMap<>();
+            anvilSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId,
+            goblinSoundId, riverMonsterSoundId, evilWitchSoundId, shadowSerpentSoundId, demonGeneralSoundId;
+    private Map<Integer, Integer> playingSoundEffect = new HashMap<>();
     private Random rand;
     private Handler handler;
 
@@ -51,12 +48,7 @@ public class SoundManager {
         openDoorSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        getHome();
-                    }
-                }, 1000);
+                getHome();
             }
         });
         rainingSound = MediaPlayer.create(gameScreen, R.raw.raining);
@@ -75,14 +67,6 @@ public class SoundManager {
             }
         });
 
-        battleMusic = MediaPlayer.create(gameScreen, battleMusicList[rand.nextInt(battleMusicList.length)]);
-        battleMusic.setLooping(true);
-        battleMusic.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                battleMusic = MediaPlayer.create(gameScreen, battleMusicList[rand.nextInt(battleMusicList.length)]);
-            }
-        });
         clickSoundId = soundPool.load(gameScreen, R.raw.click, 1);
         obtainWeaponSoundId = soundPool.load(gameScreen, R.raw.obtain_weapon, 1);
         healthUpSoundId = soundPool.load(gameScreen, R.raw.health_up, 1);
@@ -96,23 +80,44 @@ public class SoundManager {
         horseSoundId = soundPool.load(gameScreen, R.raw.horse_stop, 1);
 
         anvilSoundId = soundPool.load(gameScreen, R.raw.anvil_sound, 1);
+        underWaterSoundId = soundPool.load(gameScreen, R.raw.underwater, 1);
         hitTreeSoundId = soundPool.load(gameScreen, R.raw.hit_tree, 1);
         eatingAppleSoundId = soundPool.load(gameScreen, R.raw.eating_apple, 1);
+        magicMountainSoundId = soundPool.load(gameScreen, R.raw.magic_mountain, 1);
+
+        battleMusic = MediaPlayer.create(gameScreen, battleMusicList[rand.nextInt(battleMusicList.length)]);
+        battleMusic.setLooping(true);
+        battleMusic.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                battleMusic = MediaPlayer.create(gameScreen, battleMusicList[rand.nextInt(battleMusicList.length)]);
+            }
+        });
+        insideCaveSound = MediaPlayer.create(gameScreen, R.raw.inside_cave);
+        insideCaveSound.setLooping(true);
+        demonHideoutSound = MediaPlayer.create(gameScreen, R.raw.demon_hideout);
+        demonHideoutSound.setLooping(true);
+
         goblinSoundId = soundPool.load(gameScreen, R.raw.goblin_roar, 1);
         riverMonsterSoundId = soundPool.load(gameScreen, R.raw.river_monster_roar, 1);
-        evilWitchSound = soundPool.load(gameScreen, R.raw.evil_witch_laugh, 1);
+        evilWitchSoundId = soundPool.load(gameScreen, R.raw.evil_witch_laugh, 1);
+        shadowSerpentSoundId = soundPool.load(gameScreen, R.raw.shadow_serpent_sound, 1);
+        demonGeneralSoundId = soundPool.load(gameScreen, R.raw.demon_general_laugh, 1);
+        explosionSoundId = soundPool.load(gameScreen, R.raw.explosion, 1);
 
-        soundEffectState.put(anvilSoundId, false);
+        titleMusic = MediaPlayer.create(gameScreen, R.raw.title_music);
+        titleMusic.setLooping(true);
+    }
+
+    public void pauseBackGroundMusic() {
+        if (bgMusic.isPlaying()) {
+            bgMusic.pause();
+            positionBgMusic = battleMusic.getCurrentPosition();
+        }
     }
 
     public void playBackGroundMusic() {
-        if (battleMusic.isPlaying()) {
-            battleMusic.pause();
-            positionBattleMusic = battleMusic.getCurrentPosition();
-        } else if (rainingSound.isPlaying())
-            rainingSound.stop();
-        else if (windySound.isPlaying())
-            windySound.stop();
+        stopAllMusic();
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 bgMusic.seekTo(positionBgMusic);
@@ -122,24 +127,45 @@ public class SoundManager {
     }
 
     public void playBattleMusic() {
-        if (bgMusic.isPlaying()) {
-            bgMusic.pause();
-            positionBgMusic = bgMusic.getCurrentPosition();
-        }
+        stopAllMusic();
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 battleMusic.seekTo(positionBattleMusic);
                 battleMusic.start();
             }
-        }, 500);
+        }, 300);
+    }
+
+    public void playTheEndMusic() {
+        stopAllMusic();
+        titleMusic.start();
+    }
+
+    public void stopAllMusic() {
+        if (battleMusic.isPlaying()) {
+            battleMusic.pause();
+            positionBattleMusic = battleMusic.getCurrentPosition();
+        }
+        if (bgMusic.isPlaying()) {
+            bgMusic.pause();
+            positionBgMusic = bgMusic.getCurrentPosition();
+        }
+        if (rainingSound.isPlaying())
+            rainingSound.stop();
+        if (windySound.isPlaying())
+            windySound.stop();
+        if (insideCaveSound.isPlaying())
+            insideCaveSound.stop();
+        if (demonHideoutSound.isPlaying())
+            demonHideoutSound.stop();
     }
 
     public void click() {
-        soundPool.play(clickSoundId, 0.5f, 0.5f, 1, 0, 0.7f);
+        soundPool.play(clickSoundId, 0.4f, 0.4f, 1, 0, 0.7f);
     }
 
     public void obtainWeapon() {
-        soundPool.play(obtainWeaponSoundId, 0.8f, 0.8f, 1, 0, 1f);
+        soundPool.play(obtainWeaponSoundId, 0.7f, 0.7f, 1, 0, 1f);
     }
 
     public void healthUp() {
@@ -164,7 +190,7 @@ public class SoundManager {
             public void run() {
                 soundPool.play(dropBagSoundId, 1f, 1f, 1, 0, 1f);
             }
-        }, 2500);
+        }, 2000);
     }
 
     public void bedRoom() {
@@ -180,31 +206,33 @@ public class SoundManager {
         }, 5000);
     }
 
+    public void raining() {
+        if (rainingSound.isPlaying())
+            rainingSound.stop();
+        else rainingSound.start();
+    }
+
     public void windyField() {
-        stopAllSoundEffect();
-        windySound.start();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                rainingSound.stop();
-            }
-        }, 2000);
+        if (windySound.isPlaying())
+            windySound.stop();
+        else
+            windySound.start();
     }
 
     public void wakeUpVoice() {
-        soundPool.play(wakeUpVoiceId, 0.5f, 0.5f, 1, 0, 1f);
+        soundPool.play(wakeUpVoiceId, 0.6f, 0.6f, 1, 0, 1f);
     }
 
     public void horseWagonFar() {
-        playingSoundEffect.add(soundPool.play(horseWagonSoundId, 0.3f, 0.3f, 1, -1, 1f));
+        playingSoundEffect.put(horseWagonSoundId, soundPool.play(horseWagonSoundId, 0.3f, 0.3f, 1, -1, 1f));
     }
 
     public void horseWagonNear() {
-        playingSoundEffect.add(soundPool.play(horseWagonSoundId, 1f, 1f, 1, -1, 1f));
+        playingSoundEffect.put(horseWagonSoundId, soundPool.play(horseWagonSoundId, 1f, 1f, 1, -1, 1f));
     }
 
     public void runningInGrass() {
-        playingSoundEffect.add(soundPool.play(runningInGrassSoundId, 1f, 1f, 1, -1, 1f));
+        playingSoundEffect.put(runningInGrassSoundId, soundPool.play(runningInGrassSoundId, 1f, 1f, 1, -1, 1f));
     }
 
     public void horse() {
@@ -212,22 +240,44 @@ public class SoundManager {
     }
 
     public void anvil() {
-        if (!soundEffectState.get(anvilSoundId)) {
-            playingSoundEffect.add(soundPool.play(anvilSoundId, 0.3f, 0.3f, 1, -1, 0.66f));
-            soundEffectState.put(anvilSoundId, true);
-        }
+        if (playingSoundEffect.get(anvilSoundId) == null)
+            playingSoundEffect.put(anvilSoundId, soundPool.play(anvilSoundId, 0.1f, 0.1f, 1, -1, 0.66f));
+    }
+
+    public void underWater() {
+        playingSoundEffect.put(underWaterSoundId, soundPool.play(underWaterSoundId, 1f, 1f, 1, -1, 1f));
     }
 
     public void hitTree() {
-        soundPool.play(hitTreeSoundId, 1.0f, 1.0f, 1, 0, 1f);
+        soundPool.play(hitTreeSoundId, 0.6f, 0.6f, 1, 0, 1f);
     }
 
     public void eatingApple() {
         soundPool.play(eatingAppleSoundId, 1.0f, 1.0f, 1, 1, 1.3f);
     }
 
-    public void goblin() {
-        soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, 0, 1f);
+    public void magicMountain() {
+        if (playingSoundEffect.get(magicMountainSoundId) == null)
+            playingSoundEffect.put(magicMountainSoundId, soundPool.play(magicMountainSoundId, 1f, 1f, 1, -1, 1f));
+    }
+
+    public void insideCave() {
+        stopAllMusic();
+        if (!insideCaveSound.isPlaying())
+            insideCaveSound.start();
+    }
+
+    public void demonHideout() {
+        stopAllMusic();
+        if (!demonHideoutSound.isPlaying())
+            demonHideoutSound.start();
+    }
+
+    public void goblin(boolean loop) {
+        if (loop) {
+            playingSoundEffect.put(goblinSoundId, soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, -1, 1f));
+        } else
+            soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, 0, 1f);
     }
 
     public void riverMonster() {
@@ -235,19 +285,29 @@ public class SoundManager {
     }
 
     public void evilWitch() {
-        soundPool.play(evilWitchSound, 1.0f, 1.0f, 1, 0, 1f);
+        soundPool.play(evilWitchSoundId, 1.0f, 1.0f, 1, 0, 1f);
+    }
+
+    public void shadowSerpent() {
+        soundPool.play(shadowSerpentSoundId, 1.0f, 1.0f, 1, 1, 1f);
+    }
+
+    public void demonGeneral() {
+        soundPool.play(demonGeneralSoundId, 1.0f, 1.0f, 1, 1, 1f);
+    }
+
+    public void explosion() {
+        soundPool.play(explosionSoundId, 1.0f, 1.0f, 1, 0, 0.6f);
     }
 
     public void stopSoundEffect(Integer id) {
-        soundPool.stop(id);
-        soundEffectState.put(id, false);
+        soundPool.stop(playingSoundEffect.get(id));
         playingSoundEffect.remove(id);
     }
 
     public void stopAllSoundEffect() {
-        for (Integer id : playingSoundEffect) {
-            soundPool.stop(id);
-            soundEffectState.put(id, false);
+        for (Map.Entry<Integer, Integer> entry : playingSoundEffect.entrySet()) {
+            soundPool.stop(entry.getValue());
         }
         playingSoundEffect.clear();
     }

@@ -51,9 +51,7 @@ public class GameScreen extends AppCompatActivity {
         storyManager = new StoryManager(this, gameModel);
 
         baseLayout = findViewById(R.id.baseLayout);
-
         tableLayout = findViewById(R.id.tableLayout);
-        tableLayout.setVisibility(View.INVISIBLE);
 
         hpLabel = findViewById(R.id.hpLabel);
         armorLabel = findViewById(R.id.armorLabel);
@@ -67,7 +65,8 @@ public class GameScreen extends AppCompatActivity {
         choice3 = findViewById(R.id.choiceButton3);
         choice4 = findViewById(R.id.choiceButton4);
 
-        storyManager.opening();
+        darkUI();
+        storyManager.selectPosition("startGame");
     }
 
     public void clickButton1(View view) {
@@ -90,6 +89,23 @@ public class GameScreen extends AppCompatActivity {
         storyManager.selectPosition(storyManager.nextPosition4);
     }
 
+    public void timeLoop() {
+        gameModel.setup(true);
+        darkUI();
+    }
+
+    public void darkUI() {
+        tableLayout.setVisibility(View.INVISIBLE);
+        baseLayout.setBackgroundColor(Color.parseColor("#000000"));
+        textView.setTextColor(Color.parseColor("#FFFFFF"));
+    }
+
+    public void lightUI() {
+        tableLayout.setVisibility(View.INVISIBLE);
+        baseLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        textView.setTextColor(Color.parseColor("#000000"));
+    }
+
     public void startGameUI() {
         textView.setTextColor(Color.parseColor("#000000"));
         baseLayout.setBackgroundColor(Color.parseColor("#fefec8"));
@@ -109,7 +125,7 @@ public class GameScreen extends AppCompatActivity {
         }
         hpLabel.setText("HP: " + gameModel.player.getPlayerHP() + "/" + gameModel.player.getPlayerMaxHP());
         if (gameModel.player.getPlayerHP() == 0) {
-            storyManager.deadScreen();
+            setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "deadScreen", "", "", ""});
             return false;
         }
         return true;
@@ -163,19 +179,34 @@ public class GameScreen extends AppCompatActivity {
     public void setChoice1(String textChoice, String nextPosition) {
         choice1.setText(textChoice);
         storyManager.nextPosition1 = nextPosition;
-        choice1.setVisibility(View.VISIBLE);
+        if (textChoice.equals("")) {
+            choice1.setVisibility(View.INVISIBLE);
+        } else choice1.setVisibility(View.VISIBLE);
     }
 
     public void setChoice2(String textChoice, String nextPosition) {
         choice2.setText(textChoice);
         storyManager.nextPosition2 = nextPosition;
-        choice2.setVisibility(View.VISIBLE);
+        if (textChoice.equals("")) {
+            choice2.setVisibility(View.INVISIBLE);
+        } else
+            choice2.setVisibility(View.VISIBLE);
     }
 
     public void setChoice3(String textChoice, String nextPosition) {
         choice3.setText(textChoice);
         storyManager.nextPosition3 = nextPosition;
-        choice3.setVisibility(View.VISIBLE);
+        if (textChoice.equals("")) {
+            choice3.setVisibility(View.INVISIBLE);
+        } else choice3.setVisibility(View.VISIBLE);
+    }
+
+    public void setChoice4(String textChoice, String nextPosition) {
+        choice4.setText(textChoice);
+        storyManager.nextPosition4 = nextPosition;
+        if (textChoice.equals("")) {
+            choice4.setVisibility(View.INVISIBLE);
+        } else choice4.setVisibility(View.VISIBLE);
     }
 
     public void setChoiceVisibility() {
@@ -215,6 +246,7 @@ public class GameScreen extends AppCompatActivity {
                     textingHandler.removeCallbacksAndMessages(null);
                     textView.setText(text);
                     finishTexting = false;
+                    currentIndex = text.length();
                 } else if (currentIndex < text.length()) {
                     String currentChar = Character.toString(text.charAt(currentIndex));
                     textView.append(currentChar);
@@ -231,12 +263,18 @@ public class GameScreen extends AppCompatActivity {
 
     public void continueTextSlowly(String text) {
         textView.append("\n");
+        finishTexting = false;
         textingHandler.postDelayed(new Runnable() {
             int currentIndex = 0;
 
             @Override
             public void run() {
-                if (currentIndex < text.length()) {
+                if (finishTexting) {
+                    textingHandler.removeCallbacksAndMessages(null);
+                    textView.setText(text);
+                    finishTexting = false;
+                    currentIndex = text.length();
+                } else if (currentIndex < text.length()) {
                     String currentChar = Character.toString(text.charAt(currentIndex));
                     textView.append(currentChar);
                     currentIndex++;

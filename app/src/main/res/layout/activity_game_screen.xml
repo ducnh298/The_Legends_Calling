@@ -41,10 +41,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:fontFamily="@font/black_chancery"
                 android:text="+golden armor"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:visibility="invisible" />
         </TableRow>
 
@@ -102,7 +102,8 @@
             android:layout_weight="6"
             android:fontFamily="sans-serif"
             android:onClick="finishTexting"
-            android:text="This is text"
+            android:text="This is text                                 asdasdasda sdasdasd dddd dddddd ddd ddss"
+            android:textAlignment="viewStart"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
 
@@ -110,54 +111,54 @@
             android:id="@+id/choiceButton1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_weight="1"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_weight="1.5"
             android:fontFamily="sans-serif"
             android:onClick="clickButton1"
             android:text="Button"
             android:textAllCaps="false"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/choiceButton2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_weight="1"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_weight="1.5"
             android:fontFamily="sans-serif"
             android:onClick="clickButton2"
             android:text="Button"
             android:textAllCaps="false"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/choiceButton3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_weight="1"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_weight="1.5"
             android:fontFamily="sans-serif"
             android:onClick="clickButton3"
             android:text="Button"
             android:textAllCaps="false"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/choiceButton4"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="20dp"
-            android:layout_weight="1"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1.5"
             android:fontFamily="sans-serif"
             android:onClick="clickButton4"
             android:text="Button"
             android:textAllCaps="false"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

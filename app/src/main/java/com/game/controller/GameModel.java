@@ -21,21 +21,22 @@ public class GameModel implements Serializable {
     public Effect paralyzedEffect = new Effect_Paralyzed();
     public Effect poisonousEffect = new Effect_Poisonous();
 
-    public Monster goblin, evilWitch, riverMonster, shadowSerpent, demonKing;
+    public Monster goblin, evilWitch, riverMonster, shadowSerpent, demonGeneral;
 
     public String position, lastPosition;
-    public boolean isTakenKnife, isAngryGuard, isRestAtTent, isTakenLongSword, isTakenPower,
-            blackSmithQuestActive, isTakenArmor,
+    public boolean timeLoop, isTakenKnife, isAngryGuard, isRestAtTent, isTakenLongSword, isTakenPower,
+            blackSmithQuestActive, isTakenTorch, isLightTorch, isTakenArmor,
             witchQuestActive, isTakenGoblinEar, isTakenApple,
-            isALiveRiverMonster, isALiveGoblin, isDefeatedEvilWitch, isAliveShadowSerpent, isAliveDemonKing;
+            isALiveRiverMonster, isALiveGoblin, isDefeatedEvilWitch, isAliveShadowSerpent, isAliveDemonGeneral;
     public int appleOnTree;
 
     public GameModel(double difficultRate) {
         this.difficultRate = difficultRate;
-        setup();
+        setup(false);
     }
 
-    public void setup() {
+    public void setup(boolean timeLoop) {
+        this.timeLoop = timeLoop;
         player = new Player(25);
 
         if (fist == null)
@@ -43,9 +44,9 @@ public class GameModel implements Serializable {
         player.addWeapon(fist);
 
         isTakenKnife = isAngryGuard = isRestAtTent = isTakenLongSword = isTakenPower = false;
-        blackSmithQuestActive = isTakenArmor = false;
+        blackSmithQuestActive = isTakenTorch = isLightTorch = isTakenArmor = false;
         witchQuestActive = isTakenGoblinEar = isTakenApple = isDefeatedEvilWitch = false;
-        isALiveRiverMonster = isALiveGoblin = isAliveShadowSerpent = isAliveDemonKing = true;
+        isALiveRiverMonster = isALiveGoblin = isAliveShadowSerpent = isAliveDemonGeneral = true;
         appleOnTree = 3;
     }
 }

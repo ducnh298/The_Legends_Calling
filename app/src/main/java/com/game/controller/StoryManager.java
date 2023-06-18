@@ -44,8 +44,13 @@ public class StoryManager {
 
     public void selectPosition(String nextPosition) {
         switch (nextPosition) {
-            case "startGame":
+            case "start":
+                soundManager.stopAllMusic();
+                ui.restartGame();
+                break;
+            case "startGameUI":
                 ui.startGameUI();
+                ui.updateSpellStatus();
                 townGate();
                 break;
             case "timeLoop":
@@ -53,7 +58,7 @@ public class StoryManager {
                 windyField1();
                 break;
             case "quit":
-                System.exit(0);
+                ui.quitGame();
                 break;
             case "opening":
                 opening();
@@ -341,7 +346,7 @@ public class StoryManager {
         gameModel.position = "opening";
         Glide.with(ui).load(R.drawable.driving_highway).into(ui.image);
         soundManager.drivingHighWay();
-        ui.displayTextSlowly("It's late in the evening, you find yourself behind the wheel on a familiar road, heading home after a long day at work. " +
+        ui.displayTextSlowly("It's late in the evening, you find yourself behind the wheel on a familiar road, heading home after a long day at work.\n" +
                 "It's Friday night, and the darkness envelops the surroundings, with only a scattering of streetlights casting a dim glow. ");
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "getHome", "", "", ""});
     }
@@ -361,8 +366,8 @@ public class StoryManager {
         handler.removeCallbacksAndMessages(null);
         ui.image.setImageResource(R.drawable.bedroom);
         soundManager.bedRoom();
-        ui.displayTextSlowly("Making your way to your bedroom and notice that it has started raining outside. " +
-                "With a sense of tranquility washing over you, you eagerly jump onto the bed, ready to drift into a deep and restful nap.");
+        ui.displayTextSlowly("Making your way to your bedroom and notice that it has started raining outside.\n" +
+                "With a sense of  exhaustion washing over you, you eagerly jump onto the bed, ready to drift into a deep and restful nap.");
         ui.setChoicesAndNextPositions(new String[]{"Take a rest", "", "", "", "sleeping", "", "", ""});
     }
 
@@ -384,8 +389,7 @@ public class StoryManager {
 
     public void wakeUp() {
         handler.removeCallbacksAndMessages(null);
-        ui.displayTextSlowly("\"Where am I?\" The gentle breeze caresses your face, carrying the scent of grass, while the warm touch of sunlight dances upon your skin. " +
-                "As nature's elements embrace you, a sense of both disorientation and wonder envelops your thoughts.");
+        ui.displayTextSlowly("\"Where am I?\" The gentle breeze caresses your face, carrying the scent of grass,\nwhile the warm touch of sunlight dances upon your skin. ");
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "windyField1", "", "", ""});
     }
 
@@ -408,20 +412,19 @@ public class StoryManager {
                 ui.baseLayout.setBackgroundColor(Color.parseColor("#aab865"));
                 ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "windyField2", "", "", ""});
             }
-        }, 2500);
+        }, 2000);
     }
 
     public void windyField2() {
-        ui.displayTextSlowly("You find yourself in the middle of a windy field, with the soft green grass swaying under the clear blue sky. " +
-                "A sturdy wooden fence separates the field from a winding dirt road. " +
-                "The gentle rustling of the wind and the peaceful ambiance of the surroundings create a serene atmosphere.");
+        ui.displayTextSlowly("You find yourself in the middle of a windy field, with the soft green grass swaying under the clear blue sky.\n" +
+                "A sturdy wooden fence separates the field from a winding dirt road. ");
         ui.setChoicesAndNextPositions(new String[]{"Try to recollect your thoughts", "Explore the surrounding", "Leave", "", "recollectYourThoughts", "exploreTheSurrounding1", "windyField3", ""});
     }
 
     public void recollectYourThoughts() {
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "windyField2", "", "", ""});
         if (gameModel.timeLoop) {
-            ui.displayTextSlowly("After spending a couple of minutes trying to recollect your thoughts, a realization dawns upon you like a bolt of lightning — you possess the ability to return by death. " +
+            ui.displayTextSlowly("After spending a couple of minutes trying to recollect your thoughts, a realization upon you — you possess the ability to return by death.\n" +
                     "Memories flood back, and you recall the knowledge of your previous encounters and the choices that led you to this point. ");
         } else
             ui.displayTextSlowly("After spending a couple of minutes trying to recollect your thoughts, you realize that your mind is completely blank. ");
@@ -430,8 +433,8 @@ public class StoryManager {
     public void exploreTheSurrounding1() {
         if (!gameModel.isTakenKnife) {
             ui.setChoicesAndNextPositions(new String[]{"Take it", "Leave it", "", "", "takeKnife", "notTakeKnife", "", ""});
-            ui.displayTextSlowly("As you explore the surrounding area, your eyes catch a glint of metal hidden among the tall grass. " +
-                    "Curiosity piqued, you reach down and discover an old, weathered knife, its blade worn but still sharp.\n");
+            ui.displayTextSlowly("As you explore the surrounding area, your eyes catch a glint of metal hidden among the tall grass.\n" +
+                    "You reach down and discover an old, weathered knife, its blade worn but still sharp.\n");
         } else exploreTheSurrounding2();
     }
 
@@ -442,29 +445,22 @@ public class StoryManager {
 
     public void takeKnife() {
         ui.setChoicesAndNextPositions(new String[]{"Continue to explore", "Leave", "", "", "exploreTheSurrounding2", "windyField2", "", ""});
-        ui.finishTexting(ui.getCurrentFocus());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ui.continueTextSlowly("You pick up the old knife, feeling its weight in your hand. Its worn handle and rusted blade tell tales of past adventures.");
-                if (gameModel.knife == null)
-                    gameModel.knife = new Weapon_Knife();
-                ui.obtainWeapon(gameModel.knife);
-                gameModel.isTakenKnife = true;
-            }
-        }, 100);
+        ui.continueTextSlowly("You pick up the old knife, feeling its weight in your hand. Its worn handle and rusted blade tell tales of past adventures.");
+        if (gameModel.knife == null)
+            gameModel.knife = new Weapon_Knife();
+        ui.obtainWeapon(gameModel.knife);
+        gameModel.isTakenKnife = true;
     }
 
     public void notTakeKnife() {
         ui.setChoicesAndNextPositions(new String[]{"Continue to explore", "Leave", "", "", "exploreTheSurrounding2", "windyField2", "", ""});
-        ui.finishTexting(ui.getCurrentFocus());
         ui.continueTextSlowly("You decide not to take the old knife, feeling that it may not be of much use to you.");
     }
 
     public void windyField3() {
         ui.setChoicesAndNextPositions(new String[]{"", "", "", "", "", "", "", ""});
         Glide.with(ui).load(R.drawable.windy_field_with_carriage).into(ui.image);
-        ui.displayTextSlowly("As you cross over the wooden fence, a distant sound of a carriage catches your attention. " +
+        ui.displayTextSlowly("As you cross over the wooden fence, a distant sound of a carriage catches your attention.\n" +
                 "The rhythmic clip-clop of horse hooves and the creaking of wheels echo through the air, growing louder with each passing moment.");
         handler.postDelayed(new Runnable() {
             @Override
@@ -477,10 +473,10 @@ public class StoryManager {
 
     public void windyField4() {
         ui.setChoicesAndNextPositions(new String[]{"", "", "", "", "", "", "", ""});
-        ui.displayTextSlowly("Without a moment's hesitation, you sprint towards the carriage. \n" +
+        ui.displayTextSlowly("You sprint towards the carriage. \n" +
                 "...                                                                     \n" +
-                "As it draws nearer, you take in the sight of the small wooden carriage. " +
-                "On the driver's seat, a man dressed in a blue jacket and hood from the medieval era guides the horse pulling the carriage.");
+                "As it draws nearer, you take in the sight of the small wooden carriage.\n" +
+                "On the driver's seat, a man dressed in a blue jacket and hood guides the horse pulling the carriage.");
         soundManager.runningInGrass();
         handler.postDelayed(new Runnable() {
             @Override
@@ -496,9 +492,8 @@ public class StoryManager {
         soundManager.stopAllSoundEffect();
         soundManager.horseWagonNear();
         ui.setChoicesAndNextPositions(new String[]{"", "", "", "", "", "", "", ""});
-        ui.displayTextSlowly("You manage to get closer the carriage and urgently call out to the driver to stop. " +
-                "The sound of your voice echoes through the air, catching the attention of the man, who looks back in surprise. " +
-                "The horse slows down, and the carriage gradually comes to a stop. ");
+        ui.displayTextSlowly("You manage to get closer the carriage and urgently call out to the driver to stop.\n" +
+                "Catching the attention of the man, the horse slows down, and the carriage gradually comes to a stop. ");
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -509,33 +504,30 @@ public class StoryManager {
                 if (gameModel.isTakenKnife)
                     ui.setChoice4("Take control the carriage", "attackCarriage");
             }
-        }, 4000);
+        }, 2500);
     }
 
     public void attackCarriage() {
-        ui.displayTextSlowly("With the knife in hand, you bravely attempt to seize control of the carriage. " +
+        ui.displayTextSlowly("With the knife in hand, you bravely attempt to seize control of the carriage.\n" +
                 "However, The man reacts swiftly, drawing his sword and delivering a powerful strike on you, instantly ending your life.");
         gameModel.player.setPlayerHP(0);
         ui.updatePlayerHp(0);
     }
 
     public void askAboutLocation() {
-        ui.displayTextSlowly("He looks at you with a puzzled expression before replying, \"You're in the outskirts of a small town called Rivervale. " +
-                "You should not be here alone, as there have been numerous reports of increased monster activity due to the expanding territory of the demon general.\"\n" +
-                "You asking yourself in your head \"monster?\", \"demon???\" \"Where the heck am i, seem like this isn't my world.\"");
+        ui.displayTextSlowly("\"You're in the outskirts of a small town called Rivervale.\n" +
+                "You should not be here alone, as there have been numerous reports of increased monster activity due to the expanding territory of the demon general.\"");
     }
 
     public void askAboutEra() {
-        ui.displayTextSlowly("Seeking information about current era, you engage the man in conversation, asking several questions that confirm your suspicions. " +
-                "Overwhelmed by the strangeness of the situation, you instinctively slap your own face, hoping to wake up from what feels like an inexplicable dream. " +
+        ui.displayTextSlowly("Seeking information about current era, you engage the man in conversation, asking several questions.\n" +
                 "You realize that you might have traveled back in time to a medieval era or an alternate reality.");
     }
 
     public void askForARide() {
         ui.setChoicesAndNextPositions(new String[]{"", "", "", "", "", "", "", ""});
-        ui.displayTextSlowly("Prioritizing your safety, you ask the man for a ride and gather more information about the current state of affairs. " +
-                "The man agrees to take you with. With gratitude, you thank him before quickly getting on the carriage and setting off on your journey. " +
-                "As the wheels begin to turn, the carriage sets off towards the direction of Rivervale town");
+        ui.displayTextSlowly("Prioritizing your safety, you ask the man for a ride.\n" +
+                "The man agrees to take you with. As the wheels begin to turn, the carriage sets off towards the direction of Rivervale town");
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -549,59 +541,54 @@ public class StoryManager {
 
     public void onCarriage1() {
         ui.displayTextSlowly("As the carriage continues its journey, you seize the opportunity to ask the man a series of questions.");
-        ui.setChoicesAndNextPositions(new String[]{"About the teleportation between worlds", "About the history of this world", "", "Done asking", "askAboutTeleportation", "askAboutHistoryOfThisWorld1", "", "onCarriage2"});
+        ui.setChoicesAndNextPositions(new String[]{"About the teleportation between worlds", "About the history of this world", "Done asking", "", "askAboutTeleportation", "askAboutHistoryOfThisWorld1", "onCarriage2", ""});
         if (gameModel.timeLoop)
-            ui.setChoice3("About the ability to return by death", "askAboutAbilityToReTurnByDeath");
+            ui.setChoicesAndNextPositions(new String[]{"About the teleportation between worlds", "About the history of this world", "Done asking", "About the ability to return by death", "askAboutTeleportation", "askAboutHistoryOfThisWorld1", "onCarriage2", "askAboutAbilityToReTurnByDeath"});
     }
 
     public void askAboutTeleportation() {
-        ui.displayTextSlowly("You inquire with the man if he possesses any knowledge about the existence of teleportation between different worlds or dimensions. \n" +
-                "\"Teleportation between worlds? I'm afraid I haven't heard of such a thing. But there are rumors of ancient magic and hidden portals in these lands. " +
+        ui.displayTextSlowly("\"Teleportation between worlds? I'm afraid I haven't heard of such a thing.\n" +
+                "But there are rumors of ancient magic and hidden portals in these lands.\n" +
                 "Perhaps seeking guidance from a wise mage or exploring ancient ruins could reveal more.\"");
         ui.setChoicesAndNextPositions(new String[]{"About the existence of magic", "", "", "", "askAboutMagic", "", "", ""});
     }
 
     public void askAboutMagic() {
-        ui.displayTextSlowly("Curiosity piqued, you delve deeper into the topic of magic, asking the man about its nature and usage. " +
-                "He explains that only a select few individuals possess the innate ability to wield magic, using it either to enhance their daily lives or to engage in formidable battles against the forces of darkness.");
+        ui.displayTextSlowly("He explains that only a select few individuals possess the innate ability to wield magic,\nusing it either to enhance their daily lives or to engage in formidable battles against the forces of darkness.");
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "onCarriage1", "", "", ""});
     }
 
     public void askAboutHistoryOfThisWorld1() {
-        ui.displayTextSlowly("\"In this world's ancient history, humans and monsters have coexisted and clashed for thousands of years. " +
-                "Every 500 years, a new demon general is born, commanding a powerful army. " +
-                "With each passing generation, the demon army grows stronger that poses a constant threat to humanity.\"");
-        ui.setChoicesAndNextPositions(new String[]{"\"How can humanity defeat such a formidable enemy?\"", "\"Is there a specific method or weapon to defeat the demon general and his army?\"", "\"What about the previous heroes who fought against the demon army?\"", "Ask another", "askAboutHistoryOfThisWorld2", "askAboutHistoryOfThisWorld3", "askAboutHistoryOfThisWorld4", "onCarriage1"});
+        ui.displayTextSlowly("\"In this world's ancient history, humans and monsters have coexisted and clashed for thousands of years.\n" +
+                "Every 500 years, a new demon king is born, commanding a powerful army, grow stronger each passing generation\"");
+        ui.setChoicesAndNextPositions(new String[]{"\"How can humanity defeat such a formidable enemy?\"", "\"Is there a specific method or weapon to defeat the demon king and his army?\"", "\"What about the previous heroes who fought against the demon army?\"", "Ask another", "askAboutHistoryOfThisWorld2", "askAboutHistoryOfThisWorld3", "askAboutHistoryOfThisWorld4", "onCarriage1"});
     }
 
     public void askAboutHistoryOfThisWorld2() {
-        ui.displayTextSlowly("\"In the face of the demon's threat, a chosen hero emerges every 500 years. " +
-                "This hero, blessed with unique abilities and unwavering courage, leads the united armies of the five kingdoms against the demon army. " +
+        ui.displayTextSlowly("\"A chosen hero emerges every 500 years. " +
+                "This hero, blessed with unique abilities and unwavering courage, leads the united armies of the five kingdoms against the demon army.\n" +
                 "Through their valor and strategic prowess, they bring about peace and protect humanity for the next five hundred years.\"");
     }
 
     public void askAboutHistoryOfThisWorld3() {
-        ui.displayTextSlowly("\"There are ancient prophecies that speak of a legendary weapon, said to be the only thing capable of piercing the demon general's invulnerability. " +
-                "It is said to be hidden in the depths of a treacherous labyrinth, guarded by formidable challenges. " +
-                "Only the chosen hero, guided by fate, can retrieve it.\"");
+        ui.displayTextSlowly("\"Legend speaks of a legendary artifact known as the 'Sword of Light,' said to possess the power to vanquish the darkness.\n" +
+                "However, its whereabouts are unknown, and only a chosen hero, guided by destiny, can wield its true power.\"");
     }
 
     public void askAboutHistoryOfThisWorld4() {
-        ui.displayTextSlowly("\"The previous heroes were legendary figures, their names etched in the annals of history. " +
-                "They led armies, inspired hope, and faced the demon general with unwavering resolve. " +
-                "Some heroes triumphed and became revered throughout the land, while others fell in the line of duty.\"");
+        ui.displayTextSlowly("\"The previous heroes were legendary figures, their names etched in the annals of history.\n" +
+                "They led armies, inspired hope, and faced the demon army with unwavering resolve. \"");
     }
 
     public void askAboutAbilityToReTurnByDeath() {
-        ui.displayTextSlowly("\"What a nonsense\" he dismisses, but then he adds a cautionary note: " +
-                "\"If the power of rewinding time and altering one's fate really exist, it comes at a great cost and is often accompanied by unimaginable suffering.\" " +
-                "Leaving you with more questions than answers, you decide to keep your thoughts to yourself, contemplating the possibility of such a power in silence.");
+        ui.displayTextSlowly("\"What a nonsense\" he dismisses, but then he adds a cautionary note:\n" +
+                "\"If the power of rewinding time and altering one's fate really exist, it comes at a great cost and is often accompanied by unimaginable suffering.\"");
     }
 
     public void onCarriage2() {
-        ui.displayTextSlowly("After a few hours of travel, the carriage finally arrives at the town gate. " +
+        ui.displayTextSlowly("After a few hours of travel, the carriage finally arrives at the town gate.\n" +
                 "The man kindly drops you off and bids you farewell before continuing his own journey. ");
-        ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "startGame", "", "", ""});
+        ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "startGameUI", "", "", ""});
     }
 
     public void townGate() {
@@ -611,12 +598,11 @@ public class StoryManager {
 
         if (!gameModel.isAliveDemonGeneral) {
             gameModel.isAngryGuard = false;
-            ui.displayTextSlowly("Returning to the town, you spot the familiar figure of the guard standing at his post. " +
-                    "As you approach, he looks up and recognition flashes across his face. \"You've returned,\" he says with a mix of surprise and relief. ");
+            ui.displayTextSlowly("Returning to the town, you spot the familiar figure of the guard standing at his post.\n" +
+                    "As you approach, he looks up and recognition flashes across his face. \"You've returned,\" he says. ");
         } else
-            ui.displayTextSlowly("As you draw near to the town gate, you notice that it is tightly shut and fortified, clearly designed to keep potential dangers at bay. " +
-                    "Standing before the gate is a guard, fully equipped with armor and a sword, their attentive gaze fixed upon you. " +
-                    "They carefully evaluate your presence, their eyes alert and watchful.");
+            ui.displayTextSlowly("As you draw near to the town gate, you notice that it is tightly shut and fortified.\n" +
+                    "Standing before the gate is a guard, fully equipped with armor and a sword, their attentive gaze fixed upon you.");
         if (gameModel.isAngryGuard) {
             ui.setChoice1("Talk to the angry guard", "talkGuard1");
             ui.setChoice2("Attack the guard again", "attackGuard");
@@ -633,22 +619,21 @@ public class StoryManager {
         ui.setChoicesAndNextPositions(new String[]{"", "Leave", "", "", "", "crossRoad", "", ""});
 
         if (!gameModel.isAliveDemonGeneral) {
-            ui.displayTextSlowly("\"I heard rumors of the demon general's defeat. Is it true?\" " +
-                    "You nod, sharing the details of your epic battle and the destruction of the demon general's hideout. " +
-                    "The guard's stern expression softens, replaced by a genuine smile. " +
+            ui.displayTextSlowly("\"I heard rumors of the demon general's defeat. Is it true?\"\n" +
+                    "You nod, sharing the details of your epic battle and the destruction of the demon general's hideout.\n" +
+                    "The guard's stern expression softens, replaced by a genuine smile.\n" +
                     "\"You've done the town a great service. We owe you our gratitude.\"");
             ui.setChoice1("\"Can i enter the town now?\"", "talkGuard2");
         } else if (gameModel.isTakenArmor && !gameModel.isAngryGuard) {
-            ui.displayTextSlowly("The guard who notices your newly acquired armor: \"Ah, I see you're donning your new armor. It suits you well. " +
-                    "There is something else you should know. Legend has it that to the north-east of here, atop the mountain, lies a sacred place. " +
-                    "It is said that those who possess great courage and are recognized as the chosen hero can harness their heroic blood and choose a power that suits them.\"");
-            ui.setChoice1("\"I'll have it a try\"", "crossRoad");
+            ui.displayTextSlowly("\"Ah, I see you're donning your new armor. It suits you well. " +
+                    "But you still need to prove yourself trustworthy to get in.\" ");
+            ui.setChoice1("\"Thank you\"", "crossRoad");
         } else {
             if (gameModel.isAngryGuard)
-                ui.displayTextSlowly("The guard is clearly angry as they scold you for your attack. " +
+                ui.displayTextSlowly("The guard is clearly angry as they scold you for your attack.\n" +
                         "They look disappointed and emphasize how crucial it is to keep the town safe. Trust and redemption feel far away in this moment. ");
             else
-                ui.displayTextSlowly("Guard: \"Hello, stranger! I cannot let unfamiliar faces into our town. " +
+                ui.displayTextSlowly("Guard: \"Hello, stranger! I cannot let unfamiliar faces into our town." +
                         "Prove yourself trustworthy, or find another way in.\" ");
             ui.setChoice1("\"How can i prove myself?\"", "talkGuard2");
         }
@@ -663,8 +648,7 @@ public class StoryManager {
             ui.setChoice1("Enter the town", "theEnd");
         } else {
             ui.displayTextSlowly("Guard: \"Lately, one of the demon general has been intruding into our land, endangering our safety. " +
-                    "We urgently require a hero to safeguard our town. " +
-                    "If you can defeat the demon general and repel the threat, I will allow you to enter.\"");
+                    "We urgently require a hero to safeguard our town.\"");
             ui.setChoice1("\"How am i supposed to do that\"", "talkGuard3");
         }
     }
@@ -672,9 +656,8 @@ public class StoryManager {
     public void talkGuard3() {
         gameModel.position = "talkGuard3";
 
-        ui.displayTextSlowly("The guard notices that your current gear is not sufficient to defeat the demon general. " +
-                "They advise you to visit the blacksmith in the north to acquire better equipment.");
-        ui.setChoicesAndNextPositions(new String[]{"\"Ok! Thank you.\"", "Leave", "", "", "crossRoad", "crossRoad", "", ""});
+        ui.displayTextSlowly("He advises you to visit the blacksmith in the north to acquire better equipment first.");
+        ui.setChoicesAndNextPositions(new String[]{"\"I got it\"", "Leave", "", "", "crossRoad", "crossRoad", "", ""});
     }
 
     public void attackGuard() {
@@ -684,7 +667,7 @@ public class StoryManager {
         int hpLost = (int) Math.ceil(8 * gameModel.difficultRate) - (gameModel.player.getArmor() != null ? gameModel.player.getArmor().getDamageReduced() : 0);
         if (ui.updatePlayerHp(-hpLost))
             ui.setChoicesAndNextPositions(new String[]{"\"Sorry\"", "Leave", "", "", "townGate", "crossRoad", "", ""});
-        ui.displayTextSlowly("As a consequence of your actions, the guard retaliates and strikes you in response, resulting in you taking " + hpLost + " damage.");
+        ui.displayTextSlowly("As a consequence of your actions, the guard strikes you in response,\nresulting in you taking " + hpLost + " damage.");
     }
 
     public void crossRoad() {
@@ -692,7 +675,7 @@ public class StoryManager {
         gameModel.position = "crossRoad";
         ui.image.setImageResource(R.drawable.cross_road);
 
-        ui.displayTextSlowly("You find yourself at a crossroad, standing at the intersection of multiple paths. " +
+        ui.displayTextSlowly("You find yourself at a crossroad, standing at the intersection of multiple paths.\n" +
                 "The choices laid out offering different directions to explore.");
         ui.setChoicesAndNextPositions(new String[]{"Go North", "Go East", "Go South", "Go West (the town)", "blackSmithHouse", "riverSide", "goblinCave", "townGate"});
     }
@@ -701,32 +684,30 @@ public class StoryManager {
         gameModel.position = "blackSmithHouse";
         Glide.with(ui).load(R.drawable.black_smith_house).into(ui.image);
         soundManager.anvil();
-        ui.displayTextSlowly("As you approach the blacksmith shop, the sound of hammer striking metal echoes in the air. " +
-                "The skilled blacksmith can be seen diligently working at the forge, their expertise showcased by each precise strike.");
+        ui.displayTextSlowly("As you approach the blacksmith shop, the sound of hammer striking metal echoes in the air.\n" +
+                "The skilled blacksmith can be seen diligently working at the forge.");
         ui.setChoicesAndNextPositions(new String[]{"Talk to the blacksmith", "Go East", "Go South", "", "talkBlackSmith", "northRiver", "crossRoad", ""});
     }
 
     public void talkBlackSmith() {
         gameModel.position = "talkBlackSmith";
-        ui.setChoicesAndNextPositions(new String[]{"", "Leave", "", "", "", "blackSmithHouse", "", ""});
+        ui.setChoicesAndNextPositions(new String[]{"Leave", "", "", "", "blackSmithHouse", "", "", ""});
 
         if (!gameModel.blackSmithQuestActive) {
-            ui.displayTextSlowly("The blacksmith, acknowledging your unfamiliar presence, kindly asks for a favor before proceeding with further conversation. " +
-                    "They explain the troubles caused by a mischievous goblin and provide its last known location—a cave to the south. " +
-                    "They request that you return once you have successfully dealt with the goblin."
+            ui.displayTextSlowly("The blacksmith, acknowledging your unfamiliar presence, kindly asks for a favor before proceeding with further conversation.\n" +
+                    "He explain the troubles caused by a mischievous goblin and provide its last known location—a cave to the south.\n" +
+                    "\"Return once you have successfully dealt with the.\""
             );
-            ui.setChoice1("Accept the request", "acceptBlackSmithQuest");
+            ui.setChoicesAndNextPositions(new String[]{"Accept the request", "Leave", "", "", "acceptBlackSmithQuest", "blackSmithHouse", "", ""});
         } else if (!gameModel.isALiveGoblin) {
             if (!gameModel.isTakenArmor) {
-                ui.displayTextSlowly("\"Look like you've killed that goblin. Thank you,\" they acknowledge with gratitude. " +
-                        "Their attention then turns to your quest to repulse the demon general. " +
-                        "\"You're on the way to repulse the demon general, huh? I have a reward for you,\" they reveal, a glimmer of excitement in their voice. ");
-                ui.setChoice1("Take reward", "takeArmor");
+                ui.displayTextSlowly("\"Look like you've killed that goblin. I have a reward for you,\"  ");
+                ui.setChoicesAndNextPositions(new String[]{"Take reward", "Leave", "", "", "takeArmor", "blackSmithHouse", "", ""});
             } else if (gameModel.isTakenArmor) {
-                ui.displayTextSlowly("They believe in your ability to overcome the challenge and offer their unwavering support. " +
+                ui.displayTextSlowly("They believe in your ability to overcome the challenge. " +
                         "The blacksmith advises, \"There's one more thing you should know. " +
-                        "The witch who wanders along the river near the goblin cave is known for her trickery. Be cautious and stay alert when you encounter her.\"");
-                ui.setChoice1("\"Thank you\"", "blackSmithHouse");
+                        "The witch who wanders along the river is known for her trickery.\nBe cautious and stay alert when you encounter her.\"");
+                ui.setChoicesAndNextPositions(new String[]{"\"Thank you\"", "Leave", "", "", "blackSmithHouse", "blackSmithHouse", "", ""});
             }
         } else {
             ui.displayTextSlowly("The blacksmith: \"That goblin is still alive! You better hurry to defeat it before it causes more harm.\"");
@@ -736,7 +717,7 @@ public class StoryManager {
     public void acceptBlackSmithQuest() {
         gameModel.blackSmithQuestActive = true;
         gameModel.isTakenTorch = true;
-        ui.displayTextSlowly("The blacksmith nods and hands you a torch along with a fire stone. " +
+        ui.displayTextSlowly("The blacksmith hands you a torch along with a fire stone. " +
                 "He warns you about the darkness inside the goblin cave and advises you to use the torch to light your way.");
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "talkBlackSmith", "", "", ""});
     }
@@ -752,29 +733,28 @@ public class StoryManager {
         ui.armorLabel.setTextColor(Color.parseColor(armor.getHexColorCode()));
 
         gameModel.isTakenArmor = true;
-        ui.displayTextSlowly("The BlackSmith: \"Take this " + armor.getName() + ".Maybe it could help you.\"" +
-                "It seems that they have prepared a special armor, recognizing the importance of your mission and the need for enhanced protection.");
+        ui.displayTextSlowly("The BlackSmith: \"Take this " + armor.getName() + " .Maybe it could help you.\"");
         ui.setChoicesAndNextPositions(new String[]{"\"Thank you\"", "Leave", "", "", "talkBlackSmith", "blackSmithHouse", "", ""});
     }
 
     public void goblinCave() {
-        if (gameModel.position.equals("insideGoblinCave"))
+        if (gameModel.position.equals("insideGoblinCave")||gameModel.position.equals("deeperInsideGoblinCave"))
             soundManager.playBackGroundMusic();
         if (!gameModel.position.equals("lightTorch"))
             gameModel.isLightTorch = false;
         gameModel.position = "goblinCave";
         ui.image.setImageResource(R.drawable.goblin_cave);
-        ui.displayTextSlowly("As you approach the entrance of the goblin cave, you see an ancient stone tunnel that leads further into the darkness. " +
-                "The cave is situated in the heart of a dense forest, surrounded by tall trees and vibrant green grass adorned with a few delicate flowers. " +
-                "A curious small stone catches your attention, resting mysteriously in front of the cave's entrance.");
-        ui.setChoicesAndNextPositions(new String[]{"Go inside the cave", "", "Go North", "Go East", "insideGoblinCave", "", "crossRoad", "southRiver"});
+        ui.displayTextSlowly("The cave is situated in the heart of a dense forest, surrounded by tall trees and vibrant green grass.\n" +
+                "Approaching the entrance of the goblin cave, you see an ancient stone tunnel that leads further into the darkness.");
+        ui.setChoicesAndNextPositions(new String[]{"Go inside the cave", "Go North", "Go East", "", "insideGoblinCave", "crossRoad", "southRiver", ""});
         if (gameModel.isTakenTorch && !gameModel.isLightTorch)
-            ui.setChoice2("Light torch", "lightTorch");
+            ui.setChoicesAndNextPositions(new String[]{"Go inside the cave", "Light torch", "Go North", "Go East", "insideGoblinCave", "lightTorch", "crossRoad", "southRiver"});
     }
 
     public void lightTorch() {
         gameModel.position = "lightTorch";
         gameModel.isLightTorch = true;
+        soundManager.lightFire();
         Toast.makeText(ui.getApplicationContext(), "You have lit the torch", Toast.LENGTH_SHORT).show();
         goblinCave();
     }
@@ -799,12 +779,13 @@ public class StoryManager {
     public void deeperInsideGoblinCave() {
         gameModel.lastPosition = gameModel.position;
         gameModel.position = "deeperInsideGoblinCave";
-        ui.setChoicesAndNextPositions(new String[]{"", "Leave", "", "", "", "goblinCave", "", ""});
+        soundManager.insideCave();
+        ui.setChoicesAndNextPositions(new String[]{"", "", "", "", "", "", "", ""});
         if (gameModel.isALiveGoblin) {
             if (gameModel.isLightTorch) {
-                ui.displayTextSlowly("As you explore deeper into the goblin cave, a sudden noise startles you. " +
-                        "Illuminated by the flickering light of your torch, you catch sight of a goblin dressed in a makeshift rat costume, its eyes gleaming with malice as it wielding a menacing knife. " +
-                        "Without hesitation, it jumps towards you, its intentions clear. Swiftly, you ... ");
+                ui.displayTextSlowly("As you explore deeper into the goblin cave, a sudden noise startles you.\n" +
+                        "You catch sight of a goblin dressed in a makeshift rat costume, its eyes gleaming with malice as it wielding a small axe. " +
+                        "Without hesitation, it jumps towards you. Swiftly, you ... ");
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -819,10 +800,9 @@ public class StoryManager {
             } else {
                 ui.setChoice2("", "");
                 ui.darkUI();
-                ui.displayTextSlowly("As you venture deeper into the goblin cave, the oppressive darkness engulfs your senses. " +
-                        "Suddenly, a creepy noise echoes through the chamber, causing you to startle. " +
-                        "The source of the sound seems to move and encircle you, growing ever nearer. " +
-                        "Before you can react, a swift and deadly attack strikes your throat,  leaving you helpless in the depths of the cave.");
+                ui.displayTextSlowly("As you venture deeper into the goblin cave, the oppressive darkness engulfs your senses.\n" +
+                        "Suddenly, a creepy noise echoes through the chamber. The source of the sound is growing ever nearer.\n" +
+                        "Before you can react, a swift and deadly attack strikes your throat, leaving you helpless in the depths of the cave.");
                 soundManager.pauseBackGroundMusic();
                 soundManager.goblin(true);
                 handler.postDelayed(new Runnable() {
@@ -834,22 +814,28 @@ public class StoryManager {
                 }, 3000);
             }
         } else {
-            if (gameModel.isLightTorch)
+            if (gameModel.isLightTorch) {
                 ui.image.setImageResource(R.drawable.inside_cave);
-            else ui.image.setImageResource(R.drawable.inside_dark_cave);
-            if (!gameModel.isDefeatedEvilWitch && gameModel.witchQuestActive && !gameModel.isTakenGoblinEar) {
-                ui.displayTextSlowly("As you explore the depths of the cave, you stumble upon the lifeless body of a goblin. " +
-                        "Remembering the witch's request, you reach down to retrieve the goblin's left ear.");
-                ui.setChoice1("Take the goblin's left ear", "takeGoblinEar");
-            } else if (!gameModel.isTakenLongSword) {
-                ui.displayTextSlowly("As you explore the depths of the cave, you come across the lifeless body of a goblin. " +
-                        "In the dim light, something shiny catches your attention, revealing an old, weathered long sword.  " +
-                        "Despite its worn appearance, yet it exudes a sense of strength, ready to be wielded once again.");
-                ui.setChoice1("Take the long sword", "takeLongSword");
+                if (!gameModel.isDefeatedEvilWitch && gameModel.witchQuestActive && !gameModel.isTakenGoblinEar) {
+                    ui.displayTextSlowly("As you explore the depths of the cave, you stumble upon the lifeless body of a goblin.\n" +
+                            "Remembering the witch's request, you reach down to retrieve the goblin's left ear.");
+                    ui.setChoicesAndNextPositions(new String[]{"Take the goblin's left ear", "Leave", "", "", "takeGoblinEar", "goblinCave", "", ""});
+                } else if (!gameModel.isTakenLongSword) {
+                    ui.displayTextSlowly("As you explore the depths of the cave, you come across the lifeless body of a goblin.\n" +
+                            "Something shiny catches your attention, revealing an old, weathered long sword.\n" +
+                            "Despite its worn appearance, yet it exudes a sense of strength, ready to be wielded once again.");
+                    ui.setChoicesAndNextPositions(new String[]{"Take the long sword", "Leave", "", "", "takeLongSword", "goblinCave", "", ""});
+                } else {
+                    ui.image.setImageResource(R.drawable.inside_cave_painting);
+                    ui.displayTextSlowly("As you venture deeper into the cave, you come across a painting on the wall depicting a mountain.\n" +
+                            "It appears that reaching the top of the mountain holds the promise of acquiring great strength, magic, or some other extraordinary power");
+                    ui.setChoicesAndNextPositions(new String[]{"Leave", "", "", "", "goblinCave", "", "", ""});
+                }
             } else {
-                ui.displayTextSlowly("As you continue deeper into the cave, you find that there is not much to discover. " +
-                        "The darkness surrounds you, revealing no hidden treasures or significant sights. " +
-                        "It appears that this part of the cave holds no remarkable secrets, prompting you to continue your exploration elsewhere.");
+                ui.image.setImageResource(R.drawable.inside_dark_cave);
+                ui.displayTextSlowly("As you continue deeper into the cave, you find that there is not much to discover.\n" +
+                        "The darkness surrounds you, revealing no hidden treasures or significant sights.");
+                ui.setChoicesAndNextPositions(new String[]{"Leave", "", "", "", "goblinCave", "", "", ""});
             }
         }
     }
@@ -872,17 +858,14 @@ public class StoryManager {
         if (!gameModel.isDefeatedEvilWitch) {
             ui.image.setImageResource(R.drawable.river_side_with_witch);
 
-            ui.displayTextSlowly("You find yourself by the riverside, where the gentle flow of the water creates a serene ambiance. " +
-                    "As you admire the tranquil scene, a witch passes by, her long dark cloak billowing in the breeze, and a pointy hat adorning her head. " +
-                    "In the distance, you notice a small wooden bridge that stretches across the river.");
+            ui.displayTextSlowly("You find yourself by the riverside. In the distance, you notice a small wooden bridge that stretches across the river.\n" +
+                    "A witch passes by, her long dark cloak and a pointy hat adorning her head. ");
             ui.setChoicesAndNextPositions(new String[]{"Talk to the Witch", "Go North", "Go East(cross the river on bridge)", "Go West", "talkWitch1", "northRiver", "jungle", "crossRoad"});
             if (gameModel.witchQuestActive)
                 nextPosition1 = "talkWitch2";
         } else {
             ui.image.setImageResource(R.drawable.river_side);
-
-            ui.displayTextSlowly("You find yourself at the edge of a river, its calm current gently winding through the landscape. " +
-                    "The soothing sound of flowing water creates a peaceful atmosphere as you notice a small wooden bridge spanning across the river.");
+            ui.displayTextSlowly("You find yourself by the riverside. In the distance, you notice a small wooden bridge that stretches across the river.");
             ui.setChoicesAndNextPositions(new String[]{"Go North", "Go East(cross the river on bridge)", "Go South", "Go West", "northRiver", "jungle", "southRiver", "crossRoad"});
         }
     }
@@ -891,9 +874,8 @@ public class StoryManager {
         gameModel.position = "talkWitch1";
         ui.image.setImageResource(R.drawable.witch);
 
-        ui.displayTextSlowly("\"Hey there, young man,\" the witch addresses you, her gaze filled with curiosity. " +
-                "\"You seem strong and capable. If you do me a favor, I'll be sure to reward you handsomely." +
-                "\" Her offer hangs in the air, tempting you with the promise of a worthy prize.");
+        ui.displayTextSlowly("\"Hey there, young man, You seem strong and capable. " +
+                "If you do me a favor, I'll be sure to reward you handsomely.\"");
         ui.setChoicesAndNextPositions(new String[]{"Ask about the favor", "Leave", "", "", "talkWitch2", "riverSide", "", ""});
     }
 
@@ -906,8 +888,8 @@ public class StoryManager {
         else
             ui.setChoicesAndNextPositions(new String[]{"Accept the favor", "\"Don't try to fool me\"", "Leave", "", "acceptWitchQuest", "talkWitch3", "riverSide", ""});
 
-        StringBuilder text = new StringBuilder("As you inquire about the favor, the witch requests that you venture into the jungle on the other side of the river and fetch her a fresh apple. " +
-                "Additionally, she asks for a goblin's left ear, explaining that it holds powerful magical properties.");
+        StringBuilder text = new StringBuilder("The witch requests that you venture into the jungle on the other side of the river and fetch her a fresh apple.\n" +
+                "Additionally, she asks for a goblin's left ear.");
         if (gameModel.isTakenGoblinEar)
             text.append("\n(You had the goblin's left ear)");
         if (gameModel.isTakenApple)
@@ -932,14 +914,13 @@ public class StoryManager {
         ui.setChoicesAndNextPositions(new String[]{"Encounter the Evil Witch", "", "", "", "encounterEvilWitch", "", "", ""});
 
         if (gameModel.witchQuestActive) {
-            ui.displayTextSlowly("The witch swiftly snatches the items from your grasp, a sinister grin spreading across her face. " +
-                    "Her mocking laughter fills the air as she taunts you for your foolishness. " +
-                    "With a flick of her staff, she raises it menacingly, casting a spell enveloping you in a cloud of toxic poison.");
+            ui.displayTextSlowly("The witch swiftly snatches the items from your grasp.\n" +
+                    "Her mocking laughter fills the air as she taunts you for your foolishness.\n" +
+                    "With a flick of her staff, a spell enveloping you in a cloud of toxic poison.");
         } else
-            ui.displayTextSlowly("\"Don't try to fool me,\" you assert, your weapon held high in defiance. " +
-                    "The witch's expression shifts from arrogance to surprise as she realizes that you see through her ruse. " +
-                    "She bursts into laughter, a wicked sound that echoes through the air. " +
-                    "With a swift flick of her staff, she casts a powerful poison spell, enveloping you in a toxic haze.");
+            ui.displayTextSlowly("\"Don't try to fool me,\" you assert, your weapon held high in defiance.\n" +
+                    "The witch's expression shifts from arrogance to surprise as she realizes that you see through her ruse.\n" +
+                    "She bursts into laughter, with a swift flick of her staff, she casts a poison spell, enveloping you in a toxic haze.");
         if (gameModel.evilWitch == null)
             gameModel.evilWitch = new Monster_EvilWitch(gameModel.difficultRate);
     }
@@ -950,7 +931,7 @@ public class StoryManager {
         ui.image.setImageResource(R.drawable.defeated_witch);
         ui.setChoicesAndNextPositions(new String[]{"Spare her life", "Finish her", "Leave", "", "talkWitch5", "talkWitch7", "talkWitch6", ""});
 
-        ui.displayTextSlowly("\"Enough! Spare my life, I'll remove the poison spell casted on you and give you a reward,\" " +
+        ui.displayTextSlowly("\"Enough! Spare my life, I'll remove the spell casted on you and give you a reward,\" " +
                 "she begs, desperation evident in her voice. \"No more tricks, I swear.\"");
     }
 
@@ -960,7 +941,7 @@ public class StoryManager {
         ui.image.setImageResource(R.drawable.defeated_witch);
         ui.setChoicesAndNextPositions(new String[]{"Enhance your strength", "Learn Poison breeze", "Leave", "", "enhanceStrength", "learnPoisonBreeze", "riverSide", ""});
 
-        ui.displayTextSlowly("\"About the reward, I can either enhance your strength, making you even more powerful, or teach you the secret of the poison breeze, a lethal technique.\"");
+        ui.displayTextSlowly("\"About the reward, I can either enhance your strength, making you even more powerful,\nor teach you the secret of the poison breeze, a lethal technique.\"");
     }
 
     public void talkWitch6() {
@@ -968,8 +949,7 @@ public class StoryManager {
 
         ui.image.setImageResource(R.drawable.river_side);
         ui.setChoicesAndNextPositions(new String[]{"Go North", "Go south", "Go East(cross the river on bridge)", "Go West", "northRiver", "southRiver", "jungle", "crossRoad"});
-        ui.displayTextSlowly("As you spare the witch's life, she quickly realizes the gravity of the situation and hastily retreats, no longer posing a threat to your journey. " +
-                "The path to the south of the river is now clear, allowing you to continue your adventure unhindered.");
+        ui.displayTextSlowly("As you spare the witch's life, she quickly realizes the gravity of the situation and hastily retreats.");
     }
 
     public void talkWitch7() {
@@ -977,9 +957,8 @@ public class StoryManager {
 
         ui.image.setImageResource(R.drawable.river_side);
         ui.setChoicesAndNextPositions(new String[]{"Go North", "Go south", "Go East(cross the river on bridge)", "Go West", "northRiver", "southRiver", "jungle", "crossRoad"});
-        ui.displayTextSlowly("As you prepare to deliver the decisive blow, the witch's eyes gleam with a mixture of fear and cunning. " +
-                "With a swift motion of her hand, she unleashes a powerful spell, creating a blinding flash of light that disorients you. " +
-                "By the time your vision clears, the witch is nowhere to be seen, leaving you standing alone");
+        ui.displayTextSlowly("As you prepare to deliver the decisive blow.\nWith a swift motion of her hand, she unleashes a spell, creating a blinding flash of light that disorients you.\n" +
+                "By the time your vision clears, the witch is nowhere to be seen.");
     }
 
     public void enhanceStrength() {
@@ -987,19 +966,19 @@ public class StoryManager {
         gameModel.player.increasePlayerMaxHP(3);
         gameModel.player.increaseBaseAttack(1);
         ui.updatePlayerHp(0);
-
-        Toast.makeText(ui.getApplicationContext(), "The witch enhances your strength, granting you a boost in power. Your maximum HP is increased by 3, and your base attack is enhanced by 1", Toast.LENGTH_SHORT).show();
-        talkWitch6();
+        ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "talkWitch6", "", "", ""});
+        ui.displayTextSlowly("The witch enhances your strength, granting you a boost in power.\nYour maximum HP is increased by 3, and your base attack is enhanced by 1");
     }
 
     public void learnPoisonBreeze() {
         gameModel.witchQuestActive = false;
         gameModel.poisonBreeze = new Spell_PoisonBreeze();
+        gameModel.poisonousEffect = gameModel.poisonBreeze.getEffect();
         gameModel.player.addSpell(gameModel.poisonBreeze);
-
-        Toast.makeText(ui.getApplicationContext(), "You learn the skill of Poison Breeze from the witch, acquiring the ability to unleash a toxic and debilitating attack against your enemies.", Toast.LENGTH_SHORT).show();
         ui.updateSpellStatus();
-        talkWitch6();
+        ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "talkWitch6", "", "", ""});
+        ui.displayTextSlowly("You learn the skill of Poison Breeze from the witch.\nAcquiring the ability to unleash a toxic cloud that deal " + gameModel.poisonousEffect.getDamage() + " damage each round against your enemies.");
+
     }
 
     public void northRiver() {
@@ -1013,24 +992,22 @@ public class StoryManager {
             ui.setChoicesAndNextPositions(new String[]{"", "Go East(swim cross the river)", "Go South", "Go West", "", "mountain", "riverSide", "blackSmithHouse"});
 
             if (!gameModel.isRestAtTent) {
-                ui.displayTextSlowly("North of the river, you discover a cozy fireplace and an old tent by the riverside. " +
-                        "Resting at the tent allows you to recover 10 HP. " +
-                        "Unfortunately, the path ahead has been blocked, denying any further progress in that direction.");
+                ui.displayTextSlowly("North of the river, you discover a cozy fireplace and an old tent by the riverside.\n" +
+                        "Resting at the tent allows you to recover 10 HP.\nThe path to the northern ahead has been blocked.");
                 ui.setChoicesAndNextPositions(new String[]{"Take a rest", "Go East(swim cross the river)", "Go South", "Go West", "takeRest", "mountain", "riverSide", "blackSmithHouse"});
 
             } else {
-                ui.displayTextSlowly("North of the river, you discover a cozy fireplace and an old tent by the riverside. " +
-                        "Unfortunately, the path ahead has been blocked, denying any further progress in that direction.");
+                ui.displayTextSlowly("North of the river, you discover a cozy fireplace and an old tent by the riverside.\nThe path to the northern ahead has been blocked.");
                 ui.setChoicesAndNextPositions(new String[]{"", "Go East(swim cross the river)", "Go South", "Go West", "", "mountain", "riverSide", "blackSmithHouse"});
             }
         }
     }
 
     public void takeRest() {
-        Toast.makeText(ui.getApplicationContext(), "Resting at a tent, you regain 10 HP.", Toast.LENGTH_SHORT).show();
         ui.updatePlayerHp(10);
         gameModel.isRestAtTent = true;
-        northRiver();
+        ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "northRiver", "", "", ""});
+        ui.continueTextSlowly("Resting at a tent, you regain 10 HP.");
     }
 
     public void southRiver() {
@@ -1041,16 +1018,13 @@ public class StoryManager {
             soundManager.playBackGroundMusic();
         } else {
             ui.image.setImageResource(R.drawable.south_river);
-            ui.setChoicesAndNextPositions(new String[]{"", "Go North", "Go East(swim cross the river)", "Go West", "", "riverSide", "demonHideout", "goblinCave"});
-
             if (gameModel.isALiveRiverMonster) {
-                ui.displayTextSlowly("South of the river, a strange vortex captivates your gaze from the center of the water. " +
-                        "However, progress along the southern path is halted by a waterfall, blocking any further advancement.");
+                ui.displayTextSlowly("South of the river, a strange vortex from the center of the water.\n" +
+                        "Progress along the southern path is halted by a waterfall.");
                 ui.setChoicesAndNextPositions(new String[]{"Throw a rock into it", "Go North", "Go East(swim cross the river)", "Go West", "encounterRiverMonster", "riverSide", "demonHideout", "goblinCave"});
-
             } else {
                 ui.displayTextSlowly("South of the river, a waterfall creates an impassable barrier, preventing any further advancement along the southern path.");
-                ui.setChoicesAndNextPositions(new String[]{"", "Go North", "Go East(swim cross the river)", "Go West", "", "riverSide", "demonHideout", "goblinCave"});
+                ui.setChoicesAndNextPositions(new String[]{"Go North", "Go East(swim cross the river)", "Go West", "", "riverSide", "demonHideout", "goblinCave", ""});
             }
         }
     }
@@ -1061,8 +1035,8 @@ public class StoryManager {
             ui.image.setImageResource(R.drawable.dark_screen);
             ui.darkUI();
             soundManager.stopAllMusic();
-            ui.displayTextSlowly("As you bravely swim across the river. " +
-                    "Reaching the middle, a swirling vortex forms around you, and you feel a powerful force pulling you downwards. " +
+            ui.displayTextSlowly("You bravely swim across the river.\n" +
+                    "Reaching the middle, a swirling vortex forms around you, and you feel a powerful force pulling you downwards.\n" +
                     "Before you can react, you are bitten by something formidable, dragging you deeper into the dark depths of the water.");
             handler.postDelayed(new Runnable() {
                 @Override
@@ -1075,7 +1049,7 @@ public class StoryManager {
             }, 2000);
 
         } else {
-            ui.displayTextSlowly("You take the bold decision to swim across the river, and to your relief, everything goes smoothly. " +
+            ui.displayTextSlowly("You take the bold decision to swim across the river.\n" +
                     "The water is calm, and you manage to reach the other side without any mishaps or obstacles.");
             ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", gameModel.position, "", "", ""});
         }
@@ -1087,8 +1061,8 @@ public class StoryManager {
         gameModel.position = "jungle";
         soundManager.stopAllSoundEffect();
         ui.image.setImageResource(R.drawable.jungle);
-        ui.displayTextSlowly("You find yourself in a peaceful forest clearing, surrounded by tall, ancient trees. " +
-                "Shafts of sunlight filter through the dense foliage, casting a gentle glow on the lush grass beneath your feet.\n" +
+        ui.displayTextSlowly("You find yourself in a peaceful forest clearing, surrounded by tall, ancient trees.\n" +
+                "Shafts of sunlight casting a gentle glow on the lush grass beneath your feet.\n" +
                 "You see an apple tree.");
         ui.setChoicesAndNextPositions(new String[]{"Hit the apple tree", "Go North", "Go South", "Go West(cross the river on bridge)", "hitTheAppleTree", "mountain", "demonHideout", "riverSide"});
     }
@@ -1111,7 +1085,7 @@ public class StoryManager {
             ui.setChoice3("Leave", "jungle");
             ui.displayTextSlowly(text.toString());
         } else if (c1 == 1) {
-            ui.displayTextSlowly("You hit the apple tree, angering a nearby monkey. It retaliates by throwing a stick at you, causing " + (int) Math.ceil(2 * gameModel.difficultRate) + " damage.");
+            ui.displayTextSlowly("You hit the apple tree, angering a nearby monkey.\nIt retaliates by throwing a stick at you, causing " + (int) Math.ceil(2 * gameModel.difficultRate) + " damage.");
             ui.updatePlayerHp(-(int) Math.ceil(2 * gameModel.difficultRate));
         } else
             ui.displayTextSlowly("Nothing happen.");
@@ -1123,6 +1097,7 @@ public class StoryManager {
     }
 
     public void eatApple() {
+        ui.setChoicesAndNextPositions(new String[]{"", "", "", "", "", "", "", ""});
         soundManager.eatingApple();
         gameModel.appleOnTree--;
         handler.postDelayed(new Runnable() {
@@ -1143,9 +1118,8 @@ public class StoryManager {
             ui.image.setImageResource(R.drawable.mountain);
             soundManager.stopAllSoundEffect();
             soundManager.playBackGroundMusic();
-            ui.displayTextSlowly("As you approach the towering mountain, your gaze is drawn to the peculiar sight atop its peak. " +
-                    "Clusters of massive rock hover in the air, defying the natural laws of gravity. " +
-                    "You feel an irresistible pull to ascend the mountain and uncover the secrets hidden within the realm of the floating rocks.");
+            ui.displayTextSlowly("As you approach the towering mountain, your gaze is drawn to the peculiar sight atop its peak.\n" +
+                    "Clusters of massive rock hover in the air, defying the natural laws of gravity.");
             ui.setChoicesAndNextPositions(new String[]{"Climb to the top", "Go South", "Go West(swim cross the river)", "", "mountainTop", "jungle", "northRiver", ""});
         }
     }
@@ -1155,31 +1129,30 @@ public class StoryManager {
         ui.image.setImageResource(R.drawable.mountain_top);
         soundManager.pauseBackGroundMusic();
         soundManager.magicMountain();
-        ui.displayTextSlowly("You climb the mountain, reaching the summit where a majestic stone gate awaits. " +
+        ui.displayTextSlowly("You climb the mountain, reaching the summit where a majestic stone gate awaits.\n" +
                 "Passing through, you enter a sacred space surrounded by five towering stone statues, their presence exuding ancient power.");
         ui.setChoicesAndNextPositions(new String[]{"Touch the middle statue", "Leave", "", "", "touchStatue", "mountain", "", ""});
         if (gameModel.isTakenPower)
-            ui.setChoice1("", "");
+            ui.setChoicesAndNextPositions(new String[]{"Leave", "", "", "", "mountain", "", "", ""});
     }
 
     public void touchStatue() {
         ui.displayTextSlowly("The statues grant power to the traveler as a tribute to their courage. " +
                 "Recognized as the chosen hero, the traveler's heroic blood resonates with the statues, allowing them to choose a power that suits their strengths and upcoming challenges.");
-        ui.setChoicesAndNextPositions(new String[]{"...", "Leave", "", "", "offerPower", "mountain", "", ""});
+        ui.setChoicesAndNextPositions(new String[]{"Continue", "Leave", "", "", "offerPower", "mountain", "", ""});
     }
 
     public void offerPower() {
-        ui.displayTextSlowly("A mystical voice fills the air, carrying ancient wisdom and a sense of reverence. " +
-                "\"Knowing the heroic blood that flows within you, we offer you a choice,\" the voice declares. " +
+        ui.displayTextSlowly("A mystical voice fills the air, carrying ancient wisdom and a sense of reverence. \n" +
+                "\"Knowing the heroic blood that flows within you, we offer you a choice.\"\n" +
                 "\"Embrace the path of strength, wield the power of scorching fire, command the paralyzing force of lightning, or harness the soothing energy of healing water.\"");
         ui.setChoicesAndNextPositions(new String[]{"Strength", "Fire power", "Lightning power", "Water power", "strengthPower", "firePower", "lightningPower", "waterPower"});
     }
 
     public void strengthPower() {
-        ui.displayTextSlowly("Strength Power: This power enhances the traveler's physical capabilities by increasing their HP and base attack.\n" +
-                "Tap into your inner strength and experience a surge of power. " +
-                "Your maximum HP is increased by 4, fortifying your resilience and granting you the endurance to withstand greater challenges. " +
-                "Additionally, your base attack is enhanced by 1, empowering your strikes and making your every blow more impactful.");
+        ui.displayTextSlowly("Strength Power: This power enhances the traveler's physical capabilities.\n" +
+                "Tap into your inner strength and experience a surge of power. \n" +
+                "Your maximum HP is increased by 4 and your base attack is enhanced by 1.");
         ui.setChoicesAndNextPositions(new String[]{"Take power", "Back", "", "", "takeStrengthPower", "offerPower", "", ""});
     }
 
@@ -1188,15 +1161,15 @@ public class StoryManager {
         gameModel.player.increasePlayerMaxHP(4);
         gameModel.player.increaseBaseAttack(1);
         ui.updatePlayerHp(0);
-        Toast.makeText(ui.getApplicationContext(), "You feel an overwhelming surge of strength coursing through your veins as you embrace the power of enhanced strength.", Toast.LENGTH_SHORT).show();
-        mountainTop();
+        ui.continueTextSlowly("You feel an overwhelming surge of strength coursing through your veins as you embrace the power of enhanced strength.");
+        ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "mountainTop", "", "", ""});
     }
 
     public void firePower() {
         if (gameModel.fireStorm == null) gameModel.fireStorm = new Spell_FireStorm();
         gameModel.selectedSpell = gameModel.fireStorm;
-        ui.displayTextSlowly("Fire Power: This power grants the traveler mastery over the element of fire, enabling them to unleash devastating Fire Storm that inflict immense damage upon their enemies.\n" +
-                "Unleash a mighty magic Fire Storm that scorches your enemies, dealing a significant " + gameModel.fireStorm.getDamage() + " damage.");
+        ui.displayTextSlowly("Fire Power: Grants the traveler mastery over the element of fire. " +
+                "Enabling them to unleash devastating Fire Storm that scorches your enemies, dealing a significant " + gameModel.fireStorm.getDamage() + " damage.");
         ui.setChoicesAndNextPositions(new String[]{"Take power", "Back", "", "", "takePower", "offerPower", "", ""});
     }
 
@@ -1205,7 +1178,7 @@ public class StoryManager {
             gameModel.lightningBolt = new Spell_LightningBolt();
         }
         gameModel.selectedSpell = gameModel.lightningBolt;
-        ui.displayTextSlowly("Lightning Power: Harness the electrifying energy of lightning to deal substantial damage to your foes, while also stunning them in their tracks.\n" +
+        ui.displayTextSlowly("Lightning Power: Harness the electrifying energy of lightning.\n" +
                 "Unleash bolts of lightning that deal " + gameModel.lightningBolt.getDamage() + " damage and momentarily stun monsters, granting you the opportunity to follow up with an additional attack.");
         ui.setChoicesAndNextPositions(new String[]{"Take power", "Back", "", "", "takePower", "offerPower", "", ""});
     }
@@ -1214,7 +1187,7 @@ public class StoryManager {
         if (gameModel.waterSurge == null) gameModel.waterSurge = new Spell_WaterSurge();
         gameModel.selectedSpell = gameModel.waterSurge;
         ui.displayTextSlowly("As the water spell surges forth, it forms a protective barrier that shields you from an impending monster attack, deflecting its harm. " +
-                "Simultaneously, the restorative properties of the water envelop you, replenishing your vitality and restoring 7 points of health. ");
+                "Simultaneously, the restorative properties of the water envelop you, replenishing your vitality and restoring" + (-gameModel.waterSurge.getDamage()) + "points of health. ");
         ui.setChoicesAndNextPositions(new String[]{"Take power", "Back", "", "", "takePower", "offerPower", "", ""});
     }
 
@@ -1222,8 +1195,8 @@ public class StoryManager {
         gameModel.isTakenPower = true;
         gameModel.player.addSpell(gameModel.selectedSpell);
         ui.updateSpellStatus();
-        Toast.makeText(ui.getApplicationContext(), "Congratulations! You have learned the formidable spell " + gameModel.selectedSpell.getName(), Toast.LENGTH_SHORT).show();
-        mountainTop();
+        ui.continueTextSlowly("Congratulations! You have learned the formidable spell " + gameModel.selectedSpell.getName());
+        ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "mountainTop", "", "", ""});
     }
 
     public void demonHideout() {
@@ -1232,47 +1205,43 @@ public class StoryManager {
         if (gameModel.lastPosition.equalsIgnoreCase("southRiver")) {
             crossTheRiver();
         } else {
-            ui.setChoicesAndNextPositions(new String[]{"", "Go North", "Go West (swim across the river)", "", "", "jungle", "southRiver", ""});
-            soundManager.demonHideout();
             if (gameModel.isAliveDemonGeneral) {
                 ui.image.setImageResource(R.drawable.demon_hideout);
+                soundManager.demonHideout();
                 ui.displayTextSlowly("As you approach the demon's hideout, the landscape turns sinister and dark. " +
                         "The eerie atmosphere swallows the sunlight, the entrance to the demon's lair stands before you, and you steel yourself for the impending battle, preparing to face the horrors that await within.");
-                ui.setChoice1("Enter", "");
-                if (gameModel.isAliveShadowSerpent)
-                    nextPosition1 = "encounterShadowSerpent";
-                else nextPosition1 = "encounterDemonGeneral";
+                ui.setChoicesAndNextPositions(new String[]{"Enter", "Go North", "Go West (swim across the river)", "", "insideDemonHideout", "jungle", "southRiver", ""});
             } else {
                 ui.image.setImageResource(R.drawable.demon_hideout_after_battle);
-                ui.displayTextSlowly("The battlefield, once ruled by the evil presence of the demon general, now lies destroyed and desolate. " +
+                ui.displayTextSlowly("The battlefield, once ruled by the demon general, now lies destroyed and desolate. " +
                         "Debris and remnants of the intense battle are scattered across the ground, a reminder of the epic clash that took place.");
-                ui.setChoice1("", "");
+                ui.setChoicesAndNextPositions(new String[]{"Go North", "Go West (swim across the river)", "", "", "jungle", "southRiver", "", ""});
             }
         }
     }
 
     public void insideDemonHideout() {
-        ui.image.setImageResource(R.drawable.demon_hideout);
-        soundManager.demonHideout();
-        ui.displayTextSlowly("With the shadow serpent defeated, you continue your journey, venturing deeper into the heart of the demon's hideout. " +
-                "The air becomes thick and oppressive, a haunting silence fills the surroundings, increasing the feeling of imminent danger. " +
-                "With each step, you draw nearer to the final showdown with the formidable demon general");
-        ui.setChoicesAndNextPositions(new String[]{"Go deeper", "Leave", "", "", "encounterDemonGeneral", "demonHideout", "", ""});
+        ui.displayTextSlowly("Venturing deeper into the heart of the demon's hideout. " +
+                "The air becomes thick and oppressive, a haunting silence fills the surroundings.");
+        ui.setChoicesAndNextPositions(new String[]{"Go deeper", "Leave", "", "", "", "demonHideout", "", ""});
+        if (gameModel.isAliveShadowSerpent)
+            nextPosition1 = "encounterShadowSerpent";
+        else nextPosition1 = "encounterDemonGeneral";
     }
 
     public void defeatDemonGeneral() {
         ui.image.setImageResource(R.drawable.explosion);
-        ui.displayTextSlowly("As the final blow lands on the demon general, a powerful explosion obliterates the demon's hideout. " +
-                "After the battle, you are left barely alive, drained of strength. " +
+        ui.displayTextSlowly("As the final blow lands on the demon general, a powerful explosion obliterates the demon's hideout.\n" +
+                "After the explosion, you are left barely alive. " +
                 "Exhaustion overwhelms you, and you lose consciousness, unsure of what awaits you in this dangerous situation.");
         ui.setChoicesAndNextPositions(new String[]{"...", "......", "", "", "wakeUpAfterFinalBattle", "wakeUpAfterFinalBattle", "", ""});
     }
 
     public void wakeUpAfterFinalBattle() {
         ui.image.setImageResource(R.drawable.demon_hideout_after_battle);
-        ui.displayTextSlowly("As you slowly wake up, your eyes open to a scene of complete destruction. " +
-                "The battlefield, previously controlled by the demon general, now lies in ruins. Among the debris, you spot a shining object—the demon sword. " +
-                "Feeling disoriented and weakened, you make an effort to gather your surroundings and evaluate the aftermath of the intense battle.");
+        ui.displayTextSlowly("As you slowly wake up, your eyes open to a scene of complete destruction.\n" +
+                "Among the debris, you spot a shining object—the demon sword.\n" +
+                "Feeling disoriented and weakened, you make an effort to get back to the town.");
         gameModel.player.setPlayerHP(1);
         ui.updatePlayerHp(0);
         Toast.makeText(ui.getApplicationContext(), "You have defeated the demon general!", Toast.LENGTH_SHORT).show();
@@ -1283,11 +1252,13 @@ public class StoryManager {
     }
 
     public void theEnd() {
-        ui.image.setImageResource(R.drawable.the_end);
-        ui.baseLayout.setBackgroundColor(Color.parseColor("#000000"));
+        Glide.with(ui).load(R.drawable.the_end).into(ui.image);
+        ui.darkUI();
         soundManager.playTheEndMusic();
-        ui.displayTextSlowly("Congratulations! You have successfully completed the game and overcome numerous challenges to emerge victorious. " +
-                "Well done on your remarkable journey and accomplishments!");
+        ui.displayTextSlowly("Thank you for playing the first version of the game!\n" +
+                "Well done on your remarkable journey and accomplishments!\n" +
+                "I appreciate your support, and I hope to see you again in the future when the game is further developed.\n" +
+                "Stay tuned for more updates and exciting adventures ahead!");
         ui.setChoicesAndNextPositions(new String[]{"Play again", "Quit game", "", "", "start", "quit", "", ""});
     }
 

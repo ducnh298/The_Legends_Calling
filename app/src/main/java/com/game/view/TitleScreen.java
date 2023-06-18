@@ -26,6 +26,7 @@ public class TitleScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title_screen);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
         imageView = findViewById(R.id.titleImageView);
         Glide.with(this).load(R.drawable.adventurer).into(imageView);

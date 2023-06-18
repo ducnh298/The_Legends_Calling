@@ -57,13 +57,14 @@
             <Spinner
                 android:id="@+id/weaponSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="44dp"
                 android:layout_weight="3"
                 android:background="@drawable/border"
                 android:dropDownSelector="@android:drawable/arrow_down_float"
                 android:fontFamily="sans-serif"
                 android:popupBackground="@android:drawable/editbox_dropdown_light_frame"
-                android:spinnerMode="dropdown"></Spinner>
+                android:spinnerMode="dropdown"
+                android:textAlignment="center"></Spinner>
 
             <Spinner
                 android:id="@+id/spellSpinner"
@@ -75,6 +76,7 @@
                 android:fontFamily="sans-serif"
                 android:popupBackground="@android:drawable/editbox_dropdown_light_frame"
                 android:spinnerMode="dropdown"
+                android:textAlignment="center"
                 android:visibility="invisible" />
         </TableRow>
 

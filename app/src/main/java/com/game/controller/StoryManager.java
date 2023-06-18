@@ -50,7 +50,6 @@ public class StoryManager {
                 break;
             case "startGameUI":
                 ui.startGameUI();
-                ui.updateSpellStatus();
                 townGate();
                 break;
             case "timeLoop":
@@ -308,6 +307,9 @@ public class StoryManager {
                 break;
             case "demonHideout":
                 demonHideout();
+                break;
+            case "insideDemonHideout":
+                insideDemonHideout();
                 break;
             case "encounterShadowSerpent":
                 combatManager.encounterShadowSerpent();
@@ -1160,6 +1162,7 @@ public class StoryManager {
         gameModel.isTakenPower = true;
         gameModel.player.increasePlayerMaxHP(4);
         gameModel.player.increaseBaseAttack(1);
+        soundManager.obtainWeapon();
         ui.updatePlayerHp(0);
         ui.continueTextSlowly("You feel an overwhelming surge of strength coursing through your veins as you embrace the power of enhanced strength.");
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "mountainTop", "", "", ""});
@@ -1194,6 +1197,7 @@ public class StoryManager {
     public void takePower() {
         gameModel.isTakenPower = true;
         gameModel.player.addSpell(gameModel.selectedSpell);
+        soundManager.obtainWeapon();
         ui.updateSpellStatus();
         ui.continueTextSlowly("Congratulations! You have learned the formidable spell " + gameModel.selectedSpell.getName());
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "mountainTop", "", "", ""});

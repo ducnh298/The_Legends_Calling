@@ -71,8 +71,7 @@ public class GameScreen extends AppCompatActivity {
         choice4 = findViewById(R.id.choiceButton4);
         spellSpinner.setVisibility(View.VISIBLE);
         darkUI();
-//        storyManager.opening();
-        storyManager.selectPosition("startGameUI");
+        storyManager.opening();
     }
 
     public void restartGame() {

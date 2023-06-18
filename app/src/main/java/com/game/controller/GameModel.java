@@ -44,8 +44,6 @@ public class GameModel implements Serializable {
         if (fist == null)
             fist = new Weapon_Fist();
         player.addWeapon(fist);
-        player.addWeapon(new Weapon_LongSword());
-        player.addSpell(new Spell_LightningBolt());
 
         isTakenKnife = isAngryGuard = isRestAtTent = isTakenLongSword = isTakenPower = false;
         blackSmithQuestActive = isTakenTorch = isLightTorch = isTakenArmor = false;

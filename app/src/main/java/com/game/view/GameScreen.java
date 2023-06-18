@@ -73,7 +73,37 @@ public class GameScreen extends AppCompatActivity {
         choice4 = findViewById(R.id.choiceButton4);
         spellSpinner.setVisibility(View.VISIBLE);
         darkUI();
-        storyManager.opening();
+//        storyManager.opening();
+        storyManager.selectPosition("startGameUI");
+    }
+
+    public void restartGame() {
+        Intent intent = new Intent(this, TitleScreen.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    public void quitGame(){
+        this.finishAffinity();
+        System.exit(0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm Exit");
+        builder.setMessage("Are you sure you want to exit the game?");
+        builder.setPositiveButton("Exit", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void restartGame() {

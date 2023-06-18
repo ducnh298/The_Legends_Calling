@@ -1,9 +1,7 @@
 package com.game.view;
 
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,7 +82,7 @@ public class GameScreen extends AppCompatActivity {
         finish();
     }
 
-    public void quitGame(){
+    public void quitGame() {
         this.finishAffinity();
         System.exit(0);
     }
@@ -94,36 +92,7 @@ public class GameScreen extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Confirm Exit");
         builder.setMessage("Are you sure you want to exit the game?");
-        builder.setPositiveButton("Exit", new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        builder.setNegativeButton("Cancel", null);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    public void restartGame() {
-        Intent intent = new Intent(this, TitleScreen.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
-    }
-
-    public void quitGame(){
-        this.finishAffinity();
-        System.exit(0);
-    }
-
-    @Override
-    public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Confirm Exit");
-        builder.setMessage("Are you sure you want to exit the game?");
-        builder.setPositiveButton("Exit", new DialogInterface.OnClickListener(){
+        builder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
@@ -335,7 +304,7 @@ public class GameScreen extends AppCompatActivity {
                 finishTexting = false;
                 textView.append("\n");
             }
-        },100);
+        }, 100);
 
         textingHandler.postDelayed(new Runnable() {
             int currentIndex = 0;

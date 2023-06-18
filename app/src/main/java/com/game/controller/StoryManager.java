@@ -342,8 +342,7 @@ public class StoryManager {
         Glide.with(ui).load(R.drawable.driving_highway).into(ui.image);
         soundManager.drivingHighWay();
         ui.displayTextSlowly("It's late in the evening, you find yourself behind the wheel on a familiar road, heading home after a long day at work. " +
-                "It's Friday night, and the darkness envelops the surroundings, with only a scattering of streetlights casting a dim glow. " +
-                "Thoughts of relaxation, weekend plans, and the comfort of home fill your mind.");
+                "It's Friday night, and the darkness envelops the surroundings, with only a scattering of streetlights casting a dim glow. ");
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "getHome", "", "", ""});
     }
 
@@ -353,8 +352,7 @@ public class StoryManager {
         soundManager.openingDoor();
         ui.displayTextSlowly("You finally arrive home and eagerly insert the key into the lock, opening the door to your haven\n" +
                 "...                                                                                                  \n" +
-                "With a sense of relief, you kick off your shoes, savoring the freedom of being barefoot on your familiar floors. " +
-                "As you step further inside, you drop your bag with a thud, releasing the weight of the day and embracing the tranquility of your own space.");
+                "You kick off your shoes, drop your bag, releasing the weight of the day.");
         ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "bedRoom", "", "", ""});
     }
 
@@ -363,8 +361,7 @@ public class StoryManager {
         handler.removeCallbacksAndMessages(null);
         ui.image.setImageResource(R.drawable.bedroom);
         soundManager.bedRoom();
-        ui.displayTextSlowly("You make your way to your bedroom and notice that it has started raining outside. " +
-                "The gentle pitter-patter of raindrops against the window creates a serene atmosphere. " +
+        ui.displayTextSlowly("Making your way to your bedroom and notice that it has started raining outside. " +
                 "With a sense of tranquility washing over you, you eagerly jump onto the bed, ready to drift into a deep and restful nap.");
         ui.setChoicesAndNextPositions(new String[]{"Take a rest", "", "", "", "sleeping", "", "", ""});
     }
@@ -402,9 +399,7 @@ public class StoryManager {
             gameModel.position = "windyField";
             ui.setChoicesAndNextPositions(new String[]{"", "", "", "", "", "", "", ""});
             ui.displayTextSlowly("As you slowly open your eyes, a wave of disbelief washes over you. " +
-                    "Instead of the familiar sight of your bedroom, you find yourself lying on the soft grass under an open sky. " +
-                    "Doubt fills your mind as you question the reality of this peculiar situation. " +
-                    "Could it be a mere dream, or has something truly extraordinary occurred?");
+                    "Instead of the familiar sight of your bedroom, you find yourself lying on the soft grass under an open sky. ");
         }
         handler.postDelayed(new Runnable() {
             @Override

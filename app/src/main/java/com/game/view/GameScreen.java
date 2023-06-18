@@ -66,7 +66,7 @@ public class GameScreen extends AppCompatActivity {
         choice4 = findViewById(R.id.choiceButton4);
 
         darkUI();
-        storyManager.selectPosition("startGame");
+        storyManager.opening();
     }
 
     public void clickButton1(View view) {

@@ -6,12 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
     tools:context=".view.GameScreen">
 
     <TableLayout
         android:id="@+id/tableLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
         android:background="@drawable/border"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,9 +28,8 @@
                 android:id="@+id/hpLabel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
                 android:layout_weight="2"
+                android:background="@drawable/border"
                 android:fontFamily="@font/black_chancery"
                 android:text="Hp: 25/25"
                 android:textColor="#38883B"
@@ -40,10 +40,12 @@
                 android:id="@+id/armorLabel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
                 android:layout_weight="3"
+                android:background="@drawable/border"
                 android:fontFamily="@font/black_chancery"
                 android:text="+golden armor"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
                 android:textSize="24sp"
                 android:visibility="invisible" />
         </TableRow>
@@ -56,32 +58,36 @@
                 android:id="@+id/weaponSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="4"
+                android:layout_weight="3"
+                android:background="@drawable/border"
+                android:dropDownSelector="@android:drawable/arrow_down_float"
                 android:fontFamily="sans-serif"
+                android:popupBackground="@android:drawable/editbox_dropdown_light_frame"
                 android:spinnerMode="dropdown"></Spinner>
 
             <Spinner
                 android:id="@+id/spellSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="6"
+                android:layout_weight="7"
+                android:background="@drawable/border"
+                android:dropDownSelector="@android:drawable/arrow_down_float"
                 android:fontFamily="sans-serif"
-                android:prompt="@string/app_name"
+                android:popupBackground="@android:drawable/editbox_dropdown_light_frame"
+                android:spinnerMode="dropdown"
                 android:visibility="invisible" />
         </TableRow>
 
     </TableLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="60dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout">
 
         <ImageView
             android:id="@+id/gameImageView"
@@ -105,14 +111,14 @@
             android:text="This is text                                 asdasdasda sdasdasd dddd dddddd ddd ddss"
             android:textAlignment="viewStart"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/choiceButton1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_weight="1.5"
             android:fontFamily="sans-serif"
             android:onClick="clickButton1"
@@ -124,8 +130,8 @@
             android:id="@+id/choiceButton2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_weight="1.5"
             android:fontFamily="sans-serif"
             android:onClick="clickButton2"
@@ -137,8 +143,8 @@
             android:id="@+id/choiceButton3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_weight="1.5"
             android:fontFamily="sans-serif"
             android:onClick="clickButton3"
@@ -150,8 +156,8 @@
             android:id="@+id/choiceButton4"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginBottom="10dp"
             android:layout_weight="1.5"
             android:fontFamily="sans-serif"

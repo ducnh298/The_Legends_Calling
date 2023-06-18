@@ -8,7 +8,9 @@ import com.game.model.Spell;
 import com.game.model.Weapon;
 import com.game.model.effect.Effect_Paralyzed;
 import com.game.model.effect.Effect_Poisonous;
+import com.game.model.spells.Spell_LightningBolt;
 import com.game.model.weapons.Weapon_Fist;
+import com.game.model.weapons.Weapon_LongSword;
 
 import java.io.Serializable;
 
@@ -42,6 +44,8 @@ public class GameModel implements Serializable {
         if (fist == null)
             fist = new Weapon_Fist();
         player.addWeapon(fist);
+        player.addWeapon(new Weapon_LongSword());
+        player.addSpell(new Spell_LightningBolt());
 
         isTakenKnife = isAngryGuard = isRestAtTent = isTakenLongSword = isTakenPower = false;
         blackSmithQuestActive = isTakenTorch = isLightTorch = isTakenArmor = false;

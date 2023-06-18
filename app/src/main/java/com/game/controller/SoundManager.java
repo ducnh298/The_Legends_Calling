@@ -24,7 +24,7 @@ public class SoundManager {
     public Integer clickSoundId, obtainWeaponSoundId, healthUpSoundId,
             takeShoeOffSoundId, dropBagSoundId, lyingBedSoundId, wakeUpVoiceId,
             horseWagonSoundId, runningInGrassSoundId, horseSoundId,
-            anvilSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId,
+            anvilSoundId, lightFireSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId,
             goblinSoundId, riverMonsterSoundId, evilWitchSoundId, shadowSerpentSoundId, demonGeneralSoundId;
     private Map<Integer, Integer> playingSoundEffect = new HashMap<>();
     private Random rand;
@@ -80,6 +80,7 @@ public class SoundManager {
         horseSoundId = soundPool.load(gameScreen, R.raw.horse_stop, 1);
 
         anvilSoundId = soundPool.load(gameScreen, R.raw.anvil_sound, 1);
+        lightFireSoundId = soundPool.load(gameScreen, R.raw.light_fire, 1);
         underWaterSoundId = soundPool.load(gameScreen, R.raw.underwater, 1);
         hitTreeSoundId = soundPool.load(gameScreen, R.raw.hit_tree, 1);
         eatingAppleSoundId = soundPool.load(gameScreen, R.raw.eating_apple, 1);
@@ -118,12 +119,13 @@ public class SoundManager {
 
     public void playBackGroundMusic() {
         stopAllMusic();
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                bgMusic.seekTo(positionBgMusic);
-                bgMusic.start();
-            }
-        }, 500);
+        if (!bgMusic.isPlaying())
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    bgMusic.seekTo(positionBgMusic);
+                    bgMusic.start();
+                }
+            }, 300);
     }
 
     public void playBattleMusic() {
@@ -150,14 +152,16 @@ public class SoundManager {
             bgMusic.pause();
             positionBgMusic = bgMusic.getCurrentPosition();
         }
+        if (titleMusic.isPlaying())
+            titleMusic.pause();
         if (rainingSound.isPlaying())
-            rainingSound.stop();
+            rainingSound.pause();
         if (windySound.isPlaying())
-            windySound.stop();
+            windySound.pause();
         if (insideCaveSound.isPlaying())
-            insideCaveSound.stop();
+            insideCaveSound.pause();
         if (demonHideoutSound.isPlaying())
-            demonHideoutSound.stop();
+            demonHideoutSound.pause();
     }
 
     public void click() {
@@ -178,7 +182,7 @@ public class SoundManager {
 
     public void openingDoor() {
         if (drivingHighWaySound.isPlaying())
-            drivingHighWaySound.stop();
+            drivingHighWaySound.pause();
         openDoorSound.start();
     }
 
@@ -195,7 +199,7 @@ public class SoundManager {
 
     public void bedRoom() {
         if (openDoorSound.isPlaying())
-            openDoorSound.stop();
+            openDoorSound.pause();
         stopAllSoundEffect();
         rainingSound.start();
         handler.postDelayed(new Runnable() {
@@ -208,13 +212,13 @@ public class SoundManager {
 
     public void raining() {
         if (rainingSound.isPlaying())
-            rainingSound.stop();
+            rainingSound.pause();
         else rainingSound.start();
     }
 
     public void windyField() {
         if (windySound.isPlaying())
-            windySound.stop();
+            windySound.pause();
         else
             windySound.start();
     }
@@ -242,6 +246,10 @@ public class SoundManager {
     public void anvil() {
         if (playingSoundEffect.get(anvilSoundId) == null)
             playingSoundEffect.put(anvilSoundId, soundPool.play(anvilSoundId, 0.1f, 0.1f, 1, -1, 0.66f));
+    }
+
+    public void lightFire() {
+        soundPool.play(lightFireSoundId, 1f, 1f, 1, 0, 1f);
     }
 
     public void underWater() {

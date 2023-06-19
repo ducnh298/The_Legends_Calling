@@ -234,7 +234,7 @@ public class CombatManager {
                         monsterStatus.append(" (Remain: " + effect.getRemain() + ")");
                     }
                 }
-            ui.displayText(monsterStatus.toString());
+            ui.displayText(monsterStatus.toString()+"\n");
         } else {
             encounterMonsterTurn = true;
             ui.choice1.setText("Continue");
@@ -293,11 +293,11 @@ public class CombatManager {
 
         if (!monster.getEffectList().isEmpty())
             for (Effect effect : monster.getEffectList()) {
-                text.append("\n" + effect.getDescriptionToMonster() + "\n");
+                text.append("\n" + effect.getDescriptionToMonster());
 
                 if (effect.getDamage() > 0) {
                     monster.loseHP(effect.getDamage());
-                    text.append(" -> " + monster.getMonsterCurrentHP() + "/" + monster.getMonsterMaxHP() + "\n");
+                    text.append(" -> " + monster.getMonsterCurrentHP() + "/" + monster.getMonsterMaxHP());
                 }
 
                 if (effect.getName().equalsIgnoreCase(gameModel.paralyzedEffect.getName()))
@@ -308,6 +308,7 @@ public class CombatManager {
                     if (effect.getRemain() == 0)
                         monster.removeEffect(effect);
                 }
+                text.append("\n");
             }
         monsterAttackTurn(monster, monsterAbleToAttack, text);
     }

@@ -735,7 +735,7 @@ public class StoryManager {
         Armor armor = gameModel.armors[rand.nextInt(3)];
         gameModel.player.setArmor(armor);
         ui.armorLabel.setVisibility(View.VISIBLE);
-        ui.armorLabel.setText("+" + armor.getName());
+        ui.armorLabel.setText(armor.getName());
         ui.armorLabel.setTextColor(Color.parseColor(armor.getHexColorCode()));
 
         gameModel.isTakenArmor = true;
@@ -821,6 +821,7 @@ public class StoryManager {
             }
         } else {
             if (gameModel.isLightTorch) {
+                ui.image.setImageResource(R.drawable.inside_cave);
                 if (!gameModel.isDefeatedEvilWitch && gameModel.witchQuestActive && !gameModel.isTakenGoblinEar) {
                     ui.displayTextSlowly("As you explore the depths of the cave, you stumble upon the lifeless body of a goblin.");
                     ui.setChoicesAndNextPositions("Take the goblin's left ear", "Leave", "", "", "takeGoblinEar", "goblinCave", "", "");
@@ -1234,6 +1235,7 @@ public class StoryManager {
 
     public void defeatDemonGeneral() {
         ui.image.setImageResource(R.drawable.explosion);
+        soundManager.explosion();
         ui.displayTextSlowly("As the final blow lands on the demon general, a powerful explosion obliterates the demon's hideout.\n" +
                 "After the explosion, you are left barely alive. " +
                 "Exhaustion overwhelms you, and you lose consciousness, unsure of what awaits you in this dangerous situation.");

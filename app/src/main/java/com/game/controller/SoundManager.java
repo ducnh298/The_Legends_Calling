@@ -166,15 +166,15 @@ public class SoundManager {
     }
 
     public void click() {
-        soundPool.play(clickSoundId, 0.2f, 0.2f, 1, 0, 1.5f);
+        soundPool.play(clickSoundId, 0.5f, 0.5f, 1, 0, 1.5f);
     }
 
     public void obtainWeapon() {
-        soundPool.play(obtainWeaponSoundId, 0.6f, 0.6f, 1, 0, 1f);
+        soundPool.play(obtainWeaponSoundId, 1f, 1f, 1, 0, 1f);
     }
 
     public void healthUp() {
-        soundPool.play(healthUpSoundId, 0.8f, 0.8f, 1, 0, 1f);
+        soundPool.play(healthUpSoundId, 1f, 1f, 1, 0, 1f);
     }
 
     public void coins() {
@@ -210,7 +210,7 @@ public class SoundManager {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                soundPool.play(lyingBedSoundId, 1.6f, 1.6f, 1, 0, 0.6f);
+                soundPool.play(lyingBedSoundId, 2f, 2f, 1, 0, 0.6f);
             }
         }, 5000);
     }
@@ -229,11 +229,11 @@ public class SoundManager {
     }
 
     public void wakeUpVoice() {
-        soundPool.play(wakeUpVoiceId, 0.6f, 0.6f, 1, 0, 1f);
+        soundPool.play(wakeUpVoiceId, 1f, 1f, 1, 0, 1f);
     }
 
     public void horseWagonFar() {
-        playingSoundEffect.put(horseWagonSoundId, soundPool.play(horseWagonSoundId, 0.3f, 0.3f, 1, -1, 1f));
+        playingSoundEffect.put(horseWagonSoundId, soundPool.play(horseWagonSoundId, 0.6f, 0.6f, 1, -1, 1f));
     }
 
     public void horseWagonNear() {
@@ -250,7 +250,7 @@ public class SoundManager {
 
     public void anvil() {
         if (playingSoundEffect.get(anvilSoundId) == null)
-            playingSoundEffect.put(anvilSoundId, soundPool.play(anvilSoundId, 0.1f, 0.1f, 1, -1, 0.66f));
+            playingSoundEffect.put(anvilSoundId, soundPool.play(anvilSoundId, 0.4f, 0.4f, 1, -1, 0.66f));
     }
 
     public void lightFire() {
@@ -262,7 +262,7 @@ public class SoundManager {
     }
 
     public void hitTree() {
-        soundPool.play(hitTreeSoundId, 0.6f, 0.6f, 1, 0, 1f);
+        soundPool.play(hitTreeSoundId, 1f, 0.6f, 1, 0, 1f);
     }
 
     public void eatingApple() {
@@ -288,7 +288,7 @@ public class SoundManager {
 
     public void goblin(boolean loop) {
         if (loop) {
-            playingSoundEffect.put(goblinSoundId, soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, -1, 1f));
+            soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, 2, 1.3f);
         } else
             soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, 0, 1f);
     }

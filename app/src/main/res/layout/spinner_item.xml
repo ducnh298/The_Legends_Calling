@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fontFamily="@font/black_chancery"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:textAllCaps="false"
-    android:textColor="#ff6961"
-    android:textSize="24sp" />
+    android:textColor="#4CAF50"
+    android:textSize="22sp" />

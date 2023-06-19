@@ -12,7 +12,7 @@
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="80dp"
         android:background="@drawable/border"
         app:layout_constraintBottom_toTopOf="@id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,21 +21,22 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
             android:background="@drawable/border">
 
             <TextView
                 android:id="@+id/hpLabel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:background="@drawable/border"
                 android:editable="false"
                 android:fontFamily="@font/black_chancery"
                 android:gravity="center"
                 android:text="Hp: 25/25"
-                android:textColor="#38883B"
+                android:textAlignment="viewStart"
+                android:textColor="#C32A2A"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -43,14 +44,13 @@
                 android:id="@+id/armorLabel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:background="@drawable/border"
                 android:editable="false"
                 android:fontFamily="@font/black_chancery"
                 android:gravity="center"
-                android:text="+golden armor"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
+                android:text="golden armor"
+                android:textAlignment="viewStart"
                 android:textSize="24sp"
                 android:visibility="visible" />
 
@@ -58,15 +58,14 @@
                 android:id="@+id/goldLabel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:background="@drawable/border"
-                android:drawableRight="@android:drawable/btn_star_big_on"
                 android:editable="false"
                 android:fontFamily="@font/black_chancery"
                 android:gravity="center|end"
-                android:text="Gold coin: 6"
-                android:textAlignment="center"
-                android:textColor="#FFC107"
+                android:text="Coins: 6"
+                android:textAlignment="viewStart"
+                android:textColor="#7A621A"
                 android:textSize="24sp"
                 android:textStyle="bold" />
         </TableRow>
@@ -74,32 +73,31 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_weight="3">
 
             <Spinner
                 android:id="@+id/weaponSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:background="@drawable/border"
-                android:dropDownSelector="@android:drawable/arrow_down_float"
                 android:fontFamily="sans-serif"
+                android:foreground="@drawable/weapon_bg"
                 android:popupBackground="@android:drawable/editbox_dropdown_light_frame"
                 android:spinnerMode="dropdown"
-                android:textAlignment="center"></Spinner>
+                android:textAlignment="viewEnd"></Spinner>
 
             <Spinner
                 android:id="@+id/spellSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_weight="6"
                 android:background="@drawable/border"
-                android:dropDownSelector="@android:drawable/arrow_down_float"
                 android:fontFamily="sans-serif"
-                android:popupBackground="@android:drawable/editbox_dropdown_light_frame"
+                android:foreground="@drawable/magic_hand_bg"
                 android:spinnerMode="dropdown"
-                android:textAlignment="center"
-                android:visibility="invisible" />
+                android:textAlignment="viewEnd"
+                android:visibility="visible" />
 
         </TableRow>
 

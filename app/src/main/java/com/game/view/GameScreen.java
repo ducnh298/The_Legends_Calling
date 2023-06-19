@@ -3,9 +3,11 @@ package com.game.view;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -59,9 +61,39 @@ public class GameScreen extends AppCompatActivity {
         tableLayout = findViewById(R.id.tableLayout);
 
         hpLabel = findViewById(R.id.hpLabel);
+        hpLabel.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Drawable img = getResources().getDrawable(R.drawable.heart);
+                        img.setBounds(0, 0, img.getIntrinsicWidth() * hpLabel.getMeasuredHeight() / img.getIntrinsicHeight() - 2, hpLabel.getMeasuredHeight() - 2);
+                        hpLabel.setCompoundDrawables(img, null, null, null);
+                        hpLabel.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
         armorLabel = findViewById(R.id.armorLabel);
+        armorLabel.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Drawable img = getResources().getDrawable(R.drawable.armor);
+                        img.setBounds(10, 10, img.getIntrinsicWidth() * armorLabel.getMeasuredHeight() / img.getIntrinsicHeight(), armorLabel.getMeasuredHeight());
+                        armorLabel.setCompoundDrawables(img, null, null, null);
+                        armorLabel.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
         armorLabel.setVisibility(View.INVISIBLE);
         goldLabel = findViewById(R.id.goldLabel);
+        goldLabel.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Drawable img = getResources().getDrawable(R.drawable.coin);
+                        img.setBounds(0, 0, img.getIntrinsicWidth() * goldLabel.getMeasuredHeight() / img.getIntrinsicHeight() - 2, goldLabel.getMeasuredHeight() - 2);
+                        goldLabel.setCompoundDrawables(img, null, null, null);
+                        goldLabel.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
         goldLabel.setVisibility(View.INVISIBLE);
         weaponSpinner = findViewById(R.id.weaponSpinner);
         spellSpinner = findViewById(R.id.spellSpinner);
@@ -161,7 +193,7 @@ public class GameScreen extends AppCompatActivity {
             soundManager.healthUp();
             gameModel.player.restoreHP(hpAmount);
         }
-        hpLabel.setText("HP: " + gameModel.player.getPlayerHP() + "/" + gameModel.player.getPlayerMaxHP());
+        hpLabel.setText(gameModel.player.getPlayerHP() + "/" + gameModel.player.getPlayerMaxHP());
         if (gameModel.player.getPlayerHP() == 0) {
             setChoicesAndNextPositions("Continue", "", "", "", "deadScreen", "", "", "");
             return false;
@@ -199,7 +231,7 @@ public class GameScreen extends AppCompatActivity {
             gameModel.player.removeCoins(-coins);
         else
             gameModel.player.addCoins(coins);
-        goldLabel.setText("Gold coins: " + gameModel.player.getCoins());
+        goldLabel.setText("Coins: " + gameModel.player.getCoins());
     }
 
     public void obtainWeapon(Weapon weaponObtain) {

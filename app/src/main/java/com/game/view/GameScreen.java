@@ -34,7 +34,7 @@ public class GameScreen extends AppCompatActivity {
     public ImageView image;
     public ConstraintLayout baseLayout;
     public TableLayout tableLayout;
-    public TextView textView, hpLabel, armorLabel;
+    public TextView textView, hpLabel, armorLabel, goldLabel;
     public Button choice1, choice2, choice3, choice4;
     public Spinner weaponSpinner, spellSpinner;
     StoryManager storyManager;
@@ -60,6 +60,9 @@ public class GameScreen extends AppCompatActivity {
 
         hpLabel = findViewById(R.id.hpLabel);
         armorLabel = findViewById(R.id.armorLabel);
+        armorLabel.setVisibility(View.INVISIBLE);
+        goldLabel = findViewById(R.id.goldLabel);
+        goldLabel.setVisibility(View.INVISIBLE);
         weaponSpinner = findViewById(R.id.weaponSpinner);
         spellSpinner = findViewById(R.id.spellSpinner);
 
@@ -94,7 +97,8 @@ public class GameScreen extends AppCompatActivity {
         builder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish();
+                finishAffinity();
+                System.exit(0);
             }
         });
         builder.setNegativeButton("Cancel", null);
@@ -159,7 +163,7 @@ public class GameScreen extends AppCompatActivity {
         }
         hpLabel.setText("HP: " + gameModel.player.getPlayerHP() + "/" + gameModel.player.getPlayerMaxHP());
         if (gameModel.player.getPlayerHP() == 0) {
-            setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "deadScreen", "", "", ""});
+            setChoicesAndNextPositions("Continue", "", "", "", "deadScreen", "", "", "");
             return false;
         }
         return true;
@@ -168,7 +172,8 @@ public class GameScreen extends AppCompatActivity {
     public void updateSpellStatus() {
         if (spellSpinner.getVisibility() == View.INVISIBLE)
             spellSpinner.setVisibility(View.VISIBLE);
-        int position = spellSpinner.getSelectedItemPosition();
+
+        int selectedItemPosition = spellSpinner.getSelectedItemPosition();
         if (!gameModel.player.getSpellList().isEmpty()) {
             List<String> spellList = new ArrayList<>();
             for (int i = 0; i < gameModel.player.getSpellList().size(); i++) {
@@ -181,32 +186,48 @@ public class GameScreen extends AppCompatActivity {
                     R.layout.spinner_item, spellList);
             adapter.setDropDownViewResource(R.layout.spinner_item);
             spellSpinner.setAdapter(adapter);
-            spellSpinner.setSelection(position);
+            spellSpinner.setSelection(selectedItemPosition);
         }
     }
 
+    public void updatePlayersCoins(int coins) {
+        if (goldLabel.getVisibility() == View.INVISIBLE)
+            goldLabel.setVisibility(View.VISIBLE);
+
+        soundManager.coins();
+        if (coins <= 0)
+            gameModel.player.removeCoins(-coins);
+        else
+            gameModel.player.addCoins(coins);
+        goldLabel.setText("Gold coins: " + gameModel.player.getCoins());
+    }
+
     public void obtainWeapon(Weapon weaponObtain) {
+        int selectedItemPosition = weaponSpinner.getSelectedItemPosition();
         if (weaponObtain != null) {
+            if (gameModel.player.getWeaponList().get(0).equals(gameModel.fist))
+                gameModel.player.getWeaponList().remove(0);
             soundManager.obtainWeapon();
             gameModel.player.addWeapon(weaponObtain);
+            selectedItemPosition = gameModel.player.getWeaponList().size() - 1;
             Toast.makeText(getApplicationContext(), "You obtained the " + weaponObtain.getName() + "!!!", Toast.LENGTH_SHORT).show();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item, gameModel.player.getWeaponList().stream().map(weapon -> weapon.getName()).collect(Collectors.toList()));
         adapter.setDropDownViewResource(R.layout.spinner_item);
         weaponSpinner.setAdapter(adapter);
-        weaponSpinner.setSelection(gameModel.player.getWeaponList().size() - 1);
+        weaponSpinner.setSelection(selectedItemPosition);
     }
 
-    public void setChoicesAndNextPositions(String[] choicesAndNextPositions) {
-        choice1.setText(choicesAndNextPositions[0]);
-        storyManager.nextPosition1 = choicesAndNextPositions[4];
-        choice2.setText(choicesAndNextPositions[1]);
-        storyManager.nextPosition2 = choicesAndNextPositions[5];
-        choice3.setText(choicesAndNextPositions[2]);
-        storyManager.nextPosition3 = choicesAndNextPositions[6];
-        choice4.setText(choicesAndNextPositions[3]);
-        storyManager.nextPosition4 = choicesAndNextPositions[7];
+    public void setChoicesAndNextPositions(String choice1, String choice2, String choice3, String choice4, String nextPosition1, String nextPosition2, String nextPosition3, String nextPosition4) {
+        this.choice1.setText(choice1);
+        storyManager.nextPosition1 = nextPosition1;
+        this.choice2.setText(choice2);
+        storyManager.nextPosition2 = nextPosition2;
+        this.choice3.setText(choice3);
+        storyManager.nextPosition3 = nextPosition3;
+        this.choice4.setText(choice4);
+        storyManager.nextPosition4 = nextPosition4;
         setChoiceVisibility();
     }
 
@@ -265,6 +286,11 @@ public class GameScreen extends AppCompatActivity {
     public void displayText(String text) {
         textingHandler.removeCallbacksAndMessages(null);
         textView.setText(text);
+    }
+
+    public void continueDisplayText(String text) {
+        textingHandler.removeCallbacksAndMessages(null);
+        textView.append(text);
     }
 
     public void displayTextSlowly(String text) {

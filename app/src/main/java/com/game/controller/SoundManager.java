@@ -21,7 +21,7 @@ public class SoundManager {
     private int[] battleMusicList = {R.raw.battle_music_1, R.raw.battle_music_2};
     private int[] backGroundMusicList = {R.raw.back_ground_music_1, R.raw.back_ground_music_2};
     private int positionBgMusic = 0, positionBattleMusic = 0;
-    public Integer clickSoundId, obtainWeaponSoundId, healthUpSoundId,
+    public Integer clickSoundId, obtainWeaponSoundId, healthUpSoundId, coinsSoundId,
             takeShoeOffSoundId, dropBagSoundId, lyingBedSoundId, wakeUpVoiceId,
             horseWagonSoundId, runningInGrassSoundId, horseSoundId,
             anvilSoundId, lightFireSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId,
@@ -70,6 +70,7 @@ public class SoundManager {
         clickSoundId = soundPool.load(gameScreen, R.raw.click, 1);
         obtainWeaponSoundId = soundPool.load(gameScreen, R.raw.obtain_weapon, 1);
         healthUpSoundId = soundPool.load(gameScreen, R.raw.health_up, 1);
+        coinsSoundId = soundPool.load(gameScreen, R.raw.coin, 1);
 
         takeShoeOffSoundId = soundPool.load(gameScreen, R.raw.shoes_take_off, 1);
         dropBagSoundId = soundPool.load(gameScreen, R.raw.drop_bag, 1);
@@ -165,15 +166,19 @@ public class SoundManager {
     }
 
     public void click() {
-        soundPool.play(clickSoundId, 0.4f, 0.4f, 1, 0, 0.7f);
+        soundPool.play(clickSoundId, 0.2f, 0.2f, 1, 0, 1.5f);
     }
 
     public void obtainWeapon() {
-        soundPool.play(obtainWeaponSoundId, 0.7f, 0.7f, 1, 0, 1f);
+        soundPool.play(obtainWeaponSoundId, 0.6f, 0.6f, 1, 0, 1f);
     }
 
     public void healthUp() {
         soundPool.play(healthUpSoundId, 0.8f, 0.8f, 1, 0, 1f);
+    }
+
+    public void coins() {
+        soundPool.play(coinsSoundId, 1f, 1f, 1, 0, 1f);
     }
 
     public void drivingHighWay() {

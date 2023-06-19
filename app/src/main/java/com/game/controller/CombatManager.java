@@ -187,7 +187,7 @@ public class CombatManager {
     }
 
     public void encounterMonster(Monster monster) {
-        ui.setChoicesAndNextPositions(new String[]{"Fight", "Try to run", "", "", gameModel.lastPosition, "tryToRun", "", ""});
+        ui.setChoicesAndNextPositions("Fight", "Try to run", "", "", gameModel.lastPosition, "tryToRun", "", "");
         if (monster.equals(gameModel.goblin)) {
             storyManager.nextPosition1 = "attackGoblin";
             if (!gameModel.player.getSpellList().isEmpty()) {
@@ -338,23 +338,23 @@ public class CombatManager {
                 text.append(" -> " + gameModel.player.getPlayerHP() + "/" + gameModel.player.getPlayerMaxHP() + "\n");
             }
         }
-        ui.continueTextSlowly(text.toString());
+        ui.continueDisplayText(text.toString());
         encounterMonsterTurn = false;
     }
 
     public void tryToRun() {
         if (gameModel.position.equalsIgnoreCase("encounterEvilWitch") || gameModel.position.equalsIgnoreCase("talkWitch3")) {
             ui.continueTextSlowly("Escape from the clutches of the witch proves futile as she blocks your path.");
-            ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", "encounterEvilWitch", "", "", ""});
+            ui.setChoicesAndNextPositions("Continue", "", "", "", "encounterEvilWitch", "", "", "");
         } else if (rand.nextBoolean()) {
             soundManager.playBackGroundMusic();
             ui.continueTextSlowly("With a swift dodge, you evade the monster's attack and successfully escape, fleeing to safety.");
-            ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", gameModel.lastPosition, "", "", ""});
+            ui.setChoicesAndNextPositions("Continue", "", "", "", gameModel.lastPosition, "", "", "");
         } else {
             int damageTaken = (int) Math.ceil(2 * gameModel.difficultRate) - (gameModel.player.getArmor() != null ? gameModel.player.getArmor().getDamageReduced() : 0);
             ui.continueTextSlowly("You were unable to evade the monster's pursuit and suffered a blow, losing " + (damageTaken > 0 ? damageTaken : 0) + " points of health.");
             if (ui.updatePlayerHp(-damageTaken))
-                ui.setChoicesAndNextPositions(new String[]{"Continue", "", "", "", gameModel.position, "", "", ""});
+                ui.setChoicesAndNextPositions("Continue", "", "", "", gameModel.position, "", "", "");
             else
                 Toast.makeText(ui.getApplicationContext(), "You were unable to evade the monster's pursuit and suffered a blow, losing " + (damageTaken > 0 ? damageTaken : 0) + " points of health.", Toast.LENGTH_LONG).show();
         }

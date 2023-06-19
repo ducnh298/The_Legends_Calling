@@ -13,6 +13,7 @@ public class Player implements Serializable {
     private Armor armor;
     private List<Spell> spellList = new ArrayList<>();
     private List<Effect> effectList = new LinkedList<>();
+    private int coins = 0;
 
     public Player(int playerMaxHP) {
         this.playerMaxHP = this.playerHP = playerMaxHP;
@@ -96,5 +97,20 @@ public class Player implements Serializable {
 
     public void removeEffect(Effect effect) {
         this.effectList.remove(effect);
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public void addCoins(int numberOfCoins) {
+        coins += numberOfCoins;
+    }
+
+    public boolean removeCoins(int numberOfCoins) {
+        if (coins >= numberOfCoins) {
+            coins -= numberOfCoins;
+            return true;
+        } else return false;
     }
 }

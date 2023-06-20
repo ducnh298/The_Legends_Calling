@@ -79,6 +79,10 @@ public class Player implements Serializable {
         this.armor = armor;
     }
 
+    public void removeArmor() {
+        this.armor = null;
+    }
+
     public List<Spell> getSpellList() {
         return spellList;
     }

@@ -24,6 +24,7 @@ import com.game.R;
 import com.game.controller.GameModel;
 import com.game.controller.SoundManager;
 import com.game.controller.StoryManager;
+import com.game.model.Armor;
 import com.game.model.Spell;
 import com.game.model.Weapon;
 
@@ -72,6 +73,7 @@ public class GameScreen extends AppCompatActivity {
                     }
                 });
         armorLabel = findViewById(R.id.armorLabel);
+        armorLabel.setVisibility(View.INVISIBLE);
         armorLabel.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -82,8 +84,8 @@ public class GameScreen extends AppCompatActivity {
                         armorLabel.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
-        armorLabel.setVisibility(View.INVISIBLE);
         goldLabel = findViewById(R.id.goldLabel);
+        goldLabel.setVisibility(View.INVISIBLE);
         goldLabel.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -94,9 +96,10 @@ public class GameScreen extends AppCompatActivity {
                         goldLabel.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
-        goldLabel.setVisibility(View.INVISIBLE);
         weaponSpinner = findViewById(R.id.weaponSpinner);
+        weaponSpinner.setVisibility(View.INVISIBLE);
         spellSpinner = findViewById(R.id.spellSpinner);
+        spellSpinner.setVisibility(View.INVISIBLE);
 
         image = findViewById(R.id.gameImageView);
         textView = findViewById(R.id.gameTextView);
@@ -104,7 +107,6 @@ public class GameScreen extends AppCompatActivity {
         choice2 = findViewById(R.id.choiceButton2);
         choice3 = findViewById(R.id.choiceButton3);
         choice4 = findViewById(R.id.choiceButton4);
-        spellSpinner.setVisibility(View.VISIBLE);
         darkUI();
         storyManager.opening();
     }
@@ -178,7 +180,7 @@ public class GameScreen extends AppCompatActivity {
 
     public void startGameUI() {
         textView.setTextColor(Color.parseColor("#000000"));
-        baseLayout.setBackgroundColor(Color.parseColor("#fefec8"));
+        baseLayout.setBackgroundColor(Color.parseColor("#b4ecb4"));
         tableLayout.setVisibility(View.VISIBLE);
         soundManager.stopAllSoundEffect();
         soundManager.playBackGroundMusic();
@@ -199,6 +201,23 @@ public class GameScreen extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    public void obtainWeapon(Weapon weaponObtain) {
+        int selectedItemPosition = weaponSpinner.getSelectedItemPosition();
+        if (weaponObtain != null) {
+            if (weaponSpinner.getVisibility() == View.INVISIBLE)
+                weaponSpinner.setVisibility(View.VISIBLE);
+            soundManager.obtainWeapon();
+            gameModel.player.addWeapon(weaponObtain);
+            selectedItemPosition = gameModel.player.getWeaponList().size() - 1;
+            Toast.makeText(getApplicationContext(), "You obtained the " + weaponObtain.getName() + "!!!", Toast.LENGTH_SHORT).show();
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                R.layout.spinner_item, gameModel.player.getWeaponList().stream().map(weapon -> weapon.getName()).collect(Collectors.toList()));
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        weaponSpinner.setAdapter(adapter);
+        weaponSpinner.setSelection(selectedItemPosition);
     }
 
     public void updateSpellStatus() {
@@ -222,33 +241,30 @@ public class GameScreen extends AppCompatActivity {
         }
     }
 
-    public void updatePlayersCoins(int coins) {
+    public void updatePlayersArmor(Armor armor) {
+        if (armor != null) {
+            if (armorLabel.getVisibility() == View.INVISIBLE)
+                armorLabel.setVisibility(View.VISIBLE);
+            gameModel.player.setArmor(armor);
+            armorLabel.setText(armor.getName());
+            armorLabel.setTextColor(Color.parseColor(armor.getHexColorCode()));
+        } else armorLabel.setVisibility(View.INVISIBLE);
+    }
+
+    public boolean updatePlayersCoins(int coins) {
         if (goldLabel.getVisibility() == View.INVISIBLE)
             goldLabel.setVisibility(View.VISIBLE);
 
         soundManager.coins();
-        if (coins <= 0)
-            gameModel.player.removeCoins(-coins);
-        else
+        if (coins <= 0) {
+            if (!gameModel.player.removeCoins(-coins)) {
+                Toast.makeText(getApplicationContext(), "You do not have enough coins to do that!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } else
             gameModel.player.addCoins(coins);
         goldLabel.setText("Coins: " + gameModel.player.getCoins());
-    }
-
-    public void obtainWeapon(Weapon weaponObtain) {
-        int selectedItemPosition = weaponSpinner.getSelectedItemPosition();
-        if (weaponObtain != null) {
-            if (gameModel.player.getWeaponList().get(0).equals(gameModel.fist))
-                gameModel.player.getWeaponList().remove(0);
-            soundManager.obtainWeapon();
-            gameModel.player.addWeapon(weaponObtain);
-            selectedItemPosition = gameModel.player.getWeaponList().size() - 1;
-            Toast.makeText(getApplicationContext(), "You obtained the " + weaponObtain.getName() + "!!!", Toast.LENGTH_SHORT).show();
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.spinner_item, gameModel.player.getWeaponList().stream().map(weapon -> weapon.getName()).collect(Collectors.toList()));
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        weaponSpinner.setAdapter(adapter);
-        weaponSpinner.setSelection(selectedItemPosition);
+        return true;
     }
 
     public void setChoicesAndNextPositions(String choice1, String choice2, String choice3, String choice4, String nextPosition1, String nextPosition2, String nextPosition3, String nextPosition4) {

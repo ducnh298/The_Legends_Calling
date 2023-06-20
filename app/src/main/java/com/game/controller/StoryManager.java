@@ -2,7 +2,6 @@ package com.game.controller;
 
 import android.graphics.Color;
 import android.os.Handler;
-import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -14,7 +13,6 @@ import com.game.model.armors.Armor_SilverArmor;
 import com.game.model.monsters.Monster_EvilWitch;
 import com.game.model.spells.Spell_FireStorm;
 import com.game.model.spells.Spell_LightningBolt;
-import com.game.model.spells.Spell_PoisonBreeze;
 import com.game.model.spells.Spell_WaterSurge;
 import com.game.model.weapons.Weapon_DemonSword;
 import com.game.model.weapons.Weapon_Knife;
@@ -95,6 +93,9 @@ public class StoryManager {
             case "exploreTheSurrounding2":
                 exploreTheSurrounding2();
                 break;
+            case "exploreTheSurrounding3":
+                exploreTheSurrounding3();
+                break;
             case "takeKnife":
                 takeKnife();
                 break;
@@ -112,6 +113,9 @@ public class StoryManager {
                 break;
             case "askForARide":
                 askForARide();
+                break;
+            case "rideCarriage":
+                rideCarriage();
                 break;
             case "askAboutEra":
                 askAboutEra();
@@ -158,20 +162,71 @@ public class StoryManager {
             case "attackGuard":
                 attackGuard();
                 break;
+            case "proveTrustWorthy1":
+                proveTrustWorthy1();
+                break;
+            case "proveTrustWorthy2":
+                proveTrustWorthy2();
+                break;
+            case "theTown":
+                theTown();
+                break;
             case "crossRoad":
                 crossRoad();
                 break;
             case "blackSmithHouse":
                 blackSmithHouse();
                 break;
-            case "talkBlackSmith":
-                talkBlackSmith();
+            case "talkBlackSmith1":
+                talkBlackSmith1();
+                break;
+            case "talkBlackSmith2":
+                talkBlackSmith2();
                 break;
             case "acceptBlackSmithQuest":
                 acceptBlackSmithQuest();
                 break;
             case "takeArmor":
                 takeArmor();
+                break;
+            case "buyIronArmor":
+                buyArmor(gameModel.ironArmor);
+                break;
+            case "buySilverArmor":
+                buyArmor(gameModel.silverArmor);
+                break;
+            case "buyGoldenArmor":
+                buyArmor(gameModel.goldenArmor);
+                break;
+            case "sellArmor":
+                sellArmor();
+                break;
+            case "northField":
+                northField();
+                break;
+            case "talkYoungMan1":
+                talkYoungMan1();
+                break;
+            case "talkYoungMan2":
+                talkYoungMan2();
+                break;
+            case "acceptYoungManRequest2":
+                acceptYoungManRequest(false);
+                break;
+            case "acceptYoungManRequest3":
+                acceptYoungManRequest(true);
+                break;
+            case "encounterWolf":
+                combatManager.encounterWolf();
+                break;
+            case "attackWolf":
+                combatManager.attackWolf(false);
+                break;
+            case "attackWolfWithSpell":
+                combatManager.attackWolf(true);
+                break;
+            case "defeatWolf":
+                defeatWolf();
                 break;
             case "goblinCave":
                 goblinCave();
@@ -209,23 +264,35 @@ public class StoryManager {
             case "talkWitch2":
                 talkWitch2();
                 break;
-            case "talkWitch3":
-                talkWitch3();
+            case "askWitchAboutTeleportation1":
+                askWitchAboutTeleportation1();
                 break;
-            case "talkWitch4":
-                talkWitch4();
+            case "askWitchAboutTeleportation2":
+                askWitchAboutTeleportation2();
                 break;
-            case "talkWitch5":
-                talkWitch5();
+            case "askWitchAboutReturnByDeath1":
+                askWitchAboutReturnByDeath1();
                 break;
-            case "talkWitch6":
-                talkWitch6();
+            case "askWitchAboutReturnByDeath2":
+                askWitchAboutReturnByDeath2();
                 break;
-            case "talkWitch7":
-                talkWitch7();
+            case "encounterFightWitch":
+                encounterFightWitch();
                 break;
-            case "talkWitch8":
-                talkWitch8();
+            case "defeatTheWitch":
+                defeatTheWitch();
+                break;
+            case "witchReward":
+                witchReward();
+                break;
+            case "  takeWitchMoney":
+                takeWitchMoney();
+                break;
+            case " spareTheWitch":
+                spareTheWitch();
+                break;
+            case "finishTheWitch":
+                finishTheWitch();
                 break;
             case "acceptWitchQuest":
                 acceptWitchQuest();
@@ -403,7 +470,7 @@ public class StoryManager {
             ui.image.setImageResource(R.drawable.dark_screen);
             soundManager.windyField();
             ui.displayTextSlowly("\"Whoa, aaaa!!!\" you scream in pain, realizing that just seconds ago you had taken a fatal blow, and now you find yourself lying in the familiar grass once again.");
-            ui.setChoicesAndNextPositions("Continue", "", "", "", "windyField1", "", "", "");
+            ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
         } else {
             gameModel.position = "windyField";
             ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
@@ -423,7 +490,9 @@ public class StoryManager {
     public void windyField2() {
         ui.displayTextSlowly("You find yourself in the middle of a windy field, with the soft green grass swaying under the clear blue sky.\n" +
                 "A sturdy wooden fence separates the field from a winding dirt road. ");
-        ui.setChoicesAndNextPositions("Try to recollect your thoughts", "Explore the surrounding", "Leave", "", "recollectYourThoughts", "exploreTheSurrounding1", "windyField3", "");
+        ui.setChoicesAndNextPositions("Try to recollect your thoughts", "Explore the surrounding", "", "", "recollectYourThoughts", "exploreTheSurrounding1", "", "");
+        if (gameModel.isTakenCoins)
+            ui.setChoice3("Leave", "windyField3");
     }
 
     public void recollectYourThoughts() {
@@ -432,19 +501,28 @@ public class StoryManager {
             ui.displayTextSlowly("After spending a couple of minutes trying to recollect your thoughts, a realization upon you — you possess the ability to return by death.\n" +
                     "Memories flood back, and you recall the knowledge of your previous encounters and the choices that led you to this point. ");
         } else
-            ui.displayTextSlowly("After spending a couple of minutes trying to recollect your thoughts, you realize that your mind is completely blank. ");
+            ui.displayTextSlowly("After spending a couple of minutes trying to recollect your thoughts, you realize that your mind is completely blank.\n" +
+                    "The world around you seems unfamiliar, and you notice that your clothes have transformed into an outfit from an old era.");
     }
 
     public void exploreTheSurrounding1() {
         if (!gameModel.isTakenKnife) {
             ui.setChoicesAndNextPositions("Take it", "Leave it", "", "", "takeKnife", "notTakeKnife", "", "");
             ui.displayTextSlowly("As you explore the surrounding area, your eyes catch a glint of metal hidden among the tall grass.\n" +
-                    "You reach down and discover an old, weathered knife, its blade worn but still sharp.\n");
-        } else exploreTheSurrounding2();
+                    "You reach down and discover an old knife, its blade worn but still sharp.\n");
+        } else if (!gameModel.isTakenCoins) exploreTheSurrounding2();
+        else exploreTheSurrounding3();
     }
 
     public void exploreTheSurrounding2() {
-        ui.updatePlayersCoins(3);
+        gameModel.isTakenCoins = true;
+        ui.updatePlayersCoins(2);
+        ui.setChoicesAndNextPositions("Continue to explore", "Leave", "", "", "exploreTheSurrounding3", "windyField2", "", "");
+        ui.displayTextSlowly("As you continue to explore, your eyes catch a glimmer on the ground, revealing not just one, but two shiny coins.\n" +
+                "You pick them up, wonder what these coins might be used for in this mysterious world.");
+    }
+
+    public void exploreTheSurrounding3() {
         ui.setChoicesAndNextPositions("Continue", "", "", "", "windyField2", "", "", "");
         ui.displayTextSlowly("As you continue to explore, there are nothing of value or usefulness left in the surrounding area.");
     }
@@ -452,15 +530,19 @@ public class StoryManager {
     public void takeKnife() {
         ui.setChoicesAndNextPositions("Continue to explore", "Leave", "", "", "exploreTheSurrounding2", "windyField2", "", "");
         ui.continueTextSlowly("You pick up the old knife, feeling its weight in your hand. Its worn handle and rusted blade tell tales of past adventures.");
+        gameModel.isTakenKnife = true;
         if (gameModel.knife == null)
             gameModel.knife = new Weapon_Knife();
         ui.obtainWeapon(gameModel.knife);
-        gameModel.isTakenKnife = true;
+        if (gameModel.isTakenCoins)
+            nextPosition1 = "exploreTheSurrounding3";
     }
 
     public void notTakeKnife() {
         ui.setChoicesAndNextPositions("Continue to explore", "Leave", "", "", "exploreTheSurrounding2", "windyField2", "", "");
         ui.continueTextSlowly("You decide not to take the old knife, feeling that it may not be of much use to you.");
+        if (gameModel.isTakenCoins)
+            nextPosition1 = "exploreTheSurrounding3";
     }
 
     public void windyField3() {
@@ -531,9 +613,15 @@ public class StoryManager {
     }
 
     public void askForARide() {
+        ui.setChoicesAndNextPositions("Give him a coin", "Is this coin acceptable", "", "", "rideCarriage", "rideCarriage", "", "");
+        ui.displayTextSlowly("Prioritizing your safety, you ask the man for a ride. The man requests a coin as payment for taking you with him.");
+    }
+
+    public void rideCarriage() {
         ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
-        ui.displayTextSlowly("Prioritizing your safety, you ask the man for a ride.\n" +
-                "The man agrees to take you with. As the wheels begin to turn, the carriage sets off towards the direction of Rivervale town");
+        ui.displayTextSlowly("The man takes the coin from your hand and nods, signaling for you to climb into the back of the carriage. " +
+                "As the wheels begin to turn, the carriage sets off towards the direction of Rivervale town");
+        ui.updatePlayersCoins(-1);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -542,8 +630,9 @@ public class StoryManager {
                 soundManager.horseWagonNear();
                 ui.setChoicesAndNextPositions("Continue", "", "", "", "onCarriage1", "", "", "");
             }
-        }, 4000);
+        }, 2000);
     }
+
 
     public void onCarriage1() {
         ui.displayTextSlowly("As the carriage continues its journey, you seize the opportunity to ask the man a series of questions.");
@@ -600,6 +689,7 @@ public class StoryManager {
     public void townGate() {
         gameModel.position = "townGate";
         ui.image.setImageResource(R.drawable.town_gate);
+        soundManager.playBackGroundMusic();
         ui.setChoicesAndNextPositions("", "", "Enter town", "Leave", "", "", "talkGuard1", "crossRoad");
 
         if (!gameModel.isAliveDemonGeneral) {
@@ -609,6 +699,8 @@ public class StoryManager {
         } else
             ui.displayTextSlowly("As you draw near to the town gate, you notice that it is tightly shut and fortified.\n" +
                     "Standing before the gate is a guard, fully equipped with armor and a sword, their attentive gaze fixed upon you.");
+        if (gameModel.isOpenTownGate)
+            nextPosition3 = "theTown";
         if (gameModel.isAngryGuard) {
             ui.setChoice1("Talk to the angry guard", "talkGuard1");
             ui.setChoice2("Attack the guard again", "attackGuard");
@@ -634,19 +726,38 @@ public class StoryManager {
             ui.displayTextSlowly("\"Ah, I see you're donning your new armor. It suits you well. " +
                     "But you still need to prove yourself trustworthy to get in.\" ");
             ui.setChoice1("\"Thank you\"", "crossRoad");
-        } else {
+        } else if (!gameModel.isOpenTownGate) {
             if (gameModel.isAngryGuard)
                 ui.displayTextSlowly("The guard is clearly angry as they scold you for your attack.\n" +
                         "They look disappointed and emphasize how crucial it is to keep the town safe. Trust and redemption feel far away in this moment. ");
             else
                 ui.displayTextSlowly("Guard: \"Hello, stranger! I cannot let unfamiliar faces into our town." +
                         "Prove yourself trustworthy, or find another way in.\" ");
-            ui.setChoice1("\"How can i prove myself?\"", "talkGuard2");
-        }
+            ui.setChoicesAndNextPositions("\"How can i prove myself?\"", "Handing him a coin", "Leave", "", "talkGuard2", "proveTrustWorthy1", "crossRoad", "");
+        } else
+            talkGuard2();
+    }
+
+    public void proveTrustWorthy1() {
+        ui.displayTextSlowly("The guard crosses his arms and looks at the coin you offered: \"A single coin won't be enough to prove your trustworthiness.\"");
+        ui.setChoicesAndNextPositions("Give him another", "Leave", "", "", "proveTrustWorthy2", "crossRoad", "", "");
+    }
+
+    public void proveTrustWorthy2() {
+        gameModel.isOpenTownGate = true;
+        ui.displayTextSlowly("The guard takes the two coins from your hand, examining them briefly before nodding in approval.\n" +
+                "\"Very well,\" he says. \"A small token of trust. You may pass. Welcome to our town.\" then opening the door for you to pass through.");
+        ui.setChoicesAndNextPositions("Enter the town", "Leave", "", "", "theTown", "crossRoad", "", "");
+        ui.updatePlayersCoins(-2);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                soundManager.townGateDoor();
+            }
+        }, 2300);
     }
 
     public void talkGuard2() {
-        gameModel.position = "talkGuard2";
         ui.setChoicesAndNextPositions("", "Leave", "", "", "", "crossRoad", "", "");
 
         if (!gameModel.isAliveDemonGeneral) {
@@ -655,15 +766,17 @@ public class StoryManager {
         } else {
             ui.displayTextSlowly("Guard: \"Lately, one of the demon general has been intruding into our land, endangering our safety. " +
                     "We urgently require a hero to safeguard our town.\"");
-            ui.setChoice1("\"How am i supposed to do that\"", "talkGuard3");
+            ui.setChoice1("Continue", "talkGuard3");
         }
     }
 
     public void talkGuard3() {
-        gameModel.position = "talkGuard3";
+        ui.displayTextSlowly("He advises you to visit the blacksmith in the north of the town to acquire better equipment first.");
+        if (gameModel.isOpenTownGate)
+            ui.setChoicesAndNextPositions("\"I got it\"", "Enter town", "Leave", "", "crossRoad", "theTown", "crossRoad", "");
+        else
+            ui.setChoicesAndNextPositions("\"I got it\"", "Leave", "", "", "crossRoad", "crossRoad", "", "");
 
-        ui.displayTextSlowly("He advises you to visit the blacksmith in the north to acquire better equipment first.");
-        ui.setChoicesAndNextPositions("\"I got it\"", "Leave", "", "", "crossRoad", "crossRoad", "", "");
     }
 
     public void attackGuard() {
@@ -676,14 +789,107 @@ public class StoryManager {
         ui.displayTextSlowly("As a consequence of your actions, the guard strikes you in response,\nresulting in you taking " + hpLost + " damage.");
     }
 
-    public void crossRoad() {
+    public void theTown() {
         soundManager.stopAllSoundEffect();
+        gameModel.position = "theTown";
+        ui.image.setImageResource(R.drawable.the_town);
+        soundManager.theTown();
+        ui.displayTextSlowly("As you stand in the town, you are surrounded by the lively sounds of people bustling about their daily activities.");
+        ui.setChoicesAndNextPositions("Go North", "Leave", "", "", "blackSmithHouse", "townGate", "", "");
+    }
+
+    public void crossRoad() {
         gameModel.position = "crossRoad";
         ui.image.setImageResource(R.drawable.cross_road);
 
         ui.displayTextSlowly("You find yourself at a crossroad, standing at the intersection of multiple paths.\n" +
                 "The choices laid out offering different directions to explore.");
-        ui.setChoicesAndNextPositions("Go North", "Go East", "Go South", "Go West (the town)", "blackSmithHouse", "riverSide", "goblinCave", "townGate");
+        ui.setChoicesAndNextPositions("Go North", "Go East", "Go South", "Go West (the town gate)", "", "riverSide", "goblinCave", "townGate");
+    }
+
+    public void northField() {
+        gameModel.position = "northField";
+        if (gameModel.isAliveWolf) {
+            ui.image.setImageResource(R.drawable.north_field_with_man_wolf);
+            ui.displayTextSlowly("Northeast of the town, your eyes are drawn to a peculiar sight.\n" +
+                    "Behind a bush, you spot a young man observing a lone wolf standing beneath a massive, solitary tree.\n" +
+                    "The man's presence seems hidden, as if he is carefully observing the wolf's behavior without being noticed. ");
+            ui.setChoicesAndNextPositions("Talk with the man", "Go East", "Go South", "", "", "northRiver", "crossRoad", "");
+        } else {
+            ui.image.setImageResource(R.drawable.north_field_with_man);
+            ui.displayTextSlowly("Northeast of the town,you find yourself standing in an open field with a breathtaking view of the sky.\n" +
+                    "As you approach, you notice Lucas, standing beneath a majestic, solitary tree.\n" +
+                    "The wolf that once posed a threat is no longer in sight, indicating that Lucas has successfully transported it back to the town.");
+            ui.setChoicesAndNextPositions("Talk with Lucas", "Go East", "Go South", "", "talkYoungMan1", "northRiver", "crossRoad", "");
+        }
+        if (!gameModel.isAliveWolf || gameModel.timeLoop)
+            ui.setChoice4("Go West", "townSewer");
+    }
+
+    public void talkYoungMan1() {
+        if (gameModel.isAliveWolf) {
+            ui.displayTextSlowly("He gestures for you to keep quiet and whispers, \"The wolf may be dangerous, but its skin and meat can be valuable resources.\"\n" +
+                    "The man observes your appearance and remarks, \"You seem capable of handling that wolf easily. " +
+                    "How about you take care of it, and I'll keep its body as well as reward you with 2 coins?\"");
+            ui.setChoicesAndNextPositions("Accept the request", "\"2 coins? I'm not gonna do it.\"", "Leave", "", "acceptYoungManRequest2", "", "northField", "");
+        } else {
+            ui.displayTextSlowly("");
+            ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Leave", "", "", "talkYoungMan2", "crossRoad", "", "");
+        }
+    }
+
+    public void talkYoungMan2() {
+        if (gameModel.isAliveWolf) {
+            ui.displayTextSlowly("\"Alright, I understand. I can offer you 3 coins instead for taking care of the wolf. " +
+                    "It's a fair price considering the risks involved. What do you say?\"");
+            ui.setChoicesAndNextPositions("Accept the request", "Leave", "", "", "acceptYoungManRequest3", "", "northField", "");
+        } else {
+            ui.displayTextSlowly("\"There's a large sewer system that runs beneath the streets.\n" +
+                    "It's not the most pleasant path, but it should allow you to enter undetected.\n" +
+                    "Just be cautious of any lurking dangers within the tunnels.\"");
+            ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "crossRoad", "crossRoad", "", "");
+        }
+    }
+
+    public void acceptYoungManRequest(boolean dealUp) {
+        if (dealUp)
+            gameModel.youngManRequestReward = 3;
+        else gameModel.youngManRequestReward = 2;
+        if (gameModel.longSword == null) {
+            gameModel.longSword = new Weapon_LongSword();
+            ui.obtainWeapon(gameModel.longSword);
+            gameModel.isBorrowSword = true;
+            ui.continueTextSlowly("You accept the man's request.\n\"Here. I'll lend you my sword. Good luck.\"");
+        }
+        ui.setChoicesAndNextPositions("Encounter the wolf", "", "", "", "encounterWolf", "", "", "");
+
+    }
+
+    public void defeatWolf() {
+        ui.image.setImageResource(R.drawable.north_field_with_man);
+        ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+        StringBuilder text = new StringBuilder("As the wolf collapses to the ground, its threat vanquished, the man approaches, gratitude evident in his eyes.\n");
+        if (gameModel.isBorrowSword)
+            text.append("He take back his sword and fulfills his promise, handing you the agreed-upon coins.\n");
+        else
+            text.append("He fulfills his promise, handing you the agreed-upon coins.\n");
+        text.append("The man introduces himself as Lucas, a humble hunter with a good understanding of the wilderness.");
+        ui.displayTextSlowly(text.toString());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ui.updatePlayersCoins(gameModel.youngManRequestReward);
+                ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "", "", "", "talkYoungMan2", "", "", "");
+            }
+        }, 2000);
+    }
+
+    public void townSewer() {
+        gameModel.position = "townSewer";
+        ui.image.setImageResource(R.drawable.town_sewer);
+
+        ui.displayTextSlowly("As you approach the sewer entrance, you notice that it is constructed from sturdy stone and its surprisingly cleanliness.");
+        ui.setChoicesAndNextPositions("Go through the sewer", "Go East", "", "", "theTown", "northField", "", "");
     }
 
     public void blackSmithHouse() {
@@ -692,11 +898,11 @@ public class StoryManager {
         soundManager.anvil();
         ui.displayTextSlowly("As you approach the blacksmith shop, the sound of hammer striking metal echoes in the air.\n" +
                 "The skilled blacksmith can be seen diligently working at the forge.");
-        ui.setChoicesAndNextPositions("Talk to the blacksmith", "Go East", "Go South", "", "talkBlackSmith", "northRiver", "crossRoad", "");
+        ui.setChoicesAndNextPositions("Talk to the blacksmith", "Go South", "", "", "talkBlackSmith1", "theTown", "", "");
     }
 
-    public void talkBlackSmith() {
-        gameModel.position = "talkBlackSmith";
+    public void talkBlackSmith1() {
+        gameModel.position = "talkBlackSmith1";
         ui.setChoicesAndNextPositions("Leave", "", "", "", "blackSmithHouse", "", "", "");
 
         if (!gameModel.blackSmithQuestActive) {
@@ -708,16 +914,37 @@ public class StoryManager {
         } else if (!gameModel.isALiveGoblin) {
             if (!gameModel.isTakenArmor) {
                 ui.displayTextSlowly("\"Look like you've killed that goblin. I have a reward for you,\"  ");
-                ui.setChoicesAndNextPositions("Take reward", "Leave", "", "", "takeArmor", "blackSmithHouse", "", "");
+                ui.setChoicesAndNextPositions("Take reward", "Leave", "", "", "takeArmor", "talkBlackSmith2", "", "");
             } else if (gameModel.isTakenArmor) {
-                ui.displayTextSlowly("They believe in your ability to overcome the challenge. " +
-                        "The blacksmith advises, \"There's one more thing you should know. " +
-                        "The witch who wanders along the river is known for her trickery.\nBe cautious and stay alert when you encounter her.\"");
-                ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "blackSmithHouse", "blackSmithHouse", "", "");
+                int currentArmorValue = gameModel.player.getArmor() != null ? gameModel.player.getArmor().getValue() : 0;
+                ui.displayTextSlowly("The blacksmith presents you with a choice.\n" +
+                        "He offers to upgrade your current armor to a superior one for an additional fee, or you can opt to sell your current armor for a good price and buy a new one.");
+                if (currentArmorValue == 0) {
+                    ui.setChoicesAndNextPositions("Buy Iron Armor (" + gameModel.ironArmor.getValue() + " coins)", "Buy Silver Armor (+" + gameModel.silverArmor.getValue() + " coins)",
+                            "Buy Golden Armor Armor (+" + gameModel.goldenArmor.getValue() + " coins)",
+                            "Leave", "buyIronArmor", "buySilverArmor", "buyGoldenArmor", "talkBlackSmith2");
+                } else if (currentArmorValue > 0) {
+                    ui.setChoicesAndNextPositions("Upgrade to Silver Armor (+" + (gameModel.silverArmor.getValue() - currentArmorValue) + " coins)",
+                            "Upgrade to Golden Armor Armor (+" + (gameModel.goldenArmor.getValue() - currentArmorValue) + " coins)",
+                            "Sell your " + gameModel.player.getArmor().getName() + " for " + (currentArmorValue - 1) + " coins", "Leave", "buySilverArmor", "buyGoldenArmor", "sellArmor", "talkBlackSmith2");
+                    if (currentArmorValue == gameModel.silverArmor.getValue())
+                        ui.setChoice1("", "");
+                    else if (currentArmorValue == gameModel.goldenArmor.getValue()) {
+                        ui.setChoice1("", "");
+                        ui.setChoice2("", "");
+                    }
+                }
             }
         } else {
             ui.displayTextSlowly("The blacksmith: \"That goblin is still alive! You better hurry to defeat it before it causes more harm.\"");
         }
+    }
+
+    public void talkBlackSmith2() {
+        ui.displayTextSlowly("He believe in your ability to overcome the challenge. " +
+                "The blacksmith advises, \"There's one more thing you should know. " +
+                "The witch who wanders along the river is known for her trickery.\nBe cautious and stay alert when you encounter her.\"");
+        ui.setChoicesAndNextPositions("\"I got it\"", "Leave", "", "", "blackSmithHouse", "crossRoad", "", "");
     }
 
     public void acceptBlackSmithQuest() {
@@ -725,22 +952,32 @@ public class StoryManager {
         gameModel.isTakenTorch = true;
         ui.displayTextSlowly("The blacksmith hands you a torch along with a fire stone. " +
                 "He warns you about the darkness inside the goblin cave and advises you to use the torch to light your way.");
-        ui.setChoicesAndNextPositions("Continue", "", "", "", "talkBlackSmith", "", "", "");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", "blackSmithHouse", "", "", "");
+    }
+
+    public void buyArmor(Armor armor) {
+        if (ui.updatePlayersCoins(-(armor.getValue() - (gameModel.player.getArmor() != null ? gameModel.player.getArmor().getValue() : 0)))) {
+            ui.updatePlayersArmor(armor);
+        }
+        talkBlackSmith1();
+    }
+
+    public void sellArmor() {
+        ui.updatePlayersCoins(gameModel.player.getArmor().getValue() - 1);
+        gameModel.player.removeArmor();
+        ui.updatePlayersArmor(null);
+        talkBlackSmith1();
     }
 
     public void takeArmor() {
-        if (gameModel.armors == null)
-            gameModel.armors = new Armor[]{new Armor_IronArmor(), new Armor_SilverArmor(), new Armor_GoldenArmor()};
-
-        Armor armor = gameModel.armors[rand.nextInt(3)];
-        gameModel.player.setArmor(armor);
-        ui.armorLabel.setVisibility(View.VISIBLE);
-        ui.armorLabel.setText(armor.getName());
-        ui.armorLabel.setTextColor(Color.parseColor(armor.getHexColorCode()));
-
         gameModel.isTakenArmor = true;
-        ui.displayTextSlowly("The BlackSmith: \"Take this " + armor.getName() + " .Maybe it could help you.\"");
-        ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "talkBlackSmith", "blackSmithHouse", "", "");
+        gameModel.ironArmor = new Armor_IronArmor();
+        gameModel.silverArmor = new Armor_SilverArmor();
+        gameModel.goldenArmor = new Armor_GoldenArmor();
+        ui.updatePlayersArmor(gameModel.ironArmor);
+
+        ui.displayTextSlowly("The BlackSmith: \"Take this " + gameModel.player.getArmor().getName() + " .Maybe it could help you.\"");
+        ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "talkBlackSmith1", "talkBlackSmith2", "", "");
     }
 
     public void goblinCave() {
@@ -804,7 +1041,7 @@ public class StoryManager {
                     }
                 }, 2000);
             } else {
-                ui.setChoice2("", "");
+                ui.image.setImageResource(R.drawable.dark_screen);
                 ui.darkUI();
                 ui.displayTextSlowly("As you venture deeper into the goblin cave, the oppressive darkness engulfs your senses.\n" +
                         "Suddenly, a creepy noise echoes through the chamber. The source of the sound is growing ever nearer.\n" +
@@ -827,8 +1064,7 @@ public class StoryManager {
                     ui.setChoicesAndNextPositions("Take the goblin's left ear", "Leave", "", "", "takeGoblinEar", "goblinCave", "", "");
                 } else if (!gameModel.isTakenLongSword) {
                     ui.displayTextSlowly("As you explore the depths of the cave, you come across the lifeless body of a goblin.\n" +
-                            "Something shiny catches your attention, revealing an old, weathered long sword.\n" +
-                            "");
+                            "Something shiny catches your attention, revealing an old, weathered long sword.");
                     ui.setChoicesAndNextPositions("Take the long sword", "Leave", "", "", "takeLongSword", "goblinCave", "", "");
                 } else {
                     ui.image.setImageResource(R.drawable.inside_cave_painting);
@@ -845,7 +1081,9 @@ public class StoryManager {
 
     public void takeGoblinEar() {
         gameModel.isTakenGoblinEar = true;
-        ui.continueTextSlowly("Remembering the witch's request, you reach down to retrieve the goblin's left ear.");
+        ui.continueTextSlowly("Remembering the witch's request, you reach down to retrieve the goblin's left ear, but as you do, you notice something unexpected. " +
+                "In the goblin's pocket, you find two coins tucked away. ");
+        ui.updatePlayersCoins(2);
         ui.setChoicesAndNextPositions("Continue", "", "", "", "deeperInsideGoblinCave", "", "", "");
     }
 
@@ -886,14 +1124,20 @@ public class StoryManager {
     public void talkWitch2() {
         ui.image.setImageResource(R.drawable.witch);
 
-        if (gameModel.witchQuestActive)
-            ui.setChoicesAndNextPositions("\"I'm on it\"", "Leave", "", "", "riverSide", "riverSide", "", "");
-        else {
+        if (gameModel.witchQuestActive) {
+            if (!gameModel.timeLoop)
+                ui.setChoicesAndNextPositions("\"I'm on it\"", "Ask about the teleportation between worlds", "Leave", "", "riverSide", "askWitchAboutTeleportation1", "riverSide", "");
+            else {
+                ui.setChoice3("Ask about the ability to return by death", "askWitchAboutReturnByDeath1");
+                ui.setChoice4("Leave", "riverSide");
+            }
+        } else {
             if (gameModel.isTakenArmor)
-                ui.setChoicesAndNextPositions("Accept the favor", "\"Don't try to fool me\"", "Leave", "", "acceptWitchQuest", "talkWitch3", "riverSide", "");
+                ui.setChoicesAndNextPositions("Accept the favor", "\"Don't try to fool me\"", "Leave", "", "acceptWitchQuest", "encounterFightWitch", "riverSide", "");
             else
                 ui.setChoicesAndNextPositions("Accept the favor", "Leave", "", "", "acceptWitchQuest", "riverSide", "", "");
         }
+
         StringBuilder text = new StringBuilder("The witch requests that you venture into the jungle on the other side of the river and fetch her a fresh apple.\n" +
                 "Additionally, she asks for a goblin's left ear.");
         if (gameModel.isTakenGoblinEar)
@@ -903,16 +1147,41 @@ public class StoryManager {
         ui.displayTextSlowly(text.toString());
 
         if (gameModel.isTakenGoblinEar && gameModel.isTakenApple) {
-            ui.setChoice1("\"Here are the items you requested.\"", "talkWitch3");
+            ui.setChoice1("\"Here are the items you requested.\"", "encounterFightWitch");
         }
+
     }
 
     public void acceptWitchQuest() {
         gameModel.witchQuestActive = true;
-        selectPosition("riverSide");
+        riverSide();
     }
 
-    public void talkWitch3() {
+    public void askWitchAboutTeleportation1() {
+        ui.displayTextSlowly("Her eyes narrowing in contemplation.\nAfter a moment, she responds, explaining that while tales of interdimensional travel exist, it is an incredibly complex and risky effort.\n" +
+                "She warns that tampering with the fabric of reality can have dire consequences, and one must possess immense knowledge and power to even attempt such a feat.");
+        ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "askWitchAboutTeleportation2", "riverSide", "", "");
+    }
+
+    public void askWitchAboutTeleportation2() {
+        ui.continueTextSlowly("The witch reveals a rumor she has heard, suggesting that in the past, heroes were summoned by the shaman council of the five countries to assist in the battle against the demon army. " +
+                "These heroes possessed extraordinary powers that were not of this world, making them formidable against the forces of evil.");
+        ui.setChoice1("Continue", "talkWitch2");
+    }
+
+    public void askWitchAboutReturnByDeath1() {
+        ui.displayTextSlowly("She hesitates before sharing that it is a forbidden art, steeped in legends and whispered stories.\n" +
+                "\"This is such a powerful ability but warns that it can be a curse as well.\"");
+        ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "askWitchAboutReturnByDeath2", "riverSide", "", "");
+    }
+
+    public void askWitchAboutReturnByDeath2() {
+        ui.continueTextSlowly("\"While it provides the opportunity to correct mistakes and change outcomes, it also comes with a heavy burden and potential consequences.\n" +
+                "The repeated experience of death and the manipulation of time can take a toll on one's mind and soul.\"");
+        ui.setChoice1("Continue", "talkWitch2");
+    }
+
+    public void encounterFightWitch() {
         ui.image.setImageResource(R.drawable.witch);
         soundManager.evilWitch();
         ui.setChoicesAndNextPositions("Encounter the Evil Witch", "", "", "", "encounterEvilWitch", "", "", "");
@@ -929,35 +1198,37 @@ public class StoryManager {
             gameModel.evilWitch = new Monster_EvilWitch(gameModel.difficultRate);
     }
 
-    public void talkWitch4() {
+    public void defeatTheWitch() {
         ui.image.setImageResource(R.drawable.defeated_witch);
-        ui.setChoicesAndNextPositions("Spare her life", "Finish her", "Leave", "", "talkWitch5", "talkWitch8", "talkWitch7", "");
+        ui.setChoicesAndNextPositions("Spare her life", "Finish her", "Leave", "", "witchReward", "finishTheWitch", " spareTheWitch", "");
 
         ui.displayTextSlowly("\"Enough! Spare my life, I'll remove the spell casted on you and give you a reward,\" " +
                 "she begs, desperation evident in her voice. \"No more tricks, I swear.\"");
     }
 
-    public void talkWitch5() {
+    public void witchReward() {
         ui.image.setImageResource(R.drawable.defeated_witch);
-        ui.setChoicesAndNextPositions("Enhance your strength", "Learn Poison breeze", "Why not both?", "Leave", "enhanceStrength", "learnPoisonBreeze", "talkWitch6", "riverSide");
+        ui.setChoicesAndNextPositions("Enhance your strength", "Learn Poison breeze", "\"Hand over all your money!\"", "Leave", "enhanceStrength", "learnPoisonBreeze", "  takeWitchMoney", "riverSide");
 
         ui.displayTextSlowly("\"About the reward, I can either enhance your strength, making you even more powerful,\nor teach you the secret of the poison breeze, a lethal technique.\"");
     }
 
-    public void talkWitch6() {
+    public void takeWitchMoney() {
+        gameModel.witchQuestActive = false;
         ui.image.setImageResource(R.drawable.defeated_witch);
-        ui.setChoicesAndNextPositions("Continue", "", "", "", "talkWitch5", "", "", "");
-
-        ui.displayTextSlowly("\"No I can't. With such a little of power left, i can just give you one.\"");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
+        ui.displayTextSlowly("You refuse the witch's offer for power and instead demand all of her money.\n" +
+                "She promptly reaches for her money pouch and turns it upside down, causing four shiny coins to spill out onto your open palm.");
+        ui.updatePlayersCoins(4);
     }
 
-    public void talkWitch7() {
+    public void spareTheWitch() {
         ui.image.setImageResource(R.drawable.river_side);
         ui.setChoicesAndNextPositions("Go North", "Go south", "Go East(cross the river on bridge)", "Go West", "northRiver", "southRiver", "jungle", "crossRoad");
         ui.displayTextSlowly("As you spare the witch's life, she quickly realizes the gravity of the situation and hastily retreats.");
     }
 
-    public void talkWitch8() {
+    public void finishTheWitch() {
         ui.image.setImageResource(R.drawable.river_side);
         ui.setChoicesAndNextPositions("Go North", "Go south", "Go East(cross the river on bridge)", "Go West", "northRiver", "southRiver", "jungle", "crossRoad");
         ui.displayTextSlowly("As you prepare to deliver the decisive blow.\nWith a swift motion of her hand, she unleashes a spell, creating a blinding flash of light that disorients you.\n" +
@@ -969,17 +1240,15 @@ public class StoryManager {
         gameModel.player.increasePlayerMaxHP(3);
         gameModel.player.increaseBaseAttack(1);
         ui.updatePlayerHp(0);
-        ui.setChoicesAndNextPositions("Continue", "", "", "", "talkWitch7", "", "", "");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
         ui.continueTextSlowly("The witch enhances your strength, granting you a boost in power.\nYour maximum HP is increased by 3, and your base attack is enhanced by 1");
     }
 
     public void learnPoisonBreeze() {
         gameModel.witchQuestActive = false;
-        gameModel.poisonBreeze = new Spell_PoisonBreeze();
-        gameModel.poisonousEffect = gameModel.poisonBreeze.getEffect();
         gameModel.player.addSpell(gameModel.poisonBreeze);
         ui.updateSpellStatus();
-        ui.setChoicesAndNextPositions("Continue", "", "", "", "talkWitch7", "", "", "");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
         ui.continueTextSlowly("You learn the skill of Poison Breeze from the witch.\nAcquiring the ability to unleash a toxic cloud that deal " + gameModel.poisonousEffect.getDamage() + " damage each round against your enemies.");
     }
 
@@ -1087,7 +1356,12 @@ public class StoryManager {
             ui.setChoice3("Leave", "jungle");
             ui.displayTextSlowly(text.toString());
         } else if (c1 == 1) {
-            ui.displayTextSlowly("You hit the apple tree, angering a nearby monkey.\nIt retaliates by throwing a stick at you, causing " + (int) Math.ceil(2 * gameModel.difficultRate) + " damage.");
+            if (rand.nextBoolean()) {
+                ui.displayTextSlowly("You hit the apple tree, angering a nearby monkey.\nIt retaliates by throwing a coin at you, causing " + (int) Math.ceil(2 * gameModel.difficultRate) + " damage.");
+                ui.updatePlayersCoins(1);
+                gameModel.coinsOnTree--;
+            } else
+                ui.displayTextSlowly("You hit the apple tree, angering a nearby monkey.\nIt retaliates by throwing a stick at you, causing " + (int) Math.ceil(2 * gameModel.difficultRate) + " damage.");
             ui.updatePlayerHp(-(int) Math.ceil(2 * gameModel.difficultRate));
         } else
             ui.displayTextSlowly("Nothing happen.");
@@ -1169,7 +1443,10 @@ public class StoryManager {
     }
 
     public void firePower() {
-        if (gameModel.fireStorm == null) gameModel.fireStorm = new Spell_FireStorm();
+        if (gameModel.fireStorm == null) {
+            gameModel.fireStorm = new Spell_FireStorm();
+            gameModel.fireStorm.setSoundEffect(soundManager.spellFireSoundId);
+        }
         gameModel.selectedSpell = gameModel.fireStorm;
         ui.displayTextSlowly("Fire Power: Grants the traveler mastery over the element of fire. " +
                 "Enabling them to unleash devastating Fire Storm that scorches your enemies, dealing a significant " + gameModel.fireStorm.getDamage() + " damage.");
@@ -1179,6 +1456,7 @@ public class StoryManager {
     public void lightningPower() {
         if (gameModel.lightningBolt == null) {
             gameModel.lightningBolt = new Spell_LightningBolt();
+            gameModel.lightningBolt.setSoundEffect(soundManager.spellLightningSoundId);
         }
         gameModel.selectedSpell = gameModel.lightningBolt;
         ui.displayTextSlowly("Lightning Power: Harness the electrifying energy of lightning.\n" +
@@ -1187,7 +1465,10 @@ public class StoryManager {
     }
 
     public void waterPower() {
-        if (gameModel.waterSurge == null) gameModel.waterSurge = new Spell_WaterSurge();
+        if (gameModel.waterSurge == null) {
+            gameModel.waterSurge = new Spell_WaterSurge();
+            gameModel.waterSurge.setSoundEffect(soundManager.spellWaterSoundId);
+        }
         gameModel.selectedSpell = gameModel.waterSurge;
         ui.displayTextSlowly("As the water spell surges forth, it forms a protective barrier that shields you from an impending monster attack, deflecting its harm. " +
                 "Simultaneously, the restorative properties of the water envelop you, replenishing your vitality and restoring" + (-gameModel.waterSurge.getDamage()) + "points of health. ");

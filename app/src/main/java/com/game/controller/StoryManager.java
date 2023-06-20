@@ -228,6 +228,9 @@ public class StoryManager {
             case "defeatWolf":
                 defeatWolf();
                 break;
+            case "townSewer":
+                townSewer();
+                break;
             case "goblinCave":
                 goblinCave();
                 break;
@@ -516,10 +519,15 @@ public class StoryManager {
 
     public void exploreTheSurrounding2() {
         gameModel.isTakenCoins = true;
-        ui.updatePlayersCoins(2);
         ui.setChoicesAndNextPositions("Continue to explore", "Leave", "", "", "exploreTheSurrounding3", "windyField2", "", "");
         ui.displayTextSlowly("As you continue to explore, your eyes catch a glimmer on the ground, revealing not just one, but two shiny coins.\n" +
                 "You pick them up, wonder what these coins might be used for in this mysterious world.");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ui.updatePlayersCoins(2);
+            }
+        }, 1500);
     }
 
     public void exploreTheSurrounding3() {
@@ -666,7 +674,7 @@ public class StoryManager {
     }
 
     public void askAboutHistoryOfThisWorld3() {
-        ui.displayTextSlowly("\"Legend speaks of a legendary artifact known as the 'Sword of Light,' said to possess the power to vanquish the darkness.\n" +
+        ui.displayTextSlowly("\"Legend speaks of a legendary artifact known as the 'Bow of Light,' said to possess the power to vanquish the darkness.\n" +
                 "However, its whereabouts are unknown, and only a chosen hero, guided by destiny, can wield its true power.\"");
     }
 
@@ -744,17 +752,23 @@ public class StoryManager {
     }
 
     public void proveTrustWorthy2() {
-        gameModel.isOpenTownGate = true;
-        ui.displayTextSlowly("The guard takes the two coins from your hand, examining them briefly before nodding in approval.\n" +
-                "\"Very well,\" he says. \"A small token of trust. You may pass. Welcome to our town.\" then opening the door for you to pass through.");
-        ui.setChoicesAndNextPositions("Enter the town", "Leave", "", "", "theTown", "crossRoad", "", "");
-        ui.updatePlayersCoins(-2);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                soundManager.townGateDoor();
-            }
-        }, 2300);
+        if (gameModel.player.getCoins() >= 2) {
+            ui.displayTextSlowly("The guard takes the two coins from your hand, examining them briefly before nodding in approval.\n" +
+                    "\"Very well,\" he says. \"A small token of trust. You may pass. Welcome to our town.\" then opening the door for you to pass through.");
+            ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ui.updatePlayersCoins(-2);
+                    gameModel.isOpenTownGate = true;
+                    ui.setChoicesAndNextPositions("Enter the town", "Leave", "", "", "theTown", "crossRoad", "", "");
+                    soundManager.townGateDoor();
+                }
+            }, 2300);
+        } else {
+            ui.displayTextSlowly("\"You don't have enough coins? Get away!!!\"");
+            ui.setChoicesAndNextPositions("Leave", "", "", "", "crossRoad", "", "", "");
+        }
     }
 
     public void talkGuard2() {
@@ -804,7 +818,7 @@ public class StoryManager {
 
         ui.displayTextSlowly("You find yourself at a crossroad, standing at the intersection of multiple paths.\n" +
                 "The choices laid out offering different directions to explore.");
-        ui.setChoicesAndNextPositions("Go North", "Go East", "Go South", "Go West (the town gate)", "", "riverSide", "goblinCave", "townGate");
+        ui.setChoicesAndNextPositions("Go North", "Go East", "Go South", "Go West (the town gate)", "northField", "riverSide", "goblinCave", "townGate");
     }
 
     public void northField() {
@@ -814,16 +828,14 @@ public class StoryManager {
             ui.displayTextSlowly("Northeast of the town, your eyes are drawn to a peculiar sight.\n" +
                     "Behind a bush, you spot a young man observing a lone wolf standing beneath a massive, solitary tree.\n" +
                     "The man's presence seems hidden, as if he is carefully observing the wolf's behavior without being noticed. ");
-            ui.setChoicesAndNextPositions("Talk with the man", "Go East", "Go South", "", "", "northRiver", "crossRoad", "");
+            ui.setChoicesAndNextPositions("Talk with the man", "Go East", "Go South", "", "talkYoungMan1", "northRiver", "crossRoad", "");
         } else {
             ui.image.setImageResource(R.drawable.north_field_with_man);
             ui.displayTextSlowly("Northeast of the town,you find yourself standing in an open field with a breathtaking view of the sky.\n" +
                     "As you approach, you notice Lucas, standing beneath a majestic, solitary tree.\n" +
                     "The wolf that once posed a threat is no longer in sight, indicating that Lucas has successfully transported it back to the town.");
-            ui.setChoicesAndNextPositions("Talk with Lucas", "Go East", "Go South", "", "talkYoungMan1", "northRiver", "crossRoad", "");
+            ui.setChoicesAndNextPositions("Talk with Lucas", "Go East", "Go South", "Go West", "talkYoungMan1", "northRiver", "crossRoad", "townSewer");
         }
-        if (!gameModel.isAliveWolf || gameModel.timeLoop)
-            ui.setChoice4("Go West", "townSewer");
     }
 
     public void talkYoungMan1() {
@@ -831,9 +843,9 @@ public class StoryManager {
             ui.displayTextSlowly("He gestures for you to keep quiet and whispers, \"The wolf may be dangerous, but its skin and meat can be valuable resources.\"\n" +
                     "The man observes your appearance and remarks, \"You seem capable of handling that wolf easily. " +
                     "How about you take care of it, and I'll keep its body as well as reward you with 2 coins?\"");
-            ui.setChoicesAndNextPositions("Accept the request", "\"2 coins? I'm not gonna do it.\"", "Leave", "", "acceptYoungManRequest2", "", "northField", "");
+            ui.setChoicesAndNextPositions("Accept the request", "\"2 coins? I'm not gonna do it.\"", "Leave", "", "acceptYoungManRequest2", "talkYoungMan2", "northField", "");
         } else {
-            ui.displayTextSlowly("");
+            ui.displayTextSlowly("Hello there! Is there anything i can help?");
             ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Leave", "", "", "talkYoungMan2", "crossRoad", "", "");
         }
     }
@@ -841,13 +853,13 @@ public class StoryManager {
     public void talkYoungMan2() {
         if (gameModel.isAliveWolf) {
             ui.displayTextSlowly("\"Alright, I understand. I can offer you 3 coins instead for taking care of the wolf. " +
-                    "It's a fair price considering the risks involved. What do you say?\"");
-            ui.setChoicesAndNextPositions("Accept the request", "Leave", "", "", "acceptYoungManRequest3", "", "northField", "");
+                    "It's a fair price considering the risks involved. What do you say?\"\n");
+            ui.setChoicesAndNextPositions("Accept the request", "Leave", "", "", "acceptYoungManRequest3", "northField", "", "");
         } else {
             ui.displayTextSlowly("\"There's a large sewer system that runs beneath the streets.\n" +
                     "It's not the most pleasant path, but it should allow you to enter undetected.\n" +
-                    "Just be cautious of any lurking dangers within the tunnels.\"");
-            ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "crossRoad", "crossRoad", "", "");
+                    "Just be cautious of any lurking dangers within the tunnels.\"\n");
+            ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "northField", "crossRoad", "", "");
         }
     }
 
@@ -857,7 +869,6 @@ public class StoryManager {
         else gameModel.youngManRequestReward = 2;
         if (gameModel.longSword == null) {
             gameModel.longSword = new Weapon_LongSword();
-            ui.obtainWeapon(gameModel.longSword);
             gameModel.isBorrowSword = true;
             ui.continueTextSlowly("You accept the man's request.\n\"Here. I'll lend you my sword. Good luck.\"");
         }
@@ -881,7 +892,7 @@ public class StoryManager {
                 ui.updatePlayersCoins(gameModel.youngManRequestReward);
                 ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "", "", "", "talkYoungMan2", "", "", "");
             }
-        }, 2000);
+        }, 2500);
     }
 
     public void townSewer() {
@@ -1158,25 +1169,25 @@ public class StoryManager {
     }
 
     public void askWitchAboutTeleportation1() {
-        ui.displayTextSlowly("Her eyes narrowing in contemplation.\nAfter a moment, she responds, explaining that while tales of interdimensional travel exist, it is an incredibly complex and risky effort.\n" +
-                "She warns that tampering with the fabric of reality can have dire consequences, and one must possess immense knowledge and power to even attempt such a feat.");
+        ui.displayTextSlowly("She explaining that while tales of interdimensional travel exist." +
+                "It is an incredibly complex and risky effort, one must possess immense knowledge and power to even attempt such a feat.");
         ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "askWitchAboutTeleportation2", "riverSide", "", "");
     }
 
     public void askWitchAboutTeleportation2() {
-        ui.continueTextSlowly("The witch reveals a rumor she has heard, suggesting that in the past, heroes were summoned by the shaman council of the five countries to assist in the battle against the demon army. " +
+        ui.continueTextSlowly("There is a rumor she has heard: In the past, heroes were summoned by the shaman council of the five countries to assist in the battle against the demon army. " +
                 "These heroes possessed extraordinary powers that were not of this world, making them formidable against the forces of evil.");
         ui.setChoice1("Continue", "talkWitch2");
     }
 
     public void askWitchAboutReturnByDeath1() {
-        ui.displayTextSlowly("She hesitates before sharing that it is a forbidden art, steeped in legends and whispered stories.\n" +
+        ui.displayTextSlowly("She hesitates before sharing that it is a forbidden art, steeped in legends and whispered stories." +
                 "\"This is such a powerful ability but warns that it can be a curse as well.\"");
         ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "askWitchAboutReturnByDeath2", "riverSide", "", "");
     }
 
     public void askWitchAboutReturnByDeath2() {
-        ui.continueTextSlowly("\"While it provides the opportunity to correct mistakes and change outcomes, it also comes with a heavy burden and potential consequences.\n" +
+        ui.continueTextSlowly("\"While it provides the opportunity to correct mistakes and change outcomes, it also comes with a heavy burden and potential consequences." +
                 "The repeated experience of death and the manipulation of time can take a toll on one's mind and soul.\"");
         ui.setChoice1("Continue", "talkWitch2");
     }
@@ -1216,10 +1227,16 @@ public class StoryManager {
     public void takeWitchMoney() {
         gameModel.witchQuestActive = false;
         ui.image.setImageResource(R.drawable.defeated_witch);
-        ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
         ui.displayTextSlowly("You refuse the witch's offer for power and instead demand all of her money.\n" +
                 "She promptly reaches for her money pouch and turns it upside down, causing four shiny coins to spill out onto your open palm.");
-        ui.updatePlayersCoins(4);
+        ui.setChoicesAndNextPositions("", "", "", "", " ", "", "", "");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ui.updatePlayersCoins(4);
+                ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
+            }
+        },2000);
     }
 
     public void spareTheWitch() {
@@ -1264,12 +1281,12 @@ public class StoryManager {
 
             if (!gameModel.isRestAtTent) {
                 ui.displayTextSlowly("North of the river, you discover a cozy fireplace and an old tent by the riverside.\n" +
-                        "Resting at the tent allows you to recover 10 HP.\nThe path to the northern ahead has been blocked.");
-                ui.setChoicesAndNextPositions("Take a rest", "Go East(swim cross the river)", "Go South", "Go West", "takeRest", "mountain", "riverSide", "blackSmithHouse");
+                        "Resting at the tent allows you to recover 10 HP.\nThe path to the northern ahead has been blocked.\n");
+                ui.setChoicesAndNextPositions("Take a rest", "Go East(swim cross the river)", "Go South", "Go West", "takeRest", "mountain", "riverSide", "northField");
 
             } else {
                 ui.displayTextSlowly("North of the river, you discover a cozy fireplace and an old tent by the riverside.\nThe path to the northern ahead has been blocked.");
-                ui.setChoicesAndNextPositions("", "Go East(swim cross the river)", "Go South", "Go West", "", "mountain", "riverSide", "blackSmithHouse");
+                ui.setChoicesAndNextPositions("", "Go East(swim cross the river)", "Go South", "Go West", "", "mountain", "riverSide", "northField");
             }
         }
     }

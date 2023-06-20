@@ -27,7 +27,7 @@ public class SoundManager {
             horseWagonSoundId, runningInGrassSoundId, horseSoundId,
             townGateDoorSoundId, anvilSoundId, lightFireSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId,
             sword1soundId, sword2soundId, sword3soundId, sword4soundId, spellFireSoundId, spellLightningSoundId, spellWaterSoundId, spellPoisonBreezeSoundId,
-            goblinSoundId, riverMonsterSoundId, evilWitchSoundId, shadowSerpentSoundId, demonGeneralSoundId;
+            wolfSoundId, goblinSoundId, riverMonsterSoundId, evilWitchSoundId, shadowSerpentSoundId, demonGeneralSoundId;
     private Map<Integer, Integer> playingSoundEffect = new HashMap<>();
     private Random rand;
     private Handler handler;
@@ -112,6 +112,7 @@ public class SoundManager {
         sword4soundId = soundPool.load(gameScreen, R.raw.sword_4, 1);
         swordSounds = new int[]{sword1soundId, sword2soundId, sword3soundId, sword4soundId};
 
+        wolfSoundId = soundPool.load(gameScreen, R.raw.wolf_howling, 1);
         goblinSoundId = soundPool.load(gameScreen, R.raw.goblin_roar, 1);
         riverMonsterSoundId = soundPool.load(gameScreen, R.raw.river_monster_roar, 1);
         evilWitchSoundId = soundPool.load(gameScreen, R.raw.evil_witch_laugh, 1);
@@ -325,6 +326,10 @@ public class SoundManager {
             stopAllMusic();
             demonHideoutSound.start();
         }
+    }
+
+    public void wolf() {
+        soundPool.play(wolfSoundId, 1.0f, 1.0f, 1, 0, 1f);
     }
 
     public void goblin(boolean loop) {

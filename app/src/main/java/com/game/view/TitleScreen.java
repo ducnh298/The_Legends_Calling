@@ -16,7 +16,6 @@ import com.game.controller.SoundManager;
 import com.game.model.Difficulty;
 
 public class TitleScreen extends AppCompatActivity {
-    GameModel gameModel;
     SoundManager soundManager;
     ImageView imageView, cloudImageView;
     Spinner difficultySpinner;
@@ -46,8 +45,8 @@ public class TitleScreen extends AppCompatActivity {
         soundManager.click();
         soundManager.titleMusic.stop();
         Intent gameScreen = new Intent(TitleScreen.this, GameScreen.class);
-        gameModel = new GameModel(((Difficulty) difficultySpinner.getSelectedItem()).getValue());
-        gameScreen.putExtra("gameModel", gameModel);
+        double difficulty = ((Difficulty) difficultySpinner.getSelectedItem()).getValue();
+        gameScreen.putExtra("difficulty", difficulty);
         startActivity(gameScreen);
     }
 }

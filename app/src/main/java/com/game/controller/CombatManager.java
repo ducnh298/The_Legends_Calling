@@ -49,8 +49,10 @@ public class CombatManager {
         if (!gameModel.position.equalsIgnoreCase("encounterWolf")) {
             gameModel.lastPosition = gameModel.position;
             Glide.with(ui).load(R.drawable.wolf).into(ui.image);
+            if(gameModel.isBorrowSword)
+                ui.obtainWeapon(gameModel.longSword);
             soundManager.playBattleMusic();
-            soundManager.riverMonster();
+            soundManager.wolf();
             Toast.makeText(ui.getApplicationContext(), "You come face to face with a menacing wolf.", Toast.LENGTH_SHORT).show();
         }
         gameModel.position = "encounterWolf";
@@ -144,8 +146,10 @@ public class CombatManager {
             Toast.makeText(ui.getApplicationContext(), "You have defeated the wolf!", Toast.LENGTH_SHORT).show();
             gameModel.isAliveWolf = false;
             gameModel.wolf = null;
-            if(gameModel.isBorrowSword)
+            if(gameModel.isBorrowSword) {
                 gameModel.player.getWeaponList().remove(gameModel.longSword);
+                ui.obtainWeapon(null);
+            }
             storyManager.defeatWolf();
         }
     }

@@ -25,6 +25,7 @@ import com.game.controller.GameModel;
 import com.game.controller.SoundManager;
 import com.game.controller.StoryManager;
 import com.game.model.Armor;
+import com.game.model.Difficulty;
 import com.game.model.Spell;
 import com.game.model.Weapon;
 
@@ -54,7 +55,7 @@ public class GameScreen extends AppCompatActivity {
         setContentView(R.layout.activity_game_screen);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        gameModel = (GameModel) getIntent().getSerializableExtra("gameModel");
+        gameModel = new GameModel(getIntent().getDoubleExtra("difficulty",1));
         soundManager = new SoundManager(this);
         storyManager = new StoryManager(this, gameModel);
 
@@ -213,11 +214,13 @@ public class GameScreen extends AppCompatActivity {
             selectedItemPosition = gameModel.player.getWeaponList().size() - 1;
             Toast.makeText(getApplicationContext(), "You obtained the " + weaponObtain.getName() + "!!!", Toast.LENGTH_SHORT).show();
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.spinner_item, gameModel.player.getWeaponList().stream().map(weapon -> weapon.getName()).collect(Collectors.toList()));
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        weaponSpinner.setAdapter(adapter);
-        weaponSpinner.setSelection(selectedItemPosition);
+        if (gameModel.player.getWeaponList().size() > 0) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    R.layout.spinner_item, gameModel.player.getWeaponList().stream().map(weapon -> weapon.getName()).collect(Collectors.toList()));
+            adapter.setDropDownViewResource(R.layout.spinner_item);
+            weaponSpinner.setAdapter(adapter);
+            weaponSpinner.setSelection(selectedItemPosition);
+        } else weaponSpinner.setAdapter(null);
     }
 
     public void updateSpellStatus() {
@@ -255,7 +258,6 @@ public class GameScreen extends AppCompatActivity {
         if (goldLabel.getVisibility() == View.INVISIBLE)
             goldLabel.setVisibility(View.VISIBLE);
 
-        soundManager.coins();
         if (coins <= 0) {
             if (!gameModel.player.removeCoins(-coins)) {
                 Toast.makeText(getApplicationContext(), "You do not have enough coins to do that!", Toast.LENGTH_SHORT).show();
@@ -263,6 +265,7 @@ public class GameScreen extends AppCompatActivity {
             }
         } else
             gameModel.player.addCoins(coins);
+        soundManager.coins();
         goldLabel.setText("Coins: " + gameModel.player.getCoins());
         return true;
     }

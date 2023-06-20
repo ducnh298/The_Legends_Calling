@@ -15,16 +15,18 @@ import java.util.Random;
 
 public class SoundManager {
     private GameScreen gameScreen;
-    private SoundPool soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+    private SoundPool soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
     public MediaPlayer titleMusic;
-    private MediaPlayer bgMusic, battleMusic, drivingHighWaySound, openDoorSound, rainingSound, windySound, insideCaveSound, demonHideoutSound;
+    private MediaPlayer bgMusic, battleMusic, drivingHighWaySound, openDoorSound, rainingSound, windySound, theTownSound, insideCaveSound, demonHideoutSound;
     private int[] battleMusicList = {R.raw.battle_music_1, R.raw.battle_music_2};
     private int[] backGroundMusicList = {R.raw.back_ground_music_1, R.raw.back_ground_music_2};
+    private int[] swordSounds;
     private int positionBgMusic = 0, positionBattleMusic = 0;
     public Integer clickSoundId, obtainWeaponSoundId, healthUpSoundId, coinsSoundId,
             takeShoeOffSoundId, dropBagSoundId, lyingBedSoundId, wakeUpVoiceId,
             horseWagonSoundId, runningInGrassSoundId, horseSoundId,
-            anvilSoundId, lightFireSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId,
+            townGateDoorSoundId, anvilSoundId, lightFireSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId,
+            sword1soundId, sword2soundId, sword3soundId, sword4soundId, spellFireSoundId, spellLightningSoundId, spellWaterSoundId, spellPoisonBreezeSoundId,
             goblinSoundId, riverMonsterSoundId, evilWitchSoundId, shadowSerpentSoundId, demonGeneralSoundId;
     private Map<Integer, Integer> playingSoundEffect = new HashMap<>();
     private Random rand;
@@ -80,6 +82,10 @@ public class SoundManager {
         runningInGrassSoundId = soundPool.load(gameScreen, R.raw.running_in_grass, 1);
         horseSoundId = soundPool.load(gameScreen, R.raw.horse_stop, 1);
 
+        townGateDoorSoundId = soundPool.load(gameScreen, R.raw.town_gate_door, 1);
+        theTownSound = MediaPlayer.create(gameScreen, R.raw.the_town);
+        theTownSound.setLooping(true);
+
         anvilSoundId = soundPool.load(gameScreen, R.raw.anvil_sound, 1);
         lightFireSoundId = soundPool.load(gameScreen, R.raw.light_fire, 1);
         underWaterSoundId = soundPool.load(gameScreen, R.raw.underwater, 1);
@@ -100,12 +106,23 @@ public class SoundManager {
         demonHideoutSound = MediaPlayer.create(gameScreen, R.raw.demon_hideout);
         demonHideoutSound.setLooping(true);
 
+        sword1soundId = soundPool.load(gameScreen, R.raw.sword_1, 1);
+        sword2soundId = soundPool.load(gameScreen, R.raw.sword_2, 1);
+        sword3soundId = soundPool.load(gameScreen, R.raw.sword_3, 1);
+        sword4soundId = soundPool.load(gameScreen, R.raw.sword_4, 1);
+        swordSounds = new int[]{sword1soundId, sword2soundId, sword3soundId, sword4soundId};
+
         goblinSoundId = soundPool.load(gameScreen, R.raw.goblin_roar, 1);
         riverMonsterSoundId = soundPool.load(gameScreen, R.raw.river_monster_roar, 1);
         evilWitchSoundId = soundPool.load(gameScreen, R.raw.evil_witch_laugh, 1);
         shadowSerpentSoundId = soundPool.load(gameScreen, R.raw.shadow_serpent_sound, 1);
         demonGeneralSoundId = soundPool.load(gameScreen, R.raw.demon_general_laugh, 1);
         explosionSoundId = soundPool.load(gameScreen, R.raw.explosion, 1);
+
+        spellFireSoundId = soundPool.load(gameScreen, R.raw.spell_fire, 1);
+        spellLightningSoundId = soundPool.load(gameScreen, R.raw.spell_lightning, 1);
+        spellWaterSoundId = soundPool.load(gameScreen, R.raw.spell_water, 1);
+        spellPoisonBreezeSoundId = soundPool.load(gameScreen, R.raw.spell_poison_breeze, 1);
 
         titleMusic = MediaPlayer.create(gameScreen, R.raw.title_music);
         titleMusic.setLooping(true);
@@ -119,14 +136,15 @@ public class SoundManager {
     }
 
     public void playBackGroundMusic() {
-        stopAllMusic();
-        if (!bgMusic.isPlaying())
+        if (!bgMusic.isPlaying()) {
+            stopAllMusic();
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     bgMusic.seekTo(positionBgMusic);
                     bgMusic.start();
                 }
             }, 300);
+        }
     }
 
     public void playBattleMusic() {
@@ -159,6 +177,8 @@ public class SoundManager {
             rainingSound.pause();
         if (windySound.isPlaying())
             windySound.pause();
+        if (theTownSound.isPlaying())
+            theTownSound.pause();
         if (insideCaveSound.isPlaying())
             insideCaveSound.pause();
         if (demonHideoutSound.isPlaying())
@@ -179,6 +199,14 @@ public class SoundManager {
 
     public void coins() {
         soundPool.play(coinsSoundId, 1f, 1f, 1, 0, 1f);
+    }
+
+    public void spell(int id) {
+        soundPool.play(id, 1f, 1f, 1, 0, 1f);
+    }
+
+    public void sword() {
+        soundPool.play(swordSounds[rand.nextInt(swordSounds.length)], 1f, 1f, 1, 0, 1f);
     }
 
     public void drivingHighWay() {
@@ -248,6 +276,17 @@ public class SoundManager {
         soundPool.play(horseSoundId, 1f, 1f, 1, 0, 1f);
     }
 
+    public void townGateDoor() {
+        soundPool.play(townGateDoorSoundId, 1f, 1f, 1, 0, 1f);
+    }
+
+    public void theTown() {
+        if (!theTownSound.isPlaying()) {
+            stopAllMusic();
+            theTownSound.start();
+        }
+    }
+
     public void anvil() {
         if (playingSoundEffect.get(anvilSoundId) == null)
             playingSoundEffect.put(anvilSoundId, soundPool.play(anvilSoundId, 0.4f, 0.4f, 1, -1, 0.66f));
@@ -275,15 +314,17 @@ public class SoundManager {
     }
 
     public void insideCave() {
-        stopAllMusic();
-        if (!insideCaveSound.isPlaying())
+        if (!insideCaveSound.isPlaying()) {
+            stopAllMusic();
             insideCaveSound.start();
+        }
     }
 
     public void demonHideout() {
-        stopAllMusic();
-        if (!demonHideoutSound.isPlaying())
+        if (!demonHideoutSound.isPlaying()) {
+            stopAllMusic();
             demonHideoutSound.start();
+        }
     }
 
     public void goblin(boolean loop) {

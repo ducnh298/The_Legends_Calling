@@ -9,6 +9,7 @@ public abstract class Spell implements Serializable {
     protected String description;
     protected int coolDown;
     protected int coolDownRemain = 0;
+    protected int soundEffect;
 
     protected Spell(String name, int damage, int coolDown) {
         this.name = name;
@@ -46,4 +47,12 @@ public abstract class Spell implements Serializable {
     }
 
     public abstract void activeEffect();
+
+    public int getSoundEffect() {
+        return soundEffect;
+    }
+
+    public void setSoundEffect(int soundEffect) {
+        this.soundEffect = soundEffect;
+    }
 }

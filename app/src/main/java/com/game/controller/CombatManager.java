@@ -12,7 +12,9 @@ import com.game.model.monsters.Monster_DemonGeneral;
 import com.game.model.monsters.Monster_Goblin;
 import com.game.model.monsters.Monster_RiverMonster;
 import com.game.model.monsters.Monster_ShadowSerpent;
+import com.game.model.monsters.Monster_Wolf;
 import com.game.model.spells.Spell_PoisonBreeze;
+import com.game.model.weapons.Weapon_Fist;
 import com.game.model.weapons.Weapon_Trident;
 import com.game.view.GameScreen;
 
@@ -41,17 +43,33 @@ public class CombatManager {
         encounterMonster(gameModel.goblin);
     }
 
+    public void encounterWolf() {
+        if (gameModel.wolf == null)
+            gameModel.wolf = new Monster_Wolf(gameModel.difficultRate);
+        if (!gameModel.position.equalsIgnoreCase("encounterWolf")) {
+            gameModel.lastPosition = gameModel.position;
+            Glide.with(ui).load(R.drawable.wolf).into(ui.image);
+            soundManager.playBattleMusic();
+            soundManager.riverMonster();
+            Toast.makeText(ui.getApplicationContext(), "You come face to face with a menacing wolf.", Toast.LENGTH_SHORT).show();
+        }
+        gameModel.position = "encounterWolf";
+
+        encounterMonster(gameModel.wolf);
+    }
+
     public void encounterEvilWitch() {
         if (gameModel.poisonBreeze == null) {
             gameModel.poisonBreeze = new Spell_PoisonBreeze();
+            gameModel.poisonBreeze.setSoundEffect(soundManager.spellPoisonBreezeSoundId);
         }
         if (!gameModel.position.equalsIgnoreCase("encounterEvilWitch")) {
             gameModel.lastPosition = gameModel.position;
             ui.image.setImageResource(R.drawable.evil_witch);
             soundManager.evilWitch();
+            soundManager.spell(gameModel.poisonBreeze.getSoundEffect());
             soundManager.playBattleMusic();
             Toast.makeText(ui.getApplicationContext(), "The poison breeze slowly drains your health.", Toast.LENGTH_SHORT).show();
-            gameModel.poisonBreeze.activeEffect();
             gameModel.player.addEffect(gameModel.poisonBreeze.getEffect());
         }
         gameModel.position = "encounterEvilWitch";
@@ -109,11 +127,26 @@ public class CombatManager {
             attackMonster(gameModel.goblin, useSpell);
             encounterMonster(gameModel.goblin);
         } else {
-            soundManager.playBackGroundMusic();
+            soundManager.insideCave();
             Toast.makeText(ui.getApplicationContext(), "You have defeated the goblin!", Toast.LENGTH_SHORT).show();
             gameModel.isALiveGoblin = false;
             gameModel.goblin = null;
             storyManager.deeperInsideGoblinCave();
+        }
+    }
+
+    public void attackWolf(boolean useSpell) {
+        if (gameModel.wolf.getMonsterCurrentHP() > 0) {
+            attackMonster(gameModel.wolf, useSpell);
+            encounterMonster(gameModel.wolf);
+        } else {
+            soundManager.playBackGroundMusic();
+            Toast.makeText(ui.getApplicationContext(), "You have defeated the wolf!", Toast.LENGTH_SHORT).show();
+            gameModel.isAliveWolf = false;
+            gameModel.wolf = null;
+            if(gameModel.isBorrowSword)
+                gameModel.player.getWeaponList().remove(gameModel.longSword);
+            storyManager.defeatWolf();
         }
     }
 
@@ -136,7 +169,7 @@ public class CombatManager {
 
             gameModel.isDefeatedEvilWitch = true;
             gameModel.evilWitch = null;
-            storyManager.talkWitch4();
+            storyManager.defeatTheWitch();
         }
     }
 
@@ -188,7 +221,14 @@ public class CombatManager {
 
     public void encounterMonster(Monster monster) {
         ui.setChoicesAndNextPositions("Fight", "Try to run", "", "", gameModel.lastPosition, "tryToRun", "", "");
-        if (monster.equals(gameModel.goblin)) {
+        if (monster.equals(gameModel.wolf)) {
+            storyManager.nextPosition1 = "attackWolf";
+            if (!gameModel.player.getSpellList().isEmpty()) {
+                ui.updateSpellStatus();
+                ui.setChoice2("Use spell", "attackWolfWithSpell");
+                ui.setChoice3("Try to run", "tryToRun");
+            }
+        }else if (monster.equals(gameModel.goblin)) {
             storyManager.nextPosition1 = "attackGoblin";
             if (!gameModel.player.getSpellList().isEmpty()) {
                 ui.updateSpellStatus();
@@ -234,7 +274,7 @@ public class CombatManager {
                         monsterStatus.append(" (Remain: " + effect.getRemain() + ")");
                     }
                 }
-            ui.displayText(monsterStatus.toString()+"\n");
+            ui.displayText(monsterStatus.toString() + "\n");
         } else {
             encounterMonsterTurn = true;
             ui.choice1.setText("Continue");
@@ -260,7 +300,7 @@ public class CombatManager {
                 encounterMonster(monster);
                 return;
             }
-
+            soundManager.spell(spell.getSoundEffect());
             text.append("\nYou cast " + spell.getName() + ". " + spell.getDescription());
             if (spell.getDamage() > 0) {
                 monster.loseHP(spell.getDamage());
@@ -275,7 +315,17 @@ public class CombatManager {
                 monsterAbleToAttack = false;
             }
         } else {
-            Weapon currentWeapon = gameModel.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
+            Weapon currentWeapon;
+            if (gameModel.player.getWeaponList().size() > 0) {
+                currentWeapon = gameModel.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
+                soundManager.sword();
+            }
+            else{
+                if(gameModel.fist == null)
+                    gameModel.fist = new Weapon_Fist();
+                currentWeapon = gameModel.fist;
+                soundManager.hitTree();
+            }
             int playerDamage = gameModel.player.getBaseAttack() + rand.nextInt(currentWeapon.getCriticalAttackDamage() - currentWeapon.getAttackDamage()) + currentWeapon.getAttackDamage();
             text.append("\nYou attacked with " + currentWeapon.getName() + " and gave " + playerDamage + " damage!");
             monster.loseHP(playerDamage);

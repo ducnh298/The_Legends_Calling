@@ -8,9 +8,6 @@ import com.game.model.Spell;
 import com.game.model.Weapon;
 import com.game.model.effect.Effect_Paralyzed;
 import com.game.model.effect.Effect_Poisonous;
-import com.game.model.spells.Spell_LightningBolt;
-import com.game.model.weapons.Weapon_Fist;
-import com.game.model.weapons.Weapon_LongSword;
 
 import java.io.Serializable;
 
@@ -18,19 +15,20 @@ public class GameModel implements Serializable {
     double difficultRate = 1;
     public Player player;
     public Weapon fist, knife, longSword, trident, demonSword;
-    public Armor[] armors;
+    public Armor ironArmor, silverArmor, goldenArmor;
     public Spell selectedSpell, fireStorm, lightningBolt, waterSurge, poisonBreeze;
     public Effect paralyzedEffect = new Effect_Paralyzed();
     public Effect poisonousEffect = new Effect_Poisonous();
 
-    public Monster goblin, evilWitch, riverMonster, shadowSerpent, demonGeneral;
+    public Monster goblin, wolf, evilWitch, riverMonster, shadowSerpent, demonGeneral;
 
     public String position, lastPosition;
-    public boolean timeLoop, isTakenKnife, isAngryGuard, isRestAtTent, isTakenLongSword, isTakenPower,
+    public boolean timeLoop, isTakenKnife, isTakenCoins, isAngryGuard, isOpenTownGate,
+            isBorrowSword, isRestAtTent, isTakenLongSword, isTakenPower,
             blackSmithQuestActive, isTakenTorch, isLightTorch, isTakenArmor,
             witchQuestActive, isTakenGoblinEar, isTakenApple,
-            isALiveRiverMonster, isALiveGoblin, isDefeatedEvilWitch, isAliveShadowSerpent, isAliveDemonGeneral;
-    public int appleOnTree;
+            isAliveWolf, isALiveGoblin, isALiveRiverMonster, isDefeatedEvilWitch, isAliveShadowSerpent, isAliveDemonGeneral;
+    public int youngManRequestReward, appleOnTree, coinsOnTree;
 
     public GameModel(double difficultRate) {
         this.difficultRate = difficultRate;
@@ -41,14 +39,12 @@ public class GameModel implements Serializable {
         this.timeLoop = timeLoop;
         player = new Player(25);
 
-        if (fist == null)
-            fist = new Weapon_Fist();
-        player.addWeapon(fist);
-
-        isTakenKnife = isAngryGuard = isRestAtTent = isTakenLongSword = isTakenPower = false;
+        isTakenKnife = isTakenCoins = isAngryGuard = isOpenTownGate = isBorrowSword = isRestAtTent = isTakenLongSword = isTakenPower = false;
         blackSmithQuestActive = isTakenTorch = isLightTorch = isTakenArmor = false;
         witchQuestActive = isTakenGoblinEar = isTakenApple = isDefeatedEvilWitch = false;
-        isALiveRiverMonster = isALiveGoblin = isAliveShadowSerpent = isAliveDemonGeneral = true;
+        isAliveWolf = isALiveGoblin = isALiveRiverMonster = isAliveShadowSerpent = isAliveDemonGeneral = true;
+        youngManRequestReward = 0;
         appleOnTree = 3;
+        coinsOnTree = 2;
     }
 }

@@ -22,7 +22,7 @@ import java.util.Random;
 
 public class CombatManager {
     StoryManager storyManager;
-    GameModel gameModel;
+    GameData gameData;
     GameScreen ui;
     SoundManager soundManager;
     private Random rand;
@@ -30,239 +30,245 @@ public class CombatManager {
 
     public CombatManager(StoryManager storyManager) {
         this.storyManager = storyManager;
-        this.gameModel = storyManager.gameModel;
+        this.gameData = storyManager.gameData;
         this.ui = storyManager.ui;
         this.soundManager = ui.soundManager;
         this.rand = ui.rand;
     }
 
     public void encounterGoblin() {
-        if (gameModel.goblin == null)
-            gameModel.goblin = new Monster_Goblin(gameModel.difficultRate);
-        gameModel.position = "encounterGoblin";
-        encounterMonster(gameModel.goblin);
+        if (gameData.goblin == null)
+            gameData.goblin = new Monster_Goblin(gameData.difficultRate);
+        gameData.position = "encounterGoblin";
+        encounterMonster(gameData.goblin);
     }
 
     public void encounterWolf() {
-        if (gameModel.wolf == null)
-            gameModel.wolf = new Monster_Wolf(gameModel.difficultRate);
-        if (!gameModel.position.equalsIgnoreCase("encounterWolf")) {
-            gameModel.lastPosition = gameModel.position;
+        if (gameData.wolf == null)
+            gameData.wolf = new Monster_Wolf(gameData.difficultRate);
+        if (!gameData.position.equalsIgnoreCase("encounterWolf")) {
+            gameData.lastPosition = gameData.position;
             Glide.with(ui).load(R.drawable.wolf).into(ui.image);
-            if(gameModel.isBorrowSword)
-                ui.obtainWeapon(gameModel.longSword);
+            if(gameData.isBorrowSword)
+                ui.obtainWeapon(gameData.longSword);
             soundManager.playBattleMusic();
             soundManager.wolf();
             Toast.makeText(ui.getApplicationContext(), "You come face to face with a menacing wolf.", Toast.LENGTH_SHORT).show();
         }
-        gameModel.position = "encounterWolf";
+        gameData.position = "encounterWolf";
 
-        encounterMonster(gameModel.wolf);
+        encounterMonster(gameData.wolf);
     }
 
     public void encounterEvilWitch() {
-        if (gameModel.poisonBreeze == null) {
-            gameModel.poisonBreeze = new Spell_PoisonBreeze();
-            gameModel.poisonBreeze.setSoundEffect(soundManager.spellPoisonBreezeSoundId);
+        if (gameData.poisonBreeze == null) {
+            gameData.poisonBreeze = new Spell_PoisonBreeze();
+            gameData.poisonBreeze.setSoundEffect(soundManager.spellPoisonBreezeSoundId);
         }
-        if (!gameModel.position.equalsIgnoreCase("encounterEvilWitch")) {
-            gameModel.lastPosition = gameModel.position;
+        if (!gameData.position.equalsIgnoreCase("encounterEvilWitch")) {
+            gameData.lastPosition = gameData.position;
             ui.image.setImageResource(R.drawable.evil_witch);
             soundManager.evilWitch();
-            soundManager.spell(gameModel.poisonBreeze.getSoundEffect());
+            soundManager.spell(gameData.poisonBreeze.getSoundEffect());
             soundManager.playBattleMusic();
             Toast.makeText(ui.getApplicationContext(), "The poison breeze slowly drains your health.", Toast.LENGTH_SHORT).show();
-            gameModel.player.addEffect(gameModel.poisonBreeze.getEffect());
+            gameData.player.addEffect(gameData.poisonBreeze.getEffect());
         }
-        gameModel.position = "encounterEvilWitch";
+        gameData.position = "encounterEvilWitch";
 
-        encounterMonster(gameModel.evilWitch);
+        encounterMonster(gameData.evilWitch);
     }
 
     public void encounterRiverMonster() {
-        if (gameModel.riverMonster == null)
-            gameModel.riverMonster = new Monster_RiverMonster(gameModel.difficultRate);
-        if (!gameModel.position.equalsIgnoreCase("encounterRiverMonster")) {
-            gameModel.lastPosition = gameModel.position;
+        if (gameData.riverMonster == null)
+            gameData.riverMonster = new Monster_RiverMonster(gameData.difficultRate);
+        if (!gameData.position.equalsIgnoreCase("encounterRiverMonster")) {
+            gameData.lastPosition = gameData.position;
             Glide.with(ui).load(R.drawable.river_monster).into(ui.image);
             soundManager.playBattleMusic();
             soundManager.riverMonster();
             Toast.makeText(ui.getApplicationContext(), "You come face to face with a formidable river monster.", Toast.LENGTH_SHORT).show();
         }
-        gameModel.position = "encounterRiverMonster";
+        gameData.position = "encounterRiverMonster";
 
-        encounterMonster(gameModel.riverMonster);
+        encounterMonster(gameData.riverMonster);
     }
 
     public void encounterShadowSerpent() {
-        if (gameModel.shadowSerpent == null)
-            gameModel.shadowSerpent = new Monster_ShadowSerpent(gameModel.difficultRate);
-        if (!gameModel.position.equalsIgnoreCase("encounterShadowSerpent")) {
-            gameModel.lastPosition = gameModel.position;
+        if (gameData.shadowSerpent == null)
+            gameData.shadowSerpent = new Monster_ShadowSerpent(gameData.difficultRate);
+        if (!gameData.position.equalsIgnoreCase("encounterShadowSerpent")) {
+            gameData.lastPosition = gameData.position;
             Glide.with(ui).load(R.drawable.shadow_serpent).into(ui.image);
             soundManager.playBattleMusic();
             soundManager.shadowSerpent();
             Toast.makeText(ui.getApplicationContext(), "You come face to face with a menacing shadow serpent.", Toast.LENGTH_SHORT).show();
         }
-        gameModel.position = "encounterShadowSerpent";
+        gameData.position = "encounterShadowSerpent";
 
-        encounterMonster(gameModel.shadowSerpent);
+        encounterMonster(gameData.shadowSerpent);
     }
 
     public void encounterDemonGeneral() {
-        if (gameModel.demonGeneral == null)
-            gameModel.demonGeneral = new Monster_DemonGeneral(gameModel.difficultRate);
-        if (!gameModel.position.equalsIgnoreCase("encounterDemonGeneral")) {
-            gameModel.lastPosition = gameModel.position;
+        if (gameData.demonGeneral == null)
+            gameData.demonGeneral = new Monster_DemonGeneral(gameData.difficultRate);
+        if (!gameData.position.equalsIgnoreCase("encounterDemonGeneral")) {
+            gameData.lastPosition = gameData.position;
             Glide.with(ui).load(R.drawable.demon_general).into(ui.image);
             soundManager.playBattleMusic();
             soundManager.demonGeneral();
             Toast.makeText(ui.getApplicationContext(), "You confront the demon general, standing face-to-face with one of the mightiest warriors in the demon king's army.", Toast.LENGTH_LONG).show();
         }
-        gameModel.position = "encounterDemonGeneral";
+        gameData.position = "encounterDemonGeneral";
 
-        encounterMonster(gameModel.demonGeneral);
+        encounterMonster(gameData.demonGeneral);
     }
 
     public void attackGoblin(boolean useSpell) {
-        if (gameModel.goblin.getMonsterCurrentHP() > 0) {
-            attackMonster(gameModel.goblin, useSpell);
-            encounterMonster(gameModel.goblin);
+        if (gameData.goblin.getMonsterCurrentHP() > 0) {
+            attackMonster(gameData.goblin, useSpell);
+            encounterMonster(gameData.goblin);
         } else {
             soundManager.insideCave();
             Toast.makeText(ui.getApplicationContext(), "You have defeated the goblin!", Toast.LENGTH_SHORT).show();
-            gameModel.isALiveGoblin = false;
-            gameModel.goblin = null;
+            gameData.isALiveGoblin = false;
+            gameData.goblin = null;
             storyManager.deeperInsideGoblinCave();
+            ui.saveGame();
         }
     }
 
     public void attackWolf(boolean useSpell) {
-        if (gameModel.wolf.getMonsterCurrentHP() > 0) {
-            attackMonster(gameModel.wolf, useSpell);
-            encounterMonster(gameModel.wolf);
+        if (gameData.wolf.getMonsterCurrentHP() > 0) {
+            attackMonster(gameData.wolf, useSpell);
+            encounterMonster(gameData.wolf);
         } else {
             soundManager.playBackGroundMusic();
             Toast.makeText(ui.getApplicationContext(), "You have defeated the wolf!", Toast.LENGTH_SHORT).show();
-            gameModel.isAliveWolf = false;
-            gameModel.wolf = null;
-            if(gameModel.isBorrowSword) {
-                gameModel.player.getWeaponList().remove(gameModel.longSword);
+            gameData.isAliveWolf = false;
+            gameData.wolf = null;
+            if(gameData.isBorrowSword) {
+                gameData.player.removeWeapon(gameData.longSword);
                 ui.obtainWeapon(null);
             }
             storyManager.defeatWolf();
+            ui.saveGame();
         }
     }
 
     public void attackEvilWitch(boolean useSpell) {
-        if (gameModel.evilWitch.getMonsterCurrentHP() > 1) {
-            attackMonster(gameModel.evilWitch, useSpell);
-            encounterMonster(gameModel.evilWitch);
+        if (gameData.evilWitch.getMonsterCurrentHP() > 1) {
+            attackMonster(gameData.evilWitch, useSpell);
+            encounterMonster(gameData.evilWitch);
         } else {
             soundManager.playBackGroundMusic();
-            gameModel.evilWitch.setMonsterCurrentHP(1);
-            ui.displayTextSlowly(gameModel.evilWitch.getName() + "'s HP: " + gameModel.evilWitch.getMonsterCurrentHP() + "/" + gameModel.evilWitch.getMonsterMaxHP());
+            gameData.evilWitch.setMonsterCurrentHP(1);
+            ui.displayTextSlowly(gameData.evilWitch.getName() + "'s HP: " + gameData.evilWitch.getMonsterCurrentHP() + "/" + gameData.evilWitch.getMonsterMaxHP());
             Toast.makeText(ui.getApplicationContext(), "You have defeated the Evil Witch!", Toast.LENGTH_SHORT).show();
 
-            for (Effect effect : gameModel.player.getEffectList()) {
+            for (Effect effect : gameData.player.getEffectList()) {
                 if (effect.getName().equalsIgnoreCase("Poisonous")) {
-                    gameModel.player.removeEffect(effect);
+                    gameData.player.removeEffect(effect);
                     break;
                 }
             }
 
-            gameModel.isDefeatedEvilWitch = true;
-            gameModel.evilWitch = null;
+            gameData.isDefeatedEvilWitch = true;
+            gameData.evilWitch = null;
             storyManager.defeatTheWitch();
+            ui.saveGame();
         }
     }
 
     public void attackRiverMonster(boolean useSpell) {
-        if (gameModel.riverMonster.getMonsterCurrentHP() > 0) {
-            attackMonster(gameModel.riverMonster, useSpell);
-            encounterMonster(gameModel.riverMonster);
+        if (gameData.riverMonster.getMonsterCurrentHP() > 0) {
+            attackMonster(gameData.riverMonster, useSpell);
+            encounterMonster(gameData.riverMonster);
         } else {
             soundManager.playBackGroundMusic();
-            ui.displayTextSlowly(gameModel.riverMonster.getName() + "'s HP: " + gameModel.riverMonster.getMonsterCurrentHP() + "/" + gameModel.riverMonster.getMonsterMaxHP());
+            ui.displayTextSlowly(gameData.riverMonster.getName() + "'s HP: " + gameData.riverMonster.getMonsterCurrentHP() + "/" + gameData.riverMonster.getMonsterMaxHP());
             Toast.makeText(ui.getApplicationContext(), "Victorious against the river monster, you claim a gleaming trident as your reward.", Toast.LENGTH_SHORT).show();
 
-            if (gameModel.trident == null)
-                gameModel.trident = new Weapon_Trident();
-            ui.obtainWeapon(gameModel.trident);
+            if (gameData.trident == null)
+                gameData.trident = new Weapon_Trident();
+            ui.obtainWeapon(gameData.trident);
 
-            gameModel.isALiveRiverMonster = false;
-            gameModel.riverMonster = null;
-            storyManager.selectPosition(gameModel.lastPosition);
+            gameData.isALiveRiverMonster = false;
+            gameData.riverMonster = null;
+            storyManager.selectPosition(gameData.lastPosition);
+            ui.saveGame();
         }
     }
 
     public void attackShadowSerpent(boolean useSpell) {
-        if (gameModel.shadowSerpent.getMonsterCurrentHP() > 0) {
-            attackMonster(gameModel.shadowSerpent, useSpell);
-            encounterMonster(gameModel.shadowSerpent);
+        if (gameData.shadowSerpent.getMonsterCurrentHP() > 0) {
+            attackMonster(gameData.shadowSerpent, useSpell);
+            encounterMonster(gameData.shadowSerpent);
         } else {
             soundManager.playBackGroundMusic();
-            ui.displayTextSlowly(gameModel.shadowSerpent.getName() + "'s HP: " + gameModel.shadowSerpent.getMonsterCurrentHP() + "/" + gameModel.shadowSerpent.getMonsterMaxHP());
+            ui.displayTextSlowly(gameData.shadowSerpent.getName() + "'s HP: " + gameData.shadowSerpent.getMonsterCurrentHP() + "/" + gameData.shadowSerpent.getMonsterMaxHP());
             Toast.makeText(ui.getApplicationContext(), "You have defeated the shadow serpent!", Toast.LENGTH_SHORT).show();
 
-            gameModel.isAliveShadowSerpent = false;
-            gameModel.shadowSerpent = null;
+            gameData.isAliveShadowSerpent = false;
+            gameData.shadowSerpent = null;
             storyManager.insideDemonHideout();
+            ui.saveGame();
         }
     }
 
     public void attackDemonGeneral(boolean useSpell) {
-        if (gameModel.demonGeneral.getMonsterCurrentHP() > 0) {
-            attackMonster(gameModel.demonGeneral, useSpell);
-            encounterMonster(gameModel.demonGeneral);
+        if (gameData.demonGeneral.getMonsterCurrentHP() > 0) {
+            attackMonster(gameData.demonGeneral, useSpell);
+            encounterMonster(gameData.demonGeneral);
         } else {
             soundManager.playBackGroundMusic();
-            gameModel.isAliveDemonGeneral = false;
-            gameModel.demonGeneral = null;
+            gameData.isAliveDemonGeneral = false;
+            gameData.demonGeneral = null;
             storyManager.defeatDemonGeneral();
+            ui.saveGame();
         }
     }
 
     public void encounterMonster(Monster monster) {
-        ui.setChoicesAndNextPositions("Fight", "Try to run", "", "", gameModel.lastPosition, "tryToRun", "", "");
-        if (monster.equals(gameModel.wolf)) {
+        ui.setChoicesAndNextPositions("Fight", "Try to run", "", "", gameData.lastPosition, "tryToRun", "", "");
+        if (monster.equals(gameData.wolf)) {
             storyManager.nextPosition1 = "attackWolf";
-            if (!gameModel.player.getSpellList().isEmpty()) {
+            if (!gameData.player.getSpellList().isEmpty()) {
                 ui.updateSpellStatus();
                 ui.setChoice2("Use spell", "attackWolfWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
-        }else if (monster.equals(gameModel.goblin)) {
+        }else if (monster.equals(gameData.goblin)) {
             storyManager.nextPosition1 = "attackGoblin";
-            if (!gameModel.player.getSpellList().isEmpty()) {
+            if (!gameData.player.getSpellList().isEmpty()) {
                 ui.updateSpellStatus();
                 ui.setChoice2("Use spell", "attackGoblinWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
-        } else if (monster.equals(gameModel.riverMonster)) {
+        } else if (monster.equals(gameData.riverMonster)) {
             storyManager.nextPosition1 = "attackRiverMonster";
-            if (!gameModel.player.getSpellList().isEmpty()) {
+            if (!gameData.player.getSpellList().isEmpty()) {
                 ui.updateSpellStatus();
                 ui.setChoice2("Use spell", "attackRiverMonsterWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
-        } else if (monster.equals(gameModel.shadowSerpent)) {
+        } else if (monster.equals(gameData.shadowSerpent)) {
             storyManager.nextPosition1 = "attackShadowSerpent";
-            if (!gameModel.player.getSpellList().isEmpty()) {
+            if (!gameData.player.getSpellList().isEmpty()) {
                 ui.updateSpellStatus();
                 ui.setChoice2("Use spell", "attackShadowSerpentWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
-        } else if (monster.equals(gameModel.demonGeneral)) {
+        } else if (monster.equals(gameData.demonGeneral)) {
             storyManager.nextPosition1 = "attackDemonGeneral";
-            if (!gameModel.player.getSpellList().isEmpty()) {
+            if (!gameData.player.getSpellList().isEmpty()) {
                 ui.updateSpellStatus();
                 ui.setChoice2("Use spell", "attackDemonGeneralWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
-        } else if (monster.equals(gameModel.evilWitch)) {
+        } else if (monster.equals(gameData.evilWitch)) {
             storyManager.nextPosition1 = "attackEvilWitch";
-            if (!gameModel.player.getSpellList().isEmpty()) {
+            if (!gameData.player.getSpellList().isEmpty()) {
                 ui.updateSpellStatus();
                 ui.setChoice2("Use spell", "attackEvilWitchWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
@@ -285,8 +291,8 @@ public class CombatManager {
             ui.choice2.setText("");
             ui.choice3.setText("");
 
-            if (ui.updatePlayerHp(0) && monster.getMonsterCurrentHP() > 0 || (gameModel.evilWitch != null && gameModel.evilWitch.getMonsterCurrentHP() > 1)) {
-                storyManager.nextPosition1 = gameModel.position;
+            if (ui.updatePlayerHp(0) && monster.getMonsterCurrentHP() > 0 || (gameData.evilWitch != null && gameData.evilWitch.getMonsterCurrentHP() > 1)) {
+                storyManager.nextPosition1 = gameData.position;
             }
         }
         ui.setChoiceVisibility();
@@ -298,7 +304,7 @@ public class CombatManager {
         StringBuilder text = new StringBuilder("");
         //PLAYER ATTACK
         if (useSpell) {
-            spell = gameModel.player.getSpellList().get(ui.spellSpinner.getSelectedItemPosition());
+            spell = gameData.player.getSpellList().get(ui.spellSpinner.getSelectedItemPosition());
             if (spell.getCoolDownRemain() > 0) {
                 Toast.makeText(ui.getApplicationContext(), spell.getName() + " is not ready!", Toast.LENGTH_SHORT).show();
                 encounterMonster(monster);
@@ -314,30 +320,30 @@ public class CombatManager {
                 spell.activeEffect();
                 monster.addEffect(spell.getEffect());
             }
-            if (spell.equals(gameModel.waterSurge)) {
+            if (spell.equals(gameData.waterSurge)) {
                 ui.updatePlayerHp(-spell.getDamage());
                 monsterAbleToAttack = false;
             }
         } else {
             Weapon currentWeapon;
-            if (gameModel.player.getWeaponList().size() > 0) {
-                currentWeapon = gameModel.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
+            if (gameData.player.getWeaponList().size() > 0) {
+                currentWeapon = gameData.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
                 soundManager.sword();
             }
             else{
-                if(gameModel.fist == null)
-                    gameModel.fist = new Weapon_Fist();
-                currentWeapon = gameModel.fist;
+                if(gameData.fist == null)
+                    gameData.fist = new Weapon_Fist();
+                currentWeapon = gameData.fist;
                 soundManager.hitTree();
             }
-            int playerDamage = gameModel.player.getBaseAttack() + rand.nextInt(currentWeapon.getCriticalAttackDamage() - currentWeapon.getAttackDamage()) + currentWeapon.getAttackDamage();
+            int playerDamage = gameData.player.getBaseAttack() + rand.nextInt(currentWeapon.getCriticalAttackDamage() - currentWeapon.getAttackDamage()) + currentWeapon.getAttackDamage();
             text.append("\nYou attacked with " + currentWeapon.getName() + " and gave " + playerDamage + " damage!");
             monster.loseHP(playerDamage);
             text.append(" -> " + monster.getMonsterCurrentHP() + "/" + monster.getMonsterMaxHP() + "\n");
         }
 
-        if (!gameModel.player.getSpellList().isEmpty()) {
-            for (Spell sp : gameModel.player.getSpellList()) {
+        if (!gameData.player.getSpellList().isEmpty()) {
+            for (Spell sp : gameData.player.getSpellList()) {
                 if (spell != null && sp.getName().equals(spell.getName()))
                     sp.resetCoolDown();
                 else
@@ -354,7 +360,7 @@ public class CombatManager {
                     text.append(" -> " + monster.getMonsterCurrentHP() + "/" + monster.getMonsterMaxHP());
                 }
 
-                if (effect.getName().equalsIgnoreCase(gameModel.paralyzedEffect.getName()))
+                if (effect.getName().equalsIgnoreCase(gameData.paralyzedEffect.getName()))
                     monsterAbleToAttack = false;
 
                 if (spell == null || (spell != null && !spell.getEffect().getName().equals(effect.getName()))) {
@@ -369,28 +375,28 @@ public class CombatManager {
 
     private void monsterAttackTurn(Monster monster, boolean monsterAbleToAttack, StringBuilder text) {
         //MONSTER ATTACK
-        if (!gameModel.player.getEffectList().isEmpty()) {
-            for (Effect effect : gameModel.player.getEffectList()) {
+        if (!gameData.player.getEffectList().isEmpty()) {
+            for (Effect effect : gameData.player.getEffectList()) {
                 text.append("\n" + effect.getDescriptionToPlayer() + " (Remain: " + effect.getRemain() + ")");
 
                 if (effect.getDamage() > 0) {
-                    gameModel.player.loseHP((int) Math.floor(effect.getDamage() * gameModel.difficultRate));
-                    text.append(" -> " + gameModel.player.getPlayerHP() + "/" + gameModel.player.getPlayerMaxHP());
+                    gameData.player.loseHP((int) Math.floor(effect.getDamage() * gameData.difficultRate));
+                    text.append(" -> " + gameData.player.getPlayerHP() + "/" + gameData.player.getPlayerMaxHP());
                 }
                 effect.reduceRemain();
                 if (effect.getRemain() == 0)
-                    gameModel.player.removeEffect(effect);
+                    gameData.player.removeEffect(effect);
             }
             text.append("\n");
         }
 
         int monsterDamage;
         if (monsterAbleToAttack) {
-            monsterDamage = rand.nextInt(monster.getCriticalAttackDamage() - monster.getAttackDamage()) + monster.getAttackDamage() - (gameModel.player.getArmor() != null ? gameModel.player.getArmor().getDamageReduced() : 0);
-            text.append("\nThe " + monster.getName() + " attacked you." + (gameModel.player.getArmor() != null ? (" With " + gameModel.player.getArmor().getName()) : "") + " you took " + (monsterDamage > 0 ? monsterDamage : 0) + " damage!");
+            monsterDamage = rand.nextInt(monster.getCriticalAttackDamage() - monster.getAttackDamage()) + monster.getAttackDamage() - (gameData.player.getArmor() != null ? gameData.player.getArmor().getDamageReduced() : 0);
+            text.append("\nThe " + monster.getName() + " attacked you." + (gameData.player.getArmor() != null ? (" With " + gameData.player.getArmor().getName()) : "") + " you took " + (monsterDamage > 0 ? monsterDamage : 0) + " damage!");
             if (monsterDamage > 0) {
-                gameModel.player.loseHP(monsterDamage);
-                text.append(" -> " + gameModel.player.getPlayerHP() + "/" + gameModel.player.getPlayerMaxHP() + "\n");
+                gameData.player.loseHP(monsterDamage);
+                text.append(" -> " + gameData.player.getPlayerHP() + "/" + gameData.player.getPlayerMaxHP() + "\n");
             }
         }
         ui.continueDisplayText(text.toString());
@@ -398,18 +404,18 @@ public class CombatManager {
     }
 
     public void tryToRun() {
-        if (gameModel.position.equalsIgnoreCase("encounterEvilWitch") || gameModel.position.equalsIgnoreCase("talkWitch3")) {
+        if (gameData.position.equalsIgnoreCase("encounterEvilWitch") || gameData.position.equalsIgnoreCase("talkWitch3")) {
             ui.continueTextSlowly("Escape from the clutches of the witch proves futile as she blocks your path.");
             ui.setChoicesAndNextPositions("Continue", "", "", "", "encounterEvilWitch", "", "", "");
         } else if (rand.nextBoolean()) {
             soundManager.playBackGroundMusic();
             ui.continueTextSlowly("With a swift dodge, you evade the monster's attack and successfully escape, fleeing to safety.");
-            ui.setChoicesAndNextPositions("Continue", "", "", "", gameModel.lastPosition, "", "", "");
+            ui.setChoicesAndNextPositions("Continue", "", "", "", gameData.lastPosition, "", "", "");
         } else {
-            int damageTaken = (int) Math.ceil(2 * gameModel.difficultRate) - (gameModel.player.getArmor() != null ? gameModel.player.getArmor().getDamageReduced() : 0);
+            int damageTaken = (int) Math.ceil(2 * gameData.difficultRate) - (gameData.player.getArmor() != null ? gameData.player.getArmor().getDamageReduced() : 0);
             ui.continueTextSlowly("You were unable to evade the monster's pursuit and suffered a blow, losing " + (damageTaken > 0 ? damageTaken : 0) + " points of health.");
             if (ui.updatePlayerHp(-damageTaken))
-                ui.setChoicesAndNextPositions("Continue", "", "", "", gameModel.position, "", "", "");
+                ui.setChoicesAndNextPositions("Continue", "", "", "", gameData.position, "", "", "");
             else
                 Toast.makeText(ui.getApplicationContext(), "You were unable to evade the monster's pursuit and suffered a blow, losing " + (damageTaken > 0 ? damageTaken : 0) + " points of health.", Toast.LENGTH_LONG).show();
         }

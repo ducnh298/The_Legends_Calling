@@ -11,7 +11,7 @@ import com.game.model.effect.Effect_Poisonous;
 
 import java.io.Serializable;
 
-public class GameModel implements Serializable {
+public class GameData implements Serializable {
     double difficultRate = 1;
     public Player player;
     public Weapon fist, knife, longSword, trident, demonSword;
@@ -30,7 +30,7 @@ public class GameModel implements Serializable {
             isAliveWolf, isALiveGoblin, isALiveRiverMonster, isDefeatedEvilWitch, isAliveShadowSerpent, isAliveDemonGeneral;
     public int youngManRequestReward, appleOnTree, coinsOnTree;
 
-    public GameModel(double difficultRate) {
+    public GameData(double difficultRate) {
         this.difficultRate = difficultRate;
         setup(false);
     }

@@ -21,11 +21,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.game.R;
-import com.game.controller.GameModel;
+import com.game.controller.GameData;
+import com.game.controller.GameSaveManager;
 import com.game.controller.SoundManager;
 import com.game.controller.StoryManager;
 import com.game.model.Armor;
-import com.game.model.Difficulty;
 import com.game.model.Spell;
 import com.game.model.Weapon;
 
@@ -41,8 +41,10 @@ public class GameScreen extends AppCompatActivity {
     public TextView textView, hpLabel, armorLabel, goldLabel;
     public Button choice1, choice2, choice3, choice4;
     public Spinner weaponSpinner, spellSpinner;
-    StoryManager storyManager;
-    GameModel gameModel;
+    public GameScreen gameScreen;
+    public StoryManager storyManager;
+    public GameData gameData;
+    public GameSaveManager gameSaveManager;
     public SoundManager soundManager;
     public final Handler textingHandler = new Handler();
     public final Handler handler = new Handler();
@@ -55,12 +57,13 @@ public class GameScreen extends AppCompatActivity {
         setContentView(R.layout.activity_game_screen);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        gameModel = new GameModel(getIntent().getDoubleExtra("difficulty",1));
+        gameData = (GameData) getIntent().getSerializableExtra("gameData");
         soundManager = new SoundManager(this);
-        storyManager = new StoryManager(this, gameModel);
+        storyManager = new StoryManager(this, gameData);
 
         baseLayout = findViewById(R.id.baseLayout);
         tableLayout = findViewById(R.id.tableLayout);
+        tableLayout.setVisibility(View.INVISIBLE);
 
         hpLabel = findViewById(R.id.hpLabel);
         hpLabel.getViewTreeObserver()
@@ -108,8 +111,21 @@ public class GameScreen extends AppCompatActivity {
         choice2 = findViewById(R.id.choiceButton2);
         choice3 = findViewById(R.id.choiceButton3);
         choice4 = findViewById(R.id.choiceButton4);
-        darkUI();
-        storyManager.opening();
+
+        this.gameScreen = this;
+        gameSaveManager = new GameSaveManager(this);
+
+        String lastPosition = gameData.position;
+        if (lastPosition == null) {
+            darkUI();
+            storyManager.opening();
+        } else {
+            if (lastPosition.equals("timeLoop") || lastPosition.equals("windyField1") || lastPosition.equals("meetCarriage") || lastPosition.equals("rideCarriage")) {
+                baseLayout.setBackgroundColor(Color.parseColor("#aab865"));
+            } else startGameUI();
+
+            storyManager.selectPosition(lastPosition);
+        }
     }
 
     public void restartGame() {
@@ -119,9 +135,19 @@ public class GameScreen extends AppCompatActivity {
         finish();
     }
 
+    public void saveGame() {
+        gameSaveManager.saveGame();
+    }
+
     public void quitGame() {
-        this.finishAffinity();
-        System.exit(0);
+        gameSaveManager.saveGame();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                gameScreen.finishAffinity();
+                System.exit(0);
+            }
+        }, 500);
     }
 
     @Override
@@ -132,14 +158,51 @@ public class GameScreen extends AppCompatActivity {
         builder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finishAffinity();
-                System.exit(0);
+                gameSaveManager.saveGame();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        gameScreen.finishAffinity();
+                        System.exit(0);
+                    }
+                }, 500);
             }
         });
         builder.setNegativeButton("Cancel", null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void timeLoop() {
+        gameData.setup(true);
+        darkUI();
+    }
+
+    public void darkUI() {
+        tableLayout.setVisibility(View.INVISIBLE);
+        baseLayout.setBackgroundColor(Color.parseColor("#000000"));
+        textView.setTextColor(Color.parseColor("#FFFFFF"));
+    }
+
+    public void lightUI() {
+        tableLayout.setVisibility(View.INVISIBLE);
+        baseLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        textView.setTextColor(Color.parseColor("#000000"));
+    }
+
+    public void startGameUI() {
+        gameSaveManager.saveGame();
+        textView.setTextColor(Color.parseColor("#000000"));
+        baseLayout.setBackgroundColor(Color.parseColor("#b4ecb4"));
+        tableLayout.setVisibility(View.VISIBLE);
+        soundManager.stopAllSoundEffect();
+        soundManager.playBackGroundMusic();
+        updatePlayerHp(0);
+        obtainWeapon(null);
+        updatePlayersCoins(0);
+        updatePlayersArmor(null);
+        updateSpellStatus();
     }
 
     public void clickButton1(View view) {
@@ -162,42 +225,15 @@ public class GameScreen extends AppCompatActivity {
         storyManager.selectPosition(storyManager.nextPosition4);
     }
 
-    public void timeLoop() {
-        gameModel.setup(true);
-        darkUI();
-    }
-
-    public void darkUI() {
-        tableLayout.setVisibility(View.INVISIBLE);
-        baseLayout.setBackgroundColor(Color.parseColor("#000000"));
-        textView.setTextColor(Color.parseColor("#FFFFFF"));
-    }
-
-    public void lightUI() {
-        tableLayout.setVisibility(View.INVISIBLE);
-        baseLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        textView.setTextColor(Color.parseColor("#000000"));
-    }
-
-    public void startGameUI() {
-        textView.setTextColor(Color.parseColor("#000000"));
-        baseLayout.setBackgroundColor(Color.parseColor("#b4ecb4"));
-        tableLayout.setVisibility(View.VISIBLE);
-        soundManager.stopAllSoundEffect();
-        soundManager.playBackGroundMusic();
-        updatePlayerHp(0);
-        obtainWeapon(null);
-    }
-
     public boolean updatePlayerHp(int hpAmount) {
         if (hpAmount <= 0)
-            gameModel.player.loseHP(-hpAmount);
+            gameData.player.loseHP(-hpAmount);
         else {
             soundManager.healthUp();
-            gameModel.player.restoreHP(hpAmount);
+            gameData.player.restoreHP(hpAmount);
         }
-        hpLabel.setText(gameModel.player.getPlayerHP() + "/" + gameModel.player.getPlayerMaxHP());
-        if (gameModel.player.getPlayerHP() == 0) {
+        hpLabel.setText(gameData.player.getPlayerHP() + "/" + gameData.player.getPlayerMaxHP());
+        if (gameData.player.getPlayerHP() == 0) {
             setChoicesAndNextPositions("Continue", "", "", "", "deadScreen", "", "", "");
             return false;
         }
@@ -205,33 +241,32 @@ public class GameScreen extends AppCompatActivity {
     }
 
     public void obtainWeapon(Weapon weaponObtain) {
-        int selectedItemPosition = weaponSpinner.getSelectedItemPosition();
+        int selectedItemPosition;
         if (weaponObtain != null) {
             if (weaponSpinner.getVisibility() == View.INVISIBLE)
                 weaponSpinner.setVisibility(View.VISIBLE);
             soundManager.obtainWeapon();
-            gameModel.player.addWeapon(weaponObtain);
-            selectedItemPosition = gameModel.player.getWeaponList().size() - 1;
+            gameData.player.addWeapon(weaponObtain);
             Toast.makeText(getApplicationContext(), "You obtained the " + weaponObtain.getName() + "!!!", Toast.LENGTH_SHORT).show();
         }
-        if (gameModel.player.getWeaponList().size() > 0) {
+        if (gameData.player.getWeaponList().size() > 0) {
+            selectedItemPosition = gameData.player.getWeaponList().size() - 1;
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    R.layout.spinner_item, gameModel.player.getWeaponList().stream().map(weapon -> weapon.getName()).collect(Collectors.toList()));
+                    R.layout.spinner_item, gameData.player.getWeaponList().stream().map(weapon -> weapon.getName()).collect(Collectors.toList()));
             adapter.setDropDownViewResource(R.layout.spinner_item);
             weaponSpinner.setAdapter(adapter);
             weaponSpinner.setSelection(selectedItemPosition);
-        } else weaponSpinner.setAdapter(null);
+        } else weaponSpinner.setVisibility(View.VISIBLE);
     }
 
     public void updateSpellStatus() {
-        if (spellSpinner.getVisibility() == View.INVISIBLE)
-            spellSpinner.setVisibility(View.VISIBLE);
-
         int selectedItemPosition = spellSpinner.getSelectedItemPosition();
-        if (!gameModel.player.getSpellList().isEmpty()) {
+        if (!gameData.player.getSpellList().isEmpty()) {
+            if (spellSpinner.getVisibility() == View.INVISIBLE)
+                spellSpinner.setVisibility(View.VISIBLE);
             List<String> spellList = new ArrayList<>();
-            for (int i = 0; i < gameModel.player.getSpellList().size(); i++) {
-                Spell spell = gameModel.player.getSpellList().get(i);
+            for (int i = 0; i < gameData.player.getSpellList().size(); i++) {
+                Spell spell = gameData.player.getSpellList().get(i);
                 if (spell.getCoolDownRemain() == 0)
                     spellList.add(spell.getName() + " (Ready)");
                 else spellList.add(spell.getName() + " (CD: " + spell.getCoolDownRemain() + ")");
@@ -248,7 +283,7 @@ public class GameScreen extends AppCompatActivity {
         if (armor != null) {
             if (armorLabel.getVisibility() == View.INVISIBLE)
                 armorLabel.setVisibility(View.VISIBLE);
-            gameModel.player.setArmor(armor);
+            gameData.player.setArmor(armor);
             armorLabel.setText(armor.getName());
             armorLabel.setTextColor(Color.parseColor(armor.getHexColorCode()));
         } else armorLabel.setVisibility(View.INVISIBLE);
@@ -257,16 +292,15 @@ public class GameScreen extends AppCompatActivity {
     public boolean updatePlayersCoins(int coins) {
         if (goldLabel.getVisibility() == View.INVISIBLE)
             goldLabel.setVisibility(View.VISIBLE);
-
         if (coins <= 0) {
-            if (!gameModel.player.removeCoins(-coins)) {
+            if (!gameData.player.removeCoins(-coins)) {
                 Toast.makeText(getApplicationContext(), "You do not have enough coins to do that!", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } else
-            gameModel.player.addCoins(coins);
-        soundManager.coins();
-        goldLabel.setText("Coins: " + gameModel.player.getCoins());
+            gameData.player.addCoins(coins);
+        goldLabel.setText("Coins: " + gameData.player.getCoins());
+        if (coins != 0) soundManager.coins();
         return true;
     }
 

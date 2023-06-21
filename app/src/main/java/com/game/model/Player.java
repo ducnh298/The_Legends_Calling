@@ -67,6 +67,10 @@ public class Player implements Serializable {
         return weaponList;
     }
 
+    public void removeWeapon(Weapon weapon) {
+        weaponList.remove(weapon);
+    }
+
     public void addWeapon(Weapon weapon) {
         weaponList.add(weapon);
     }

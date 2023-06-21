@@ -251,10 +251,9 @@ public class SoundManager {
     }
 
     public void windyField() {
-        if (windySound.isPlaying())
-            windySound.pause();
-        else
+        if (!windySound.isPlaying()) {
             windySound.start();
+        }
     }
 
     public void wakeUpVoice() {

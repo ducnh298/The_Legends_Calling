@@ -15,6 +15,7 @@ import com.game.model.monsters.Monster_ShadowSerpent;
 import com.game.model.monsters.Monster_Wolf;
 import com.game.model.spells.Spell_PoisonBreeze;
 import com.game.model.weapons.Weapon_Fist;
+import com.game.model.weapons.Weapon_LongSword;
 import com.game.model.weapons.Weapon_Trident;
 import com.game.view.GameScreen;
 
@@ -50,7 +51,7 @@ public class CombatManager {
             gameData.lastPosition = gameData.position;
             Glide.with(ui).load(R.drawable.wolf).into(ui.image);
             if(gameData.isBorrowSword)
-                ui.obtainWeapon(gameData.longSword);
+                ui.updatePlayersWeapons(new Weapon_LongSword());
             soundManager.playBattleMusic();
             soundManager.wolf();
             Toast.makeText(ui.getApplicationContext(), "You come face to face with a menacing wolf.", Toast.LENGTH_SHORT).show();
@@ -148,8 +149,8 @@ public class CombatManager {
             gameData.isAliveWolf = false;
             gameData.wolf = null;
             if(gameData.isBorrowSword) {
-                gameData.player.removeWeapon(gameData.longSword);
-                ui.obtainWeapon(null);
+                gameData.player.removeWeapon("Long Sword");
+                ui.updatePlayersWeapons(null);
             }
             storyManager.defeatWolf();
             ui.saveGame();
@@ -189,9 +190,7 @@ public class CombatManager {
             ui.displayTextSlowly(gameData.riverMonster.getName() + "'s HP: " + gameData.riverMonster.getMonsterCurrentHP() + "/" + gameData.riverMonster.getMonsterMaxHP());
             Toast.makeText(ui.getApplicationContext(), "Victorious against the river monster, you claim a gleaming trident as your reward.", Toast.LENGTH_SHORT).show();
 
-            if (gameData.trident == null)
-                gameData.trident = new Weapon_Trident();
-            ui.obtainWeapon(gameData.trident);
+            ui.updatePlayersWeapons(new Weapon_Trident());
 
             gameData.isALiveRiverMonster = false;
             gameData.riverMonster = null;
@@ -234,42 +233,42 @@ public class CombatManager {
         if (monster.equals(gameData.wolf)) {
             storyManager.nextPosition1 = "attackWolf";
             if (!gameData.player.getSpellList().isEmpty()) {
-                ui.updateSpellStatus();
+                ui.updatePlayersSpells();
                 ui.setChoice2("Use spell", "attackWolfWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
         }else if (monster.equals(gameData.goblin)) {
             storyManager.nextPosition1 = "attackGoblin";
             if (!gameData.player.getSpellList().isEmpty()) {
-                ui.updateSpellStatus();
+                ui.updatePlayersSpells();
                 ui.setChoice2("Use spell", "attackGoblinWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
         } else if (monster.equals(gameData.riverMonster)) {
             storyManager.nextPosition1 = "attackRiverMonster";
             if (!gameData.player.getSpellList().isEmpty()) {
-                ui.updateSpellStatus();
+                ui.updatePlayersSpells();
                 ui.setChoice2("Use spell", "attackRiverMonsterWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
         } else if (monster.equals(gameData.shadowSerpent)) {
             storyManager.nextPosition1 = "attackShadowSerpent";
             if (!gameData.player.getSpellList().isEmpty()) {
-                ui.updateSpellStatus();
+                ui.updatePlayersSpells();
                 ui.setChoice2("Use spell", "attackShadowSerpentWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
         } else if (monster.equals(gameData.demonGeneral)) {
             storyManager.nextPosition1 = "attackDemonGeneral";
             if (!gameData.player.getSpellList().isEmpty()) {
-                ui.updateSpellStatus();
+                ui.updatePlayersSpells();
                 ui.setChoice2("Use spell", "attackDemonGeneralWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
         } else if (monster.equals(gameData.evilWitch)) {
             storyManager.nextPosition1 = "attackEvilWitch";
             if (!gameData.player.getSpellList().isEmpty()) {
-                ui.updateSpellStatus();
+                ui.updatePlayersSpells();
                 ui.setChoice2("Use spell", "attackEvilWitchWithSpell");
                 ui.setChoice3("Try to run", "tryToRun");
             }
@@ -291,7 +290,7 @@ public class CombatManager {
             ui.choice2.setText("");
             ui.choice3.setText("");
 
-            if (ui.updatePlayerHp(0) && monster.getMonsterCurrentHP() > 0 || (gameData.evilWitch != null && gameData.evilWitch.getMonsterCurrentHP() > 1)) {
+            if (ui.updatePlayersHp(0) && monster.getMonsterCurrentHP() > 0 || (gameData.evilWitch != null && gameData.evilWitch.getMonsterCurrentHP() > 1)) {
                 storyManager.nextPosition1 = gameData.position;
             }
         }
@@ -321,7 +320,7 @@ public class CombatManager {
                 monster.addEffect(spell.getEffect());
             }
             if (spell.equals(gameData.waterSurge)) {
-                ui.updatePlayerHp(-spell.getDamage());
+                ui.updatePlayersHp(-spell.getDamage());
                 monsterAbleToAttack = false;
             }
         } else {
@@ -414,7 +413,7 @@ public class CombatManager {
         } else {
             int damageTaken = (int) Math.ceil(2 * gameData.difficultRate) - (gameData.player.getArmor() != null ? gameData.player.getArmor().getDamageReduced() : 0);
             ui.continueTextSlowly("You were unable to evade the monster's pursuit and suffered a blow, losing " + (damageTaken > 0 ? damageTaken : 0) + " points of health.");
-            if (ui.updatePlayerHp(-damageTaken))
+            if (ui.updatePlayersHp(-damageTaken))
                 ui.setChoicesAndNextPositions("Continue", "", "", "", gameData.position, "", "", "");
             else
                 Toast.makeText(ui.getApplicationContext(), "You were unable to evade the monster's pursuit and suffered a blow, losing " + (damageTaken > 0 ? damageTaken : 0) + " points of health.", Toast.LENGTH_LONG).show();

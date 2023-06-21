@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.game.R;
 import com.game.model.Armor;
+import com.game.model.Weapon;
 import com.game.model.armors.Armor_GoldenArmor;
 import com.game.model.armors.Armor_IronArmor;
 import com.game.model.armors.Armor_SilverArmor;
@@ -190,6 +191,9 @@ public class StoryManager {
             case "takeArmor":
                 takeArmor();
                 break;
+            case "inquireGear":
+                inquireGear();
+                break;
             case "armorShop":
                 armorShop();
                 break;
@@ -202,8 +206,23 @@ public class StoryManager {
             case "buyGoldenArmor":
                 buyArmor(gameData.goldenArmor);
                 break;
+            case "confirmSellArmor":
+                confirmSellArmor();
+                break;
             case "sellArmor":
                 sellArmor();
+                break;
+            case "weaponShop":
+                weaponShop();
+                break;
+            case "confirmSellWeapon":
+                confirmSellWeapon();
+                break;
+            case "sellWeapon":
+                sellWeapon();
+                break;
+            case "enhanceWeapon":
+                enhanceWeapon();
                 break;
             case "northField":
                 northField();
@@ -231,6 +250,9 @@ public class StoryManager {
                 break;
             case "defeatWolf":
                 defeatWolf();
+                break;
+            case "askLucasAboutTheCave":
+                askLucasAboutTheCave();
                 break;
             case "townSewer":
                 townSewer();
@@ -322,8 +344,14 @@ public class StoryManager {
             case "northRiver":
                 northRiver();
                 break;
-            case "takeRest":
-                takeRest();
+            case "examineTent":
+                examineTent();
+                break;
+            case "takeRestAtTent":
+                takeRestAtTent();
+                break;
+            case "investigateFurtherTent":
+                investigateFurtherTent();
                 break;
             case "southRiver":
                 southRiver();
@@ -542,9 +570,7 @@ public class StoryManager {
         ui.setChoicesAndNextPositions("Continue to explore", "Leave", "", "", "exploreTheSurrounding2", "windyField2", "", "");
         ui.continueTextSlowly("You pick up the old knife, feeling its weight in your hand. Its worn handle and rusted blade tell tales of past adventures.");
         gameData.isTakenKnife = true;
-        if (gameData.knife == null)
-            gameData.knife = new Weapon_Knife();
-        ui.obtainWeapon(gameData.knife);
+        ui.updatePlayersWeapons(new Weapon_Knife());
         if (gameData.isTakenCoins)
             nextPosition1 = "exploreTheSurrounding3";
     }
@@ -611,7 +637,7 @@ public class StoryManager {
         ui.displayTextSlowly("With the knife in hand, you bravely attempt to seize control of the carriage.\n" +
                 "However, The man reacts swiftly, drawing his sword and delivering a powerful strike on you, instantly ending your life.");
         gameData.player.setPlayerHP(0);
-        ui.updatePlayerHp(0);
+        ui.updatePlayersHp(0);
     }
 
     public void askAboutLocation() {
@@ -771,7 +797,7 @@ public class StoryManager {
                 }
             }, 2300);
         } else {
-            ui.displayTextSlowly("\"You don't have enough coins? Get away!!!\"");
+            ui.displayTextSlowly("\"Come back to me whenever you have enough coin.\"");
             ui.setChoicesAndNextPositions("Leave", "", "", "", "crossRoad", "", "", "");
         }
     }
@@ -781,11 +807,14 @@ public class StoryManager {
 
         if (!gameData.isAliveDemonGeneral) {
             ui.displayTextSlowly("The guard, now aware of your heroic triumph, opens the town gate for you without hesitation.");
-            ui.setChoice1("Enter the town", "theEnd");
+            ui.setChoice1("", "");
+            ui.setChoicesAndNextPositions("Enter the town", "Leave", "", "", "theEnd", "crossRoad", "", "");
         } else {
             ui.displayTextSlowly("Guard: \"Lately, one of the demon general has been intruding into our land, endangering our safety. " +
                     "We urgently require a hero to safeguard our town.\"");
-            ui.setChoice1("Continue", "talkGuard3");
+            if (gameData.isOpenTownGate)
+                ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "talkGuard3", "crossRoad", "", "");
+            else ui.setChoicesAndNextPositions("Leave", "", "", "", "crossRoad", "", "", "");
         }
     }
 
@@ -803,7 +832,7 @@ public class StoryManager {
         gameData.isAngryGuard = true;
         Glide.with(ui).load(R.drawable.guard).into(ui.image);
         int hpLost = (int) Math.ceil(8 * gameData.difficultRate) - (gameData.player.getArmor() != null ? gameData.player.getArmor().getDamageReduced() : 0);
-        if (ui.updatePlayerHp(-hpLost))
+        if (ui.updatePlayersHp(-hpLost))
             ui.setChoicesAndNextPositions("\"Sorry\"", "Leave", "", "", "townGate", "crossRoad", "", "");
         ui.displayTextSlowly("As a consequence of your actions, the guard strikes you in response,\nresulting in you taking " + hpLost + " damage.");
     }
@@ -850,7 +879,14 @@ public class StoryManager {
                     "How about you take care of it, and I'll keep its body as well as reward you with 2 coins?\"");
             ui.setChoicesAndNextPositions("Accept the request", "\"2 coins? I'm not gonna do it.\"", "Leave", "", "acceptYoungManRequest2", "talkYoungMan2", "northField", "");
         } else {
-            ui.displayTextSlowly("Hello there! Is there anything i can help?");
+            ui.displayTextSlowly("Lucas: \"Hello there! Is there anything i can help?\"");
+            if (gameData.meetDarkCave) {
+                if (!gameData.isTakenTorch)
+                    ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Ask for any light source to be able to go into the dark cave located in the south", "Leave", "", "talkYoungMan2", "askLucasAboutTheCave", "crossRoad", "");
+                else
+                    ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Ask about the dark cave located in the south", "Leave", "", "talkYoungMan2", "askLucasAboutTheCave", "crossRoad", "");
+
+            }
             ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Leave", "", "", "talkYoungMan2", "crossRoad", "", "");
         }
     }
@@ -868,12 +904,22 @@ public class StoryManager {
         }
     }
 
+    public void askLucasAboutTheCave() {
+        String text = "\"Ah, that ancient cave. People have reported seeing a goblin enter it, but no one has been able to capture it. Be careful as you venture inside.\"\n";
+        if (!gameData.isTakenTorch) {
+            text += "Lucas hands you a small torch and a flint to light it, providing you with a source of light to guide your way through the cavernous depths.";
+            gameData.isTakenTorch = true;
+            ui.saveGame();
+        }
+        ui.displayTextSlowly(text);
+        ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "northField", "crossRoad", "", "");
+    }
+
     public void acceptYoungManRequest(boolean dealUp) {
         if (dealUp)
             gameData.youngManRequestReward = 3;
         else gameData.youngManRequestReward = 2;
-        if (gameData.longSword == null) {
-            gameData.longSword = new Weapon_LongSword();
+        if (gameData.player.getWeaponList().size() == 0 || (gameData.player.getWeaponList().size() == 1 && gameData.player.getWeaponList().get(0).getName().contains("Knife"))) {
             gameData.isBorrowSword = true;
             ui.continueTextSlowly("You accept the man's request.\n\"Here. I'll lend you my sword. Good luck.\"");
         }
@@ -890,7 +936,7 @@ public class StoryManager {
             text.append("He take back his sword and fulfills his promise, handing you the agreed-upon coins.\n");
         else
             text.append("He fulfills his promise, handing you the agreed-upon coins.\n");
-        text.append("The man introduces himself as Lucas, a humble hunter with a good understanding of the wilderness.");
+        text.append("The man introduces himself as Lucas, a local with a good understanding of the area around here.");
         ui.displayTextSlowly(text.toString());
         handler.postDelayed(new Runnable() {
             @Override
@@ -934,7 +980,7 @@ public class StoryManager {
                 ui.setChoicesAndNextPositions("Take reward", "Leave", "", "", "takeArmor", "talkBlackSmith2", "", "");
             } else if (gameData.isTakenArmor) {
                 ui.displayTextSlowly("The blacksmith presents you with several options to buy, upgrade or sell your armor, your weapon.\n");
-                ui.setChoicesAndNextPositions("Armor", "Weapon", "Leave", "", "armorShop", "", "talkBlackSmith2", "");
+                ui.setChoicesAndNextPositions("Inquire about your gear", "Armor", "Weapon", "Leave", "", "armorShop", "weaponShop", "talkBlackSmith2");
             }
         } else {
             ui.displayTextSlowly("The blacksmith: \"That goblin is still alive! You better hurry to defeat it before it causes more harm.\"");
@@ -951,7 +997,7 @@ public class StoryManager {
         } else if (currentArmorValue > 0) {
             ui.setChoicesAndNextPositions("Upgrade to Silver Armor (+" + (gameData.silverArmor.getValue() - currentArmorValue) + " coins)",
                     "Upgrade to Golden Armor Armor (+" + (gameData.goldenArmor.getValue() - currentArmorValue) + " coins)",
-                    "Sell your " + gameData.player.getArmor().getName() + " for " + (currentArmorValue - 1) + " coins", "Leave", "buySilverArmor", "buyGoldenArmor", "sellArmor", "talkBlackSmith2");
+                    "Sell your " + gameData.player.getArmor().getName() + " for " + (currentArmorValue - 1) + " coins", "Leave", "buySilverArmor", "buyGoldenArmor", "confirmSellArmor", "talkBlackSmith2");
             if (currentArmorValue == gameData.silverArmor.getValue())
                 ui.setChoice1("", "");
             else if (currentArmorValue == gameData.goldenArmor.getValue()) {
@@ -961,9 +1007,61 @@ public class StoryManager {
         }
     }
 
+    public void inquireGear() {
+        StringBuilder text = new StringBuilder("You inquire about your current gear and allow the blacksmith to examine it.\n");
+        if (gameData.player.getArmor() != null)
+            text.append("\"Your " + gameData.player.getArmor().getName() + " is in good condition and is capable of absorbing" + gameData.player.getArmor().getDamageReduced() + "damage from monster attacks.\n");
+        if (gameData.player.getWeaponList().size() > 0) {
+            for (Weapon weapon : gameData.player.getWeaponList()) {
+                text.append("Your " + weapon.getName() + " is assessed to have a maximum damage potential of " + weapon.getCriticalAttackDamage());
+                if (weapon.canUpgrade())
+                    text.append(" and can be upgrade to increase its damage output.");
+                text.append("\n");
+            }
+        }
+    }
+
+    public void weaponShop() {
+        Weapon currentWeapon;
+        if (gameData.player.getWeaponList().size() > 0) {
+            currentWeapon = gameData.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
+            ui.displayTextSlowly("He offers to enhance your current weapon for an additional fee, or you can opt to sell your current weapon for a good price and buy a new one.");
+            ui.setChoice1("Buy new weapon", "");
+            ui.setChoice2("Sell your" + currentWeapon.getName() + " for " + (currentWeapon.getValue() - 1) + " coins", "confirmSellWeapon");
+            if (currentWeapon.canUpgrade())
+                ui.setChoice3("Enhance  your " + currentWeapon.getName() + "(" + currentWeapon.getEnhanceCost() + " coins)", "enhanceWeapon");
+        }
+    }
+
+    public void confirmSellWeapon() {
+        Weapon currentWeapon = gameData.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
+        ui.displayTextSlowly("Are you sure to sell your " + currentWeapon.getName() + " for " + (currentWeapon.getValue() - 1) + " coins???");
+        ui.setChoicesAndNextPositions("Yes", "No", "", "", "sellWeapon", "weaponShop", "", "");
+    }
+
+    public void sellWeapon() {
+        Weapon currentWeapon = gameData.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
+        ui.updatePlayersCoins(currentWeapon.getValue() - 1);
+        gameData.player.removeWeapon(currentWeapon);
+        ui.updatePlayersWeapons(null);
+        weaponShop();
+        ui.saveGame();
+    }
+
+    public void enhanceWeapon() {
+        Weapon currentWeapon = gameData.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
+        if (ui.updatePlayersCoins(-currentWeapon.getEnhanceCost())) {
+            ui.displayTextSlowly("The blacksmith enhance your" + currentWeapon.getName() + " by sharpening it and refurbishing any worn parts, thereby improving its overall effectiveness.\n" +
+                    "Your " + currentWeapon.getName() + "now can deal up to " + currentWeapon.getCriticalAttackDamage() + " damage");
+            ui.setChoicesAndNextPositions("Continue", "", "", "", "weaponShop", "", "", "");
+            currentWeapon.enhanceWeapon();
+            ui.updatePlayersWeapons(null);
+            ui.saveGame();
+        } else weaponShop();
+    }
+
     public void talkBlackSmith2() {
-        ui.displayTextSlowly("He believe in your ability to overcome the challenge. " +
-                "The blacksmith advises, \"There's one more thing you should know. " +
+        ui.displayTextSlowly("The blacksmith advises: \"There's one more thing you should know. " +
                 "The witch who wanders along the river is known for her trickery.\nBe cautious and stay alert when you encounter her.\"");
         ui.setChoicesAndNextPositions("\"I got it\"", "Leave", "", "", "blackSmithHouse", "crossRoad", "", "");
     }
@@ -971,7 +1069,7 @@ public class StoryManager {
     public void acceptBlackSmithQuest() {
         gameData.blackSmithQuestActive = true;
         gameData.isTakenTorch = true;
-        ui.displayTextSlowly("The blacksmith hands you a torch along with a fire stone. " +
+        ui.displayTextSlowly("The blacksmith hands you a torch along with a flint. " +
                 "He warns you about the darkness inside the goblin cave and advises you to use the torch to light your way.");
         ui.setChoicesAndNextPositions("Continue", "", "", "", "blackSmithHouse", "", "", "");
         ui.saveGame();
@@ -983,6 +1081,11 @@ public class StoryManager {
             ui.saveGame();
         }
         talkBlackSmith1();
+    }
+
+    public void confirmSellArmor() {
+        ui.displayTextSlowly("Are you sure to sell your " + gameData.player.getArmor().getName() + " for " + (gameData.player.getArmor().getValue() - 1) + " coins???");
+        ui.setChoicesAndNextPositions("Yes", "No", "", "", "sellArmor", "armorShop", "", "");
     }
 
     public void sellArmor() {
@@ -1029,6 +1132,7 @@ public class StoryManager {
 
     public void insideGoblinCave() {
         gameData.position = "insideGoblinCave";
+        gameData.meetDarkCave = true;
         soundManager.insideCave();
         ui.displayTextSlowly("As you enter the goblin cave, peering into the darkness of the passage that leads deeper, you hesitate for a moment.");
         ui.setChoicesAndNextPositions("Go deeper", "Leave", "", "", "deeperInsideGoblinCave", "goblinCave", "", "");
@@ -1077,7 +1181,7 @@ public class StoryManager {
                     @Override
                     public void run() {
                         gameData.player.setPlayerHP(0);
-                        ui.updatePlayerHp(0);
+                        ui.updatePlayersHp(0);
                     }
                 }, 3000);
             }
@@ -1115,9 +1219,7 @@ public class StoryManager {
 
     public void takeLongSword() {
         gameData.isTakenLongSword = true;
-        if (gameData.longSword == null)
-            gameData.longSword = new Weapon_LongSword();
-        ui.obtainWeapon(gameData.longSword);
+        ui.updatePlayersWeapons(new Weapon_LongSword());
 
         ui.continueTextSlowly("You pick up the long sword. Despite its worn appearance, yet it exudes a sense of strength, ready to be wielded once again.");
         ui.setChoicesAndNextPositions("Continue", "", "", "", "deeperInsideGoblinCave", "", "", "");
@@ -1275,7 +1377,7 @@ public class StoryManager {
         gameData.witchQuestActive = false;
         gameData.player.increasePlayerMaxHP(3);
         gameData.player.increaseBaseAttack(1);
-        ui.updatePlayerHp(0);
+        ui.updatePlayersHp(0);
         ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
         ui.continueTextSlowly("The witch enhances your strength, granting you a boost in power.\nYour maximum HP is increased by 3, and your base attack is enhanced by 1");
         ui.saveGame();
@@ -1284,7 +1386,7 @@ public class StoryManager {
     public void learnPoisonBreeze() {
         gameData.witchQuestActive = false;
         gameData.player.addSpell(gameData.poisonBreeze);
-        ui.updateSpellStatus();
+        ui.updatePlayersSpells();
         ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
         ui.continueTextSlowly("You learn the skill of Poison Breeze from the witch.\nAcquiring the ability to unleash a toxic cloud that deal " + gameData.poisonousEffect.getDamage() + " damage each round against your enemies.");
         ui.saveGame();
@@ -1298,26 +1400,52 @@ public class StoryManager {
             crossTheRiver();
         } else {
             ui.image.setImageResource(R.drawable.north_river);
-            ui.setChoicesAndNextPositions("", "Go East(swim cross the river)", "Go South", "Go West", "", "mountain", "riverSide", "blackSmithHouse");
-
-            if (!gameData.isRestAtTent) {
-                ui.displayTextSlowly("North of the river, you discover a cozy fireplace and an old tent by the riverside.\n" +
-                        "Resting at the tent allows you to recover 10 HP.\nThe path to the northern ahead has been blocked.\n");
-                ui.setChoicesAndNextPositions("Take a rest", "Go East(swim cross the river)", "Go South", "Go West", "takeRest", "mountain", "riverSide", "northField");
-
-            } else {
-                ui.displayTextSlowly("North of the river, you discover a cozy fireplace and an old tent by the riverside.\nThe path to the northern ahead has been blocked.");
-                ui.setChoicesAndNextPositions("", "Go East(swim cross the river)", "Go South", "Go West", "", "mountain", "riverSide", "northField");
-            }
+            ui.setChoicesAndNextPositions("Examine the tent", "Go East(swim cross the river)", "Go South", "Go West", "examineTent", "mountain", "riverSide", "blackSmithHouse");
+            ui.displayTextSlowly("North of the river, you discover an old tent by the riverside.\n" +
+                    "Resting at the tent allows you to recover 10 HP.\nThe path to the northern ahead has been blocked.\n");
         }
     }
 
-    public void takeRest() {
-        ui.updatePlayerHp(10);
-        gameData.isRestAtTent = true;
-        ui.setChoicesAndNextPositions("Continue", "", "", "", "northRiver", "", "", "");
-        ui.continueTextSlowly("Resting at a tent, you regain 10 HP.");
-        ui.saveGame();
+    public void examineTent() {
+        ui.setChoicesAndNextPositions("Take a rest", "Investigate further", "Leave", "", "takeRestAtTent", "investigateFurtherTent", "", "");
+
+        ui.displayTextSlowly("Its weathered appearance as if it has been left abandoned for some time. Despite its worn condition, it still provides a suitable place for resting during your travels");
+        if (!gameData.isRestAtTent)
+            ui.setChoice1("Take a rest (1st allow you to recover 10 HP)", "takeRestAtTent");
+    }
+
+    public void takeRestAtTent() {
+        if (gameData.isRestAtTent) {
+            ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "examineTent", "northRiver", "", "");
+            ui.displayTextSlowly("As you rest, your fatigue begins to fade away, and you feel your strength returning.");
+        } else {
+            ui.updatePlayersHp(10);
+            gameData.isRestAtTent = true;
+            ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "examineTent", "northRiver", "", "");
+            ui.displayTextSlowly("As you rest, your fatigue begins to fade away, and you feel your strength returning. You regain 10 hit points,");
+            ui.saveGame();
+        }
+    }
+
+    public void investigateFurtherTent() {
+        if (gameData.isTakenCoinsInTent) {
+            ui.displayTextSlowly("As you investigate further, it seems that there is nothing of significant value to be found.");
+            ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "examineTent", "northRiver", "", "");
+        }
+        else {
+            ui.displayTextSlowly("As you investigate further, you discover a hidden compartment within the tent, and inside it, you find 2 coins.");
+            ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    gameData.isTakenCoinsInTent = true;
+                    ui.updatePlayersCoins(2);
+                    ui.setChoicesAndNextPositions("Investigate further", "Leave", "", "", "investigateFurtherTent", "northRiver", "", "");
+                    ui.saveGame();
+                }
+            }, 1500);
+        }
     }
 
     public void southRiver() {
@@ -1354,7 +1482,7 @@ public class StoryManager {
                     soundManager.underWater();
                     soundManager.riverMonster();
                     gameData.player.setPlayerHP(0);
-                    ui.updatePlayerHp(0);
+                    ui.updatePlayersHp(0);
                 }
             }, 2000);
 
@@ -1401,7 +1529,7 @@ public class StoryManager {
                 gameData.coinsOnTree--;
             } else
                 ui.displayTextSlowly("You hit the apple tree, angering a nearby monkey.\nIt retaliates by throwing a stick at you, causing " + (int) Math.ceil(2 * gameData.difficultRate) + " damage.");
-            ui.updatePlayerHp(-(int) Math.ceil(2 * gameData.difficultRate));
+            ui.updatePlayersHp(-(int) Math.ceil(2 * gameData.difficultRate));
         } else
             ui.displayTextSlowly("Nothing happen.");
     }
@@ -1419,7 +1547,7 @@ public class StoryManager {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                ui.updatePlayerHp(4);
+                ui.updatePlayersHp(4);
                 jungle();
                 ui.saveGame();
             }
@@ -1478,7 +1606,7 @@ public class StoryManager {
         gameData.player.increasePlayerMaxHP(4);
         gameData.player.increaseBaseAttack(1);
         soundManager.obtainWeapon();
-        ui.updatePlayerHp(0);
+        ui.updatePlayersHp(0);
         ui.continueTextSlowly("You feel an overwhelming surge of strength coursing through your veins as you embrace the power of enhanced strength.");
         ui.setChoicesAndNextPositions("Continue", "", "", "", "mountainTop", "", "", "");
         ui.saveGame();
@@ -1521,7 +1649,7 @@ public class StoryManager {
         gameData.isTakenPower = true;
         gameData.player.addSpell(gameData.selectedSpell);
         soundManager.obtainWeapon();
-        ui.updateSpellStatus();
+        ui.updatePlayersSpells();
         ui.continueTextSlowly("Congratulations! You have learned the formidable spell " + gameData.selectedSpell.getName());
         ui.setChoicesAndNextPositions("Continue", "", "", "", "mountainTop", "", "", "");
         ui.saveGame();
@@ -1572,11 +1700,9 @@ public class StoryManager {
                 "Among the debris, you spot a shining object—the demon sword.\n" +
                 "Feeling disoriented and weakened, you make an effort to get back to the town.");
         gameData.player.setPlayerHP(1);
-        ui.updatePlayerHp(0);
+        ui.updatePlayersHp(0);
         Toast.makeText(ui.getApplicationContext(), "You have defeated the demon general!", Toast.LENGTH_SHORT).show();
-        if (gameData.demonSword == null)
-            gameData.demonSword = new Weapon_DemonSword();
-        ui.obtainWeapon(gameData.demonSword);
+        ui.updatePlayersWeapons(new Weapon_DemonSword());
         ui.setChoicesAndNextPositions("Leave", "", "", "", "townGate", "", "", "");
     }
 

@@ -4,6 +4,6 @@ import com.game.model.Weapon;
 
 public class Weapon_Trident extends Weapon {
     public Weapon_Trident() {
-        super("Trident", 3, 6);
+        super("Trident", 4, 7, 7, 2);
     }
 }

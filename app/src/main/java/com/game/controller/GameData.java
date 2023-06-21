@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class GameData implements Serializable {
     double difficultRate = 1;
     public Player player;
-    public Weapon fist, knife, longSword, trident, demonSword;
+    public Weapon fist;
     public Armor ironArmor, silverArmor, goldenArmor;
     public Spell selectedSpell, fireStorm, lightningBolt, waterSurge, poisonBreeze;
     public Effect paralyzedEffect = new Effect_Paralyzed();
@@ -23,8 +23,8 @@ public class GameData implements Serializable {
     public Monster goblin, wolf, evilWitch, riverMonster, shadowSerpent, demonGeneral;
 
     public String position, lastPosition;
-    public boolean timeLoop, isTakenKnife, isTakenCoins, isAngryGuard, isOpenTownGate,
-            isBorrowSword, isRestAtTent, isTakenLongSword, isTakenPower,
+    public boolean timeLoop, isTakenKnife, isTakenCoins, isAngryGuard, isOpenTownGate, meetDarkCave,
+            isBorrowSword, isRestAtTent, isTakenCoinsInTent, isTakenLongSword, isTakenPower,
             blackSmithQuestActive, isTakenTorch, isLightTorch, isTakenArmor,
             witchQuestActive, isTakenGoblinEar, isTakenApple,
             isAliveWolf, isALiveGoblin, isALiveRiverMonster, isDefeatedEvilWitch, isAliveShadowSerpent, isAliveDemonGeneral;
@@ -39,8 +39,8 @@ public class GameData implements Serializable {
         this.timeLoop = timeLoop;
         player = new Player(25);
 
-        isTakenKnife = isTakenCoins = isAngryGuard = isOpenTownGate = isBorrowSword = isRestAtTent = isTakenLongSword = isTakenPower = false;
-        blackSmithQuestActive = isTakenTorch = isLightTorch = isTakenArmor = false;
+        isTakenKnife = isTakenCoins = isAngryGuard = isOpenTownGate = meetDarkCave = isBorrowSword = isTakenLongSword = isTakenPower = false;
+        isRestAtTent = isTakenCoinsInTent = blackSmithQuestActive = isTakenTorch = isLightTorch = isTakenArmor = false;
         witchQuestActive = isTakenGoblinEar = isTakenApple = isDefeatedEvilWitch = false;
         isAliveWolf = isALiveGoblin = isALiveRiverMonster = isAliveShadowSerpent = isAliveDemonGeneral = true;
         youngManRequestReward = 0;

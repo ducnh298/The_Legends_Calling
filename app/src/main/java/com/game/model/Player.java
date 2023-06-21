@@ -71,6 +71,15 @@ public class Player implements Serializable {
         weaponList.remove(weapon);
     }
 
+    public void removeWeapon(String weaponName) {
+        for(Weapon weapon:weaponList){
+            if(weapon.getName().equals(weaponName)){
+                weaponList.remove(weapon);
+                break;
+            }
+        }
+    }
+
     public void addWeapon(Weapon weapon) {
         weaponList.add(weapon);
     }

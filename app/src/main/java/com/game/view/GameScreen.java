@@ -198,11 +198,11 @@ public class GameScreen extends AppCompatActivity {
         tableLayout.setVisibility(View.VISIBLE);
         soundManager.stopAllSoundEffect();
         soundManager.playBackGroundMusic();
-        updatePlayerHp(0);
-        obtainWeapon(null);
+        updatePlayersHp(0);
+        updatePlayersWeapons(null);
         updatePlayersCoins(0);
         updatePlayersArmor(null);
-        updateSpellStatus();
+        updatePlayersSpells();
     }
 
     public void clickButton1(View view) {
@@ -225,7 +225,7 @@ public class GameScreen extends AppCompatActivity {
         storyManager.selectPosition(storyManager.nextPosition4);
     }
 
-    public boolean updatePlayerHp(int hpAmount) {
+    public boolean updatePlayersHp(int hpAmount) {
         if (hpAmount <= 0)
             gameData.player.loseHP(-hpAmount);
         else {
@@ -240,7 +240,7 @@ public class GameScreen extends AppCompatActivity {
         return true;
     }
 
-    public void obtainWeapon(Weapon weaponObtain) {
+    public void updatePlayersWeapons(Weapon weaponObtain) {
         int selectedItemPosition;
         if (weaponObtain != null) {
             if (weaponSpinner.getVisibility() == View.INVISIBLE)
@@ -250,7 +250,13 @@ public class GameScreen extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "You obtained the " + weaponObtain.getName() + "!!!", Toast.LENGTH_SHORT).show();
         }
         if (gameData.player.getWeaponList().size() > 0) {
-            selectedItemPosition = gameData.player.getWeaponList().size() - 1;
+            if (weaponObtain != null)
+                selectedItemPosition = gameData.player.getWeaponList().size() - 1;
+            else {
+                if (weaponSpinner.getSelectedItemPosition() > gameData.player.getWeaponList().size())
+                    selectedItemPosition = gameData.player.getWeaponList().size() - 1;
+                else selectedItemPosition = weaponSpinner.getSelectedItemPosition();
+            }
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                     R.layout.spinner_item, gameData.player.getWeaponList().stream().map(weapon -> weapon.getName()).collect(Collectors.toList()));
             adapter.setDropDownViewResource(R.layout.spinner_item);
@@ -259,7 +265,7 @@ public class GameScreen extends AppCompatActivity {
         } else weaponSpinner.setVisibility(View.VISIBLE);
     }
 
-    public void updateSpellStatus() {
+    public void updatePlayersSpells() {
         int selectedItemPosition = spellSpinner.getSelectedItemPosition();
         if (!gameData.player.getSpellList().isEmpty()) {
             if (spellSpinner.getVisibility() == View.INVISIBLE)

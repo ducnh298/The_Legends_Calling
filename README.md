@@ -1,4 +1,4 @@
-# ![#f03c15] `**The Legend's Calling**`
+<h1 style="color:red;">The Legend's Calling</h1>
 
 Welcome to The Legend's Calling, a captivating text-based adventure game where you embark on an epic journey through a world filled with danger and mystery. As the protagonist, you will navigate various environments, engage in thrilling combat using a variety of weapons and spells, and unravel the secrets of the realm.
 

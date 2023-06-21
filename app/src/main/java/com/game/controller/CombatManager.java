@@ -149,7 +149,7 @@ public class CombatManager {
             gameData.isAliveWolf = false;
             gameData.wolf = null;
             if(gameData.isBorrowSword) {
-                gameData.player.removeWeapon("Long Sword");
+                gameData.player.removeWeapon("Long sword");
                 ui.updatePlayersWeapons(null);
             }
             storyManager.defeatWolf();

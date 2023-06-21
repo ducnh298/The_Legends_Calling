@@ -797,7 +797,7 @@ public class StoryManager {
                 }
             }, 2300);
         } else {
-            ui.displayTextSlowly("\"Come back to me whenever you have enough coin.\"");
+            ui.displayTextSlowly("\"I can not do this. Come back to me whenever you have enough coin.\"");
             ui.setChoicesAndNextPositions("Leave", "", "", "", "crossRoad", "", "", "");
         }
     }
@@ -857,19 +857,21 @@ public class StoryManager {
 
     public void northField() {
         gameData.position = "northField";
+        ui.setChoicesAndNextPositions("Talk with the man", "Go East", "Go South", "", "talkYoungMan1", "northRiver", "crossRoad", "");
         if (gameData.isAliveWolf) {
             ui.image.setImageResource(R.drawable.north_field_with_man_wolf);
             ui.displayTextSlowly("Northeast of the town, your eyes are drawn to a peculiar sight.\n" +
                     "Behind a bush, you spot a young man observing a lone wolf standing beneath a massive, solitary tree.\n" +
                     "The man's presence seems hidden, as if he is carefully observing the wolf's behavior without being noticed. ");
-            ui.setChoicesAndNextPositions("Talk with the man", "Go East", "Go South", "", "talkYoungMan1", "northRiver", "crossRoad", "");
         } else {
             ui.image.setImageResource(R.drawable.north_field_with_man);
             ui.displayTextSlowly("Northeast of the town,you find yourself standing in an open field with a breathtaking view of the sky.\n" +
                     "As you approach, you notice Lucas, standing beneath a majestic, solitary tree.\n" +
                     "The wolf that once posed a threat is no longer in sight, indicating that Lucas has successfully transported it back to the town.");
-            ui.setChoicesAndNextPositions("Talk with Lucas", "Go East", "Go South", "Go West", "talkYoungMan1", "northRiver", "crossRoad", "townSewer");
+            ui.setChoice1("Talk with Lucas", "talkYoungMan1");
         }
+        if (gameData.isKnownTownSewer)
+            ui.setChoice4("Go West", "townSewer");
     }
 
     public void talkYoungMan1() {
@@ -880,14 +882,13 @@ public class StoryManager {
             ui.setChoicesAndNextPositions("Accept the request", "\"2 coins? I'm not gonna do it.\"", "Leave", "", "acceptYoungManRequest2", "talkYoungMan2", "northField", "");
         } else {
             ui.displayTextSlowly("Lucas: \"Hello there! Is there anything i can help?\"");
-            if (gameData.meetDarkCave) {
+            if (gameData.isMeetDarkCave) {
                 if (!gameData.isTakenTorch)
                     ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Ask for any light source to be able to go into the dark cave located in the south", "Leave", "", "talkYoungMan2", "askLucasAboutTheCave", "crossRoad", "");
                 else
-                    ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Ask about the dark cave located in the south", "Leave", "", "talkYoungMan2", "askLucasAboutTheCave", "crossRoad", "");
-
-            }
-            ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Leave", "", "", "talkYoungMan2", "crossRoad", "", "");
+                    ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Ask about the dark cave located in the south", "Leave", "", "talkYoungMan2", "askLucasAboutTheCave", "northField", "");
+            } else
+                ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "Leave", "", "", "talkYoungMan2", "northField", "", "");
         }
     }
 
@@ -897,10 +898,11 @@ public class StoryManager {
                     "It's a fair price considering the risks involved. What do you say?\"\n");
             ui.setChoicesAndNextPositions("Accept the request", "Leave", "", "", "acceptYoungManRequest3", "northField", "", "");
         } else {
+            gameData.isKnownTownSewer = true;
             ui.displayTextSlowly("\"There's a large sewer system that runs beneath the streets.\n" +
                     "It's not the most pleasant path, but it should allow you to enter undetected.\n" +
                     "Just be cautious of any lurking dangers within the tunnels.\"\n");
-            ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "northField", "crossRoad", "", "");
+            ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "talkYoungMan1", "northField", "", "");
         }
     }
 
@@ -912,7 +914,7 @@ public class StoryManager {
             ui.saveGame();
         }
         ui.displayTextSlowly(text);
-        ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "northField", "crossRoad", "", "");
+        ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "talkYoungMan1", "northField", "", "");
     }
 
     public void acceptYoungManRequest(boolean dealUp) {
@@ -942,7 +944,7 @@ public class StoryManager {
             @Override
             public void run() {
                 ui.updatePlayersCoins(gameData.youngManRequestReward);
-                ui.setChoicesAndNextPositions("Ask for a way to sneak into the town", "", "", "", "talkYoungMan2", "", "", "");
+                ui.setChoicesAndNextPositions("Continue", "", "", "", "northField", "", "", "");
             }
         }, 2500);
     }
@@ -980,7 +982,7 @@ public class StoryManager {
                 ui.setChoicesAndNextPositions("Take reward", "Leave", "", "", "takeArmor", "talkBlackSmith2", "", "");
             } else if (gameData.isTakenArmor) {
                 ui.displayTextSlowly("The blacksmith presents you with several options to buy, upgrade or sell your armor, your weapon.\n");
-                ui.setChoicesAndNextPositions("Inquire about your gear", "Armor", "Weapon", "Leave", "", "armorShop", "weaponShop", "talkBlackSmith2");
+                ui.setChoicesAndNextPositions("Inquire about your gear", "Armor", "Weapon", "Leave", "inquireGear", "armorShop", "weaponShop", "talkBlackSmith2");
             }
         } else {
             ui.displayTextSlowly("The blacksmith: \"That goblin is still alive! You better hurry to defeat it before it causes more harm.\"");
@@ -1027,10 +1029,11 @@ public class StoryManager {
             currentWeapon = gameData.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
             ui.displayTextSlowly("He offers to enhance your current weapon for an additional fee, or you can opt to sell your current weapon for a good price and buy a new one.");
             ui.setChoice1("Buy new weapon", "");
-            ui.setChoice2("Sell your" + currentWeapon.getName() + " for " + (currentWeapon.getValue() - 1) + " coins", "confirmSellWeapon");
+            ui.setChoice2("Sell your " + currentWeapon.getName() + " for " + (currentWeapon.getValue() - 1) + " coins", "confirmSellWeapon");
             if (currentWeapon.canUpgrade())
-                ui.setChoice3("Enhance  your " + currentWeapon.getName() + "(" + currentWeapon.getEnhanceCost() + " coins)", "enhanceWeapon");
+                ui.setChoice3("Enhance your " + currentWeapon.getName() + " (" + currentWeapon.getEnhanceCost() + " coins)", "enhanceWeapon");
         }
+        ui.setChoice4("Leave",  "talkBlackSmith1");
     }
 
     public void confirmSellWeapon() {
@@ -1080,7 +1083,7 @@ public class StoryManager {
             ui.updatePlayersArmor(armor);
             ui.saveGame();
         }
-        talkBlackSmith1();
+        armorShop();
     }
 
     public void confirmSellArmor() {
@@ -1092,7 +1095,7 @@ public class StoryManager {
         ui.updatePlayersCoins(gameData.player.getArmor().getValue() - 1);
         gameData.player.removeArmor();
         ui.updatePlayersArmor(null);
-        talkBlackSmith1();
+        armorShop();
         ui.saveGame();
     }
 
@@ -1116,7 +1119,7 @@ public class StoryManager {
         gameData.position = "goblinCave";
         ui.image.setImageResource(R.drawable.goblin_cave);
         ui.displayTextSlowly("The cave is situated in the heart of a dense forest, surrounded by tall trees and vibrant green grass.\n" +
-                "Approaching the entrance of the goblin cave, you see an ancient stone tunnel that leads further into the darkness.");
+                "Approaching the entrance of the cave, you see an ancient stone tunnel that leads further into the darkness.");
         ui.setChoicesAndNextPositions("Go inside the cave", "Go North", "Go East", "", "insideGoblinCave", "crossRoad", "southRiver", "");
         if (gameData.isTakenTorch && !gameData.isLightTorch)
             ui.setChoicesAndNextPositions("Go inside the cave", "Light torch", "Go North", "Go East", "insideGoblinCave", "lightTorch", "crossRoad", "southRiver");
@@ -1132,9 +1135,10 @@ public class StoryManager {
 
     public void insideGoblinCave() {
         gameData.position = "insideGoblinCave";
-        gameData.meetDarkCave = true;
+        gameData.isMeetDarkCave = true;
         soundManager.insideCave();
-        ui.displayTextSlowly("As you enter the goblin cave, peering into the darkness of the passage that leads deeper, you hesitate for a moment.");
+        ui.displayTextSlowly("As you enter the cave, peering into the darkness of the passage that leads deeper\n" +
+                "You hesitate for a moment, questioning the wisdom of venturing into such a dark cave.");
         ui.setChoicesAndNextPositions("Go deeper", "Leave", "", "", "deeperInsideGoblinCave", "goblinCave", "", "");
         if (gameData.isALiveGoblin) {
             if (gameData.isLightTorch)
@@ -1400,14 +1404,14 @@ public class StoryManager {
             crossTheRiver();
         } else {
             ui.image.setImageResource(R.drawable.north_river);
-            ui.setChoicesAndNextPositions("Examine the tent", "Go East(swim cross the river)", "Go South", "Go West", "examineTent", "mountain", "riverSide", "blackSmithHouse");
+            ui.setChoicesAndNextPositions("Examine the tent", "Go East(swim cross the river)", "Go South", "Go West", "examineTent", "mountain", "riverSide", "northField");
             ui.displayTextSlowly("North of the river, you discover an old tent by the riverside.\n" +
                     "Resting at the tent allows you to recover 10 HP.\nThe path to the northern ahead has been blocked.\n");
         }
     }
 
     public void examineTent() {
-        ui.setChoicesAndNextPositions("Take a rest", "Investigate further", "Leave", "", "takeRestAtTent", "investigateFurtherTent", "", "");
+        ui.setChoicesAndNextPositions("Take a rest", "Investigate further", "Leave", "", "takeRestAtTent", "investigateFurtherTent", "northRiver", "");
 
         ui.displayTextSlowly("Its weathered appearance as if it has been left abandoned for some time. Despite its worn condition, it still provides a suitable place for resting during your travels");
         if (!gameData.isRestAtTent)
@@ -1431,8 +1435,7 @@ public class StoryManager {
         if (gameData.isTakenCoinsInTent) {
             ui.displayTextSlowly("As you investigate further, it seems that there is nothing of significant value to be found.");
             ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "examineTent", "northRiver", "", "");
-        }
-        else {
+        } else {
             ui.displayTextSlowly("As you investigate further, you discover a hidden compartment within the tent, and inside it, you find 2 coins.");
             ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
 

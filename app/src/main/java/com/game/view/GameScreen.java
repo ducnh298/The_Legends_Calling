@@ -194,7 +194,7 @@ public class GameScreen extends AppCompatActivity {
     public void startGameUI() {
         gameSaveManager.saveGame();
         textView.setTextColor(Color.parseColor("#000000"));
-        baseLayout.setBackgroundColor(Color.parseColor("#b4ecb4"));
+        baseLayout.setBackgroundColor(Color.parseColor("fdfd96"));
         tableLayout.setVisibility(View.VISIBLE);
         soundManager.stopAllSoundEffect();
         soundManager.playBackGroundMusic();
@@ -253,7 +253,7 @@ public class GameScreen extends AppCompatActivity {
             if (weaponObtain != null)
                 selectedItemPosition = gameData.player.getWeaponList().size() - 1;
             else {
-                if (weaponSpinner.getSelectedItemPosition() > gameData.player.getWeaponList().size())
+                if (weaponSpinner.getSelectedItemPosition() > (gameData.player.getWeaponList().size()-1))
                     selectedItemPosition = gameData.player.getWeaponList().size() - 1;
                 else selectedItemPosition = weaponSpinner.getSelectedItemPosition();
             }
@@ -262,7 +262,10 @@ public class GameScreen extends AppCompatActivity {
             adapter.setDropDownViewResource(R.layout.spinner_item);
             weaponSpinner.setAdapter(adapter);
             weaponSpinner.setSelection(selectedItemPosition);
-        } else weaponSpinner.setVisibility(View.VISIBLE);
+        } else{
+            weaponSpinner.setAdapter(null);
+            weaponSpinner.setVisibility(View.VISIBLE);
+        }
     }
 
     public void updatePlayersSpells() {

@@ -73,7 +73,7 @@ public class Player implements Serializable {
 
     public void removeWeapon(String weaponName) {
         for(Weapon weapon:weaponList){
-            if(weapon.getName().equals(weaponName)){
+            if(weapon.getName().equalsIgnoreCase(weaponName)){
                 weaponList.remove(weapon);
                 break;
             }

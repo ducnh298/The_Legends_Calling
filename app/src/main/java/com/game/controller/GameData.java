@@ -23,8 +23,8 @@ public class GameData implements Serializable {
     public Monster goblin, wolf, evilWitch, riverMonster, shadowSerpent, demonGeneral;
 
     public String position, lastPosition;
-    public boolean timeLoop, isTakenKnife, isTakenCoins, isAngryGuard, isOpenTownGate, meetDarkCave,
-            isBorrowSword, isRestAtTent, isTakenCoinsInTent, isTakenLongSword, isTakenPower,
+    public boolean timeLoop, isTakenKnife, isTakenCoins, isAngryGuard, isOpenTownGate, isMeetDarkCave,
+            isBorrowSword, isKnownTownSewer,  isRestAtTent, isTakenCoinsInTent, isTakenLongSword, isTakenPower,
             blackSmithQuestActive, isTakenTorch, isLightTorch, isTakenArmor,
             witchQuestActive, isTakenGoblinEar, isTakenApple,
             isAliveWolf, isALiveGoblin, isALiveRiverMonster, isDefeatedEvilWitch, isAliveShadowSerpent, isAliveDemonGeneral;
@@ -39,7 +39,7 @@ public class GameData implements Serializable {
         this.timeLoop = timeLoop;
         player = new Player(25);
 
-        isTakenKnife = isTakenCoins = isAngryGuard = isOpenTownGate = meetDarkCave = isBorrowSword = isTakenLongSword = isTakenPower = false;
+        isTakenKnife = isTakenCoins = isAngryGuard = isOpenTownGate = isMeetDarkCave = isBorrowSword = isKnownTownSewer = isTakenLongSword = isTakenPower = false;
         isRestAtTent = isTakenCoinsInTent = blackSmithQuestActive = isTakenTorch = isLightTorch = isTakenArmor = false;
         witchQuestActive = isTakenGoblinEar = isTakenApple = isDefeatedEvilWitch = false;
         isAliveWolf = isALiveGoblin = isALiveRiverMonster = isAliveShadowSerpent = isAliveDemonGeneral = true;

@@ -130,15 +130,15 @@ public class GameScreen extends AppCompatActivity {
             @Override
             public void run() {
                 if (nextPosition == null || nextPosition.equals("opening")) {
-//                    storyManager.opening();
-                    startGameUI();
-                    gameData.isKnownTownSewer = true;
-                    gameData.isTakenArmor = true;
-                    gameData.isOpenTownGate = true;
-                    gameData.isAliveDemonGeneral = false;
-                    gameData.isSpareWitch = true;
-                    gameData.timeLoop = true;
-                    storyManager.defeatDemonGeneral();
+                    storyManager.opening();
+//                    startGameUI();
+//                    gameData.isKnownTownSewer = true;
+//                    gameData.isTakenArmor = true;
+//                    gameData.isOpenTownGate = true;
+//                    gameData.isAliveDemonGeneral = false;
+//                    gameData.isSpareWitch = true;
+//                    gameData.timeLoop = true;
+//                    storyManager.defeatDemonGeneral();
                 } else {
                     if (nextPosition.equals("timeLoop") || nextPosition.equals("windyField1") || nextPosition.equals("meetCarriage") || nextPosition.equals("rideCarriage")) {
                         baseLayout.setBackgroundColor(Color.parseColor("#aab865"));
@@ -146,7 +146,7 @@ public class GameScreen extends AppCompatActivity {
                     storyManager.selectPosition(nextPosition);
                 }
             }
-        }, 3000);
+        }, 3500);
     }
 
 
@@ -210,7 +210,7 @@ public class GameScreen extends AppCompatActivity {
     public void startGameUI() {
         gameSaveManager.saveGame();
         textView.setTextColor(Color.parseColor("#000000"));
-        baseLayout.setBackgroundColor(Color.parseColor("#fdfd96"));
+        baseLayout.setBackgroundColor(Color.parseColor("#FFEDE9C1"));
         tableLayout.setVisibility(View.VISIBLE);
         updatePlayersHp(0);
         updatePlayersWeapons(null);

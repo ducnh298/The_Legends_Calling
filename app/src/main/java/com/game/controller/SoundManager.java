@@ -75,6 +75,14 @@ public class SoundManager {
         healthUpSoundId = soundPool.load(gameScreen, R.raw.health_up, 1);
         coinsSoundId = soundPool.load(gameScreen, R.raw.coin, 1);
 
+        anvilSoundId = soundPool.load(gameScreen, R.raw.anvil_sound, 1);
+        townGateDoorSoundId = soundPool.load(gameScreen, R.raw.town_gate_door, 1);
+        lightFireSoundId = soundPool.load(gameScreen, R.raw.light_fire, 1);
+        underWaterSoundId = soundPool.load(gameScreen, R.raw.underwater, 1);
+        hitTreeSoundId = soundPool.load(gameScreen, R.raw.hit_tree, 1);
+        eatingAppleSoundId = soundPool.load(gameScreen, R.raw.eating_apple, 1);
+        magicMountainSoundId = soundPool.load(gameScreen, R.raw.magic_mountain, 1);
+
         theTownSound = MediaPlayer.create(gameScreen, R.raw.the_town);
         theTownSound.setLooping(true);
 
@@ -119,15 +127,6 @@ public class SoundManager {
     }
 
     public void playBackGroundMusic() {
-        if (townGateDoorSoundId == null) {
-            townGateDoorSoundId = soundPool.load(gameScreen, R.raw.town_gate_door, 1);
-            anvilSoundId = soundPool.load(gameScreen, R.raw.anvil_sound, 1);
-            lightFireSoundId = soundPool.load(gameScreen, R.raw.light_fire, 1);
-            underWaterSoundId = soundPool.load(gameScreen, R.raw.underwater, 1);
-            hitTreeSoundId = soundPool.load(gameScreen, R.raw.hit_tree, 1);
-            eatingAppleSoundId = soundPool.load(gameScreen, R.raw.eating_apple, 1);
-            magicMountainSoundId = soundPool.load(gameScreen, R.raw.magic_mountain, 1);
-        }
         if (!bgMusic.isPlaying()) {
             stopAllMusic();
             new Handler().postDelayed(new Runnable() {

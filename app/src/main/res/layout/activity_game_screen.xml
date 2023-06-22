@@ -5,7 +5,7 @@
     android:id="@+id/baseLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="#EDE9C1"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
     tools:context=".view.GameScreen">
 

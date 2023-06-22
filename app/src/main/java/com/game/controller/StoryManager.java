@@ -730,7 +730,7 @@ public class StoryManager {
         ui.displayTextSlowly("As the carriage continues its journey, you seize the opportunity to ask the man a series of questions.");
         ui.setChoicesAndNextPositions("About the teleportation between worlds", "About the history of this world", "Done asking", "", "askAboutTeleportation", "askAboutHistoryOfThisWorld1", "onCarriage2", "");
         if (gameData.timeLoop)
-            ui.setChoicesAndNextPositions("About the teleportation between worlds", "About the history of this world", "Done asking", "About the ability to return by death", "askAboutTeleportation", "askAboutHistoryOfThisWorld1", "onCarriage2", "askAboutAbilityToReTurnByDeath");
+            ui.setChoicesAndNextPositions("About the teleportation between worlds", "About the history of this world", "About the ability to return by death", "Done asking", "askAboutTeleportation", "askAboutHistoryOfThisWorld1", "askAboutAbilityToReTurnByDeath", "onCarriage2");
     }
 
     public void askAboutTeleportation() {
@@ -1033,7 +1033,6 @@ public class StoryManager {
     }
 
     public void talkBlackSmith1() {
-        gameData.position = "talkBlackSmith1";
         ui.setChoicesAndNextPositions("Leave", "", "", "", "blackSmithHouse", "", "", "");
         if (!gameData.blackSmithQuestActive) {
             ui.displayTextSlowly("The blacksmith, acknowledging your unfamiliar presence, kindly asks for a favor before proceeding with further conversation.\n" +
@@ -1098,6 +1097,7 @@ public class StoryManager {
                 text.append("\n");
             }
         }
+        ui.displayTextSlowly(text.toString());
     }
 
     public void armorShop() {

@@ -21,7 +21,7 @@ Welcome to The Legend's Calling, a captivating text-based adventure game where y
 - Use touch gestures on your device's screen to navigate through menus and interact with the game.
   
 ## System Requirements
-- Operating System: Android 7 +
+- Operating System: Android 7 or higher
 - Storage: 80mb of storage space or more
 
 ## Enjoy your adventure in The Legend's Calling and may your choices shape the fate of the realm!

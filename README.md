@@ -13,7 +13,7 @@ Welcome to The Legend's Calling, a captivating text-based adventure game where y
 - Multiple endings based on your decisions, so replayability is encouraged!
 
 ## How to Play:
-- Download the APK file for the game from the following link: [Download The Legend's Calling](https://drive.google.com/file/d/1VnId3KeVzvFI4GZd-rOh8z836Jyx3JZ_/view?usp=sharing)
+- Download the APK file for the game from the following link: [Download The Legend's Calling](https://drive.google.com/drive/folders/1YYLOuTV018OVyOqXotnGS_UICEbQ3whC?usp=sharing)
 - Install the APK file on your Android device by following the on-screen instructions.
 - Launch the game from your device's app drawer.
 

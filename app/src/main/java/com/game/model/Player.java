@@ -63,6 +63,10 @@ public class Player implements Serializable {
         baseAttack += baseAttackIncreased;
     }
 
+    public void setWeaponList(List<Weapon> weaponList) {
+        this.weaponList = weaponList;
+    }
+
     public List<Weapon> getWeaponList() {
         return weaponList;
     }

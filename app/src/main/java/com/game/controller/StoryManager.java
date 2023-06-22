@@ -20,6 +20,8 @@ import com.game.model.weapons.Weapon_Knife;
 import com.game.model.weapons.Weapon_LongSword;
 import com.game.view.GameScreen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class StoryManager {
@@ -49,6 +51,8 @@ public class StoryManager {
                 break;
             case "startGameUI":
                 ui.startGameUI();
+                soundManager.stopAllSoundEffect();
+                soundManager.playBackGroundMusic();
                 townGate();
                 ui.saveGame();
                 break;
@@ -440,6 +444,48 @@ public class StoryManager {
             case "wakeUpAfterFinalBattle":
                 wakeUpAfterFinalBattle();
                 break;
+            case "consumeTheHeart1":
+                consumeTheHeart1();
+                break;
+            case "consumeTheHeart2":
+                consumeTheHeart2();
+                break;
+            case "destroyTheHeart":
+                destroyTheHeart();
+                break;
+            case "restAfterDestroyTheHeart":
+                restAfterDestroyTheHeart();
+                break;
+            case "takeTheHeart":
+                takeTheHeart();
+                break;
+            case "takeTheHeartToRiverSide":
+                takeTheHeartToRiverSide();
+                break;
+            case "askWitchForHelp1":
+                askWitchForHelp1();
+                break;
+            case "askWitchForHelpOption1":
+                askWitchForHelpOption1();
+                break;
+            case "askWitchForHelpOption2":
+                askWitchForHelpOption2();
+                break;
+            case "askWitchKnowAboutTheReturnByDeath":
+                askWitchKnowAboutTheReturnByDeath();
+                break;
+            case "destroyAllTownArea":
+                destroyAllTownArea();
+                break;
+            case "wakeUpAfterDestructionTownArea":
+                wakeUpAfterDestructionTownArea();
+                break;
+            case "endYourLifeToSaveTheTown":
+                endYourLifeToSaveTheTown();
+                break;
+            case "endYourLife":
+                endYourLife();
+                break;
             case "deadScreen":
                 deadScreen();
                 break;
@@ -459,7 +505,7 @@ public class StoryManager {
     }
 
     public void getHome() {
-        ui.image.setImageResource(R.drawable.dark_screen);
+        ui.image.setImageResource(R.drawable.black_screen);
         soundManager.openingDoor();
         ui.displayTextSlowly("You finally arrive home and eagerly insert the key into the lock, opening the door to your haven\n" +
                 "...                                                                                                  \n" +
@@ -478,7 +524,7 @@ public class StoryManager {
 
     public void sleeping() {
         handler.removeCallbacksAndMessages(null);
-        ui.image.setImageResource(R.drawable.dark_screen);
+        ui.image.setImageResource(R.drawable.black_screen);
         ui.displayTextSlowly("z...z...Z...Z\n                               \nz......z......Z......Z\n                               \nz.........z.........Z.........Z");
         ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
         handler.postDelayed(new Runnable() {
@@ -501,24 +547,32 @@ public class StoryManager {
     public void windyField1() {
         gameData.position = "windyField1";
         soundManager.windyField();
-        if (gameData.timeLoop) {
-            ui.image.setImageResource(R.drawable.dark_screen);
-            ui.displayTextSlowly("\"Whoa, aaaa!!!\" you scream in pain, realizing that just seconds ago you had taken a fatal blow, and now you find yourself lying in the familiar grass once again.");
-            ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+        if (gameData.isDarknessConsume) {
+            Glide.with(ui).load(R.drawable.windy_field).into(ui.image);
+            ui.displayTextSlowly("You find yourself back in the familiar scene.\n" +
+                    "However, something feels wrong. The darkness that consumed you before does not release its hold.\n" +
+                    "Instead, it engulfs you once again, shrouding you in its suffocating presence. ");
+            ui.setChoicesAndNextPositions("Continue", "", "", "", "consumeTheHeart1", "", "", "");
         } else {
-            ui.saveGame();
-            ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
-            ui.displayTextSlowly("As you slowly open your eyes, a wave of disbelief washes over you. " +
-                    "Instead of the familiar sight of your bedroom, you find yourself lying on the soft grass under an open sky. ");
-        }
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Glide.with(ui).load(R.drawable.windy_field).into(ui.image);
-                ui.baseLayout.setBackgroundColor(Color.parseColor("#aab865"));
-                ui.setChoicesAndNextPositions("Continue", "", "", "", "windyField2", "", "", "");
+            if (gameData.timeLoop) {
+                ui.image.setImageResource(R.drawable.black_screen);
+                ui.displayTextSlowly("\"Whoa, aaaa!!!\" you scream in pain, realizing that just seconds ago you had taken a fatal blow, and now you find yourself lying in the familiar grass once again.");
+                ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+            } else {
+                ui.saveGame();
+                ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+                ui.displayTextSlowly("As you slowly open your eyes, a wave of disbelief washes over you. " +
+                        "Instead of the familiar sight of your bedroom, you find yourself lying on the soft grass under an open sky. ");
             }
-        }, 2000);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(ui).load(R.drawable.windy_field).into(ui.image);
+                    ui.baseLayout.setBackgroundColor(Color.parseColor("#aab865"));
+                    ui.setChoicesAndNextPositions("Continue", "", "", "", "windyField2", "", "", "");
+                }
+            }, 2000);
+        }
     }
 
     public void windyField2() {
@@ -731,6 +785,7 @@ public class StoryManager {
         ui.setChoicesAndNextPositions("", "", "Enter town", "Leave", "", "", "talkGuard1", "crossRoad");
 
         if (!gameData.isAliveDemonGeneral) {
+            ui.startGameUI();
             gameData.isAngryGuard = false;
             ui.displayTextSlowly("Returning to the town, you spot the familiar figure of the guard standing at his post.\n" +
                     "As you approach, he looks up and recognition flashes across his face. \"You've returned,\" he says. ");
@@ -740,9 +795,17 @@ public class StoryManager {
         if (gameData.isOpenTownGate)
             nextPosition3 = "theTown";
         if (gameData.isAngryGuard) {
+            if (gameData.isOpenTownGate) {
+                ui.setChoice1("Talk to angry Cedric", "talkGuard1");
+                ui.setChoice2("Attack Cedric again", "attackGuard");
+            }
             ui.setChoice1("Talk to the angry guard", "talkGuard1");
             ui.setChoice2("Attack the guard again", "attackGuard");
         } else {
+            if (gameData.isOpenTownGate) {
+                ui.setChoice1("Talk to Cedric", "talkGuard1");
+                ui.setChoice2("Attack Cedric", "attackGuard");
+            }
             ui.setChoice1("Talk to the guard", "talkGuard1");
             ui.setChoice2("Attack the guard", "attackGuard");
         }
@@ -759,7 +822,7 @@ public class StoryManager {
                     "You nod, sharing the details of your epic battle and the destruction of the demon general's hideout.\n" +
                     "The guard's stern expression softens, replaced by a genuine smile.\n" +
                     "\"You've done the town a great service. We owe you our gratitude.\"");
-            ui.setChoice1("\"Can i enter the town now?\"", "talkGuard2");
+            ui.setChoice1("Continue", "talkGuard2");
         } else if (gameData.isTakenArmor && !gameData.isAngryGuard) {
             ui.displayTextSlowly("\"Ah, I see you're donning your new armor. It suits you well. " +
                     "But you still need to prove yourself trustworthy to get in.\" ");
@@ -784,7 +847,7 @@ public class StoryManager {
     public void proveTrustWorthy2() {
         if (gameData.player.getCoins() >= 2) {
             ui.displayTextSlowly("The guard takes the two coins from your hand, examining them briefly before nodding in approval.\n" +
-                    "\"Very well,\" he says. \"A small token of trust. You may pass. Welcome to our town.\" then opening the door for you to pass through.");
+                    "\"Very well,\" he says. \"A small token of trust. You may pass. By the way my name is Cedric. Welcome to our town.\" then opening the door for you to pass through.");
             ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
             handler.postDelayed(new Runnable() {
                 @Override
@@ -797,7 +860,7 @@ public class StoryManager {
                 }
             }, 2300);
         } else {
-            ui.displayTextSlowly("\"I can not do this. Come back to me whenever you have enough coin.\"");
+            ui.displayTextSlowly("\"Come back to me whenever you have enough coin.\"");
             ui.setChoicesAndNextPositions("Leave", "", "", "", "crossRoad", "", "", "");
         }
     }
@@ -806,9 +869,10 @@ public class StoryManager {
         ui.setChoicesAndNextPositions("", "Leave", "", "", "", "crossRoad", "", "");
 
         if (!gameData.isAliveDemonGeneral) {
-            ui.displayTextSlowly("The guard, now aware of your heroic triumph, opens the town gate for you without hesitation.");
-            ui.setChoice1("", "");
-            ui.setChoicesAndNextPositions("Enter the town", "Leave", "", "", "theEnd", "crossRoad", "", "");
+            ui.displayTextSlowly("The guard, opens the town gate wide for you. As you enter, you are greeted by the heartwarming sight of all the townspeople gathered, cheering and celebrating your victorious return. " +
+                    "The joy and gratitude in their eyes fill your heart with a sense of fulfillment and purpose.");
+            soundManager.crowdCheer();
+            ui.setChoicesAndNextPositions("Enter the town", "Leave", "", "", "restAfterDestroyTheHeart", "crossRoad", "", "");
         } else {
             ui.displayTextSlowly("Guard: \"Lately, one of the demon general has been intruding into our land, endangering our safety. " +
                     "We urgently require a hero to safeguard our town.\"");
@@ -964,12 +1028,13 @@ public class StoryManager {
         ui.displayTextSlowly("As you approach the blacksmith shop, the sound of hammer striking metal echoes in the air.\n" +
                 "The skilled blacksmith can be seen diligently working at the forge.");
         ui.setChoicesAndNextPositions("Talk to the blacksmith", "Go South", "", "", "talkBlackSmith1", "theTown", "", "");
+        if (gameData.isTakenArmor)
+            ui.setChoicesAndNextPositions("Talk to Garret", "Go South", "", "", "talkBlackSmith1", "theTown", "", "");
     }
 
     public void talkBlackSmith1() {
         gameData.position = "talkBlackSmith1";
         ui.setChoicesAndNextPositions("Leave", "", "", "", "blackSmithHouse", "", "", "");
-
         if (!gameData.blackSmithQuestActive) {
             ui.displayTextSlowly("The blacksmith, acknowledging your unfamiliar presence, kindly asks for a favor before proceeding with further conversation.\n" +
                     "He explain the troubles caused by a mischievous goblin and provide its last known location—a cave to the south.\n" +
@@ -978,14 +1043,60 @@ public class StoryManager {
             ui.setChoicesAndNextPositions("Accept the request", "Leave", "", "", "acceptBlackSmithQuest", "blackSmithHouse", "", "");
         } else if (!gameData.isALiveGoblin) {
             if (!gameData.isTakenArmor) {
-                ui.displayTextSlowly("\"Look like you've killed that goblin. I have a reward for you,\"  ");
+                ui.displayTextSlowly("\"Look like you've killed that goblin. I have a reward for you,\".");
                 ui.setChoicesAndNextPositions("Take reward", "Leave", "", "", "takeArmor", "talkBlackSmith2", "", "");
             } else if (gameData.isTakenArmor) {
-                ui.displayTextSlowly("The blacksmith presents you with several options to buy, upgrade or sell your armor, your weapon.\n");
+                ui.displayTextSlowly("Garret presents you with several options to buy, upgrade or sell your armor, your weapon.\n");
                 ui.setChoicesAndNextPositions("Inquire about your gear", "Armor", "Weapon", "Leave", "inquireGear", "armorShop", "weaponShop", "talkBlackSmith2");
             }
         } else {
             ui.displayTextSlowly("The blacksmith: \"That goblin is still alive! You better hurry to defeat it before it causes more harm.\"");
+        }
+    }
+
+    public void talkBlackSmith2() {
+        if (gameData.isTakenArmor)
+            ui.displayTextSlowly("Garret advises: \"There's one more thing you should know. " +
+                    "The witch who wanders along the river is known for her trickery.\nBe cautious and stay alert when you encounter her.\"");
+        else
+            ui.displayTextSlowly("The blacksmith advises: \"There's one more thing you should know. " +
+                    "The witch who wanders along the river is known for her trickery.\nBe cautious and stay alert when you encounter her.\"");
+        ui.setChoicesAndNextPositions("\"I got it\"", "Leave", "", "", "blackSmithHouse", "crossRoad", "", "");
+    }
+
+    public void acceptBlackSmithQuest() {
+        gameData.blackSmithQuestActive = true;
+        gameData.isTakenTorch = true;
+        ui.displayTextSlowly("The blacksmith hands you a torch along with a flint. " +
+                "He warns you about the darkness inside the goblin cave and advises you to use the torch to light your way.");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", "blackSmithHouse", "", "", "");
+        ui.saveGame();
+    }
+
+    public void takeArmor() {
+        gameData.isTakenArmor = true;
+        gameData.ironArmor = new Armor_IronArmor();
+        gameData.silverArmor = new Armor_SilverArmor();
+        gameData.goldenArmor = new Armor_GoldenArmor();
+        ui.updatePlayersArmor(gameData.ironArmor);
+
+        ui.displayTextSlowly("\"Take this " + gameData.player.getArmor().getName() + " .Maybe it could help you.\n" +
+                "And my name is Garret. It's a pleasure to help you with your armor or weapon.\"");
+        ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "talkBlackSmith1", "talkBlackSmith2", "", "");
+        ui.saveGame();
+    }
+
+    public void inquireGear() {
+        StringBuilder text = new StringBuilder("You inquire about your current gear and allow the blacksmith to examine it.\n");
+        if (gameData.player.getArmor() != null)
+            text.append("\"Your " + gameData.player.getArmor().getName() + " is in good condition and is capable of absorbing" + gameData.player.getArmor().getDamageReduced() + "damage from monster attacks.\n");
+        if (gameData.player.getWeaponList().size() > 0) {
+            for (Weapon weapon : gameData.player.getWeaponList()) {
+                text.append("Your " + weapon.getName() + " is assessed to have a maximum damage potential of " + weapon.getCriticalAttackDamage());
+                if (weapon.canUpgrade())
+                    text.append(" and can be upgrade to increase its damage output.");
+                text.append("\n");
+            }
         }
     }
 
@@ -1009,31 +1120,38 @@ public class StoryManager {
         }
     }
 
-    public void inquireGear() {
-        StringBuilder text = new StringBuilder("You inquire about your current gear and allow the blacksmith to examine it.\n");
-        if (gameData.player.getArmor() != null)
-            text.append("\"Your " + gameData.player.getArmor().getName() + " is in good condition and is capable of absorbing" + gameData.player.getArmor().getDamageReduced() + "damage from monster attacks.\n");
-        if (gameData.player.getWeaponList().size() > 0) {
-            for (Weapon weapon : gameData.player.getWeaponList()) {
-                text.append("Your " + weapon.getName() + " is assessed to have a maximum damage potential of " + weapon.getCriticalAttackDamage());
-                if (weapon.canUpgrade())
-                    text.append(" and can be upgrade to increase its damage output.");
-                text.append("\n");
-            }
-        }
-    }
-
     public void weaponShop() {
         Weapon currentWeapon;
         if (gameData.player.getWeaponList().size() > 0) {
             currentWeapon = gameData.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
-            ui.displayTextSlowly("He offers to enhance your current weapon for an additional fee, or you can opt to sell your current weapon for a good price and buy a new one.");
+            ui.displayTextSlowly("He offers to enhance your weapon for an additional fee, or you can opt to sell your weapon for a good price and buy a new one.");
             ui.setChoice1("Buy new weapon", "");
             ui.setChoice2("Sell your " + currentWeapon.getName() + " for " + (currentWeapon.getValue() - 1) + " coins", "confirmSellWeapon");
             if (currentWeapon.canUpgrade())
                 ui.setChoice3("Enhance your " + currentWeapon.getName() + " (" + currentWeapon.getEnhanceCost() + " coins)", "enhanceWeapon");
         }
-        ui.setChoice4("Leave",  "talkBlackSmith1");
+        ui.setChoice4("Leave", "talkBlackSmith1");
+    }
+
+    public void buyArmor(Armor armor) {
+        if (ui.updatePlayersCoins(-(armor.getValue() - (gameData.player.getArmor() != null ? gameData.player.getArmor().getValue() : 0)))) {
+            ui.updatePlayersArmor(armor);
+            ui.saveGame();
+        }
+        armorShop();
+    }
+
+    public void confirmSellArmor() {
+        ui.displayTextSlowly("Are you sure to sell your " + gameData.player.getArmor().getName() + " for " + (gameData.player.getArmor().getValue() - 1) + " coins???");
+        ui.setChoicesAndNextPositions("Yes", "No", "", "", "sellArmor", "armorShop", "", "");
+    }
+
+    public void sellArmor() {
+        ui.updatePlayersCoins(gameData.player.getArmor().getValue() - 1);
+        gameData.player.removeArmor();
+        ui.updatePlayersArmor(null);
+        armorShop();
+        ui.saveGame();
     }
 
     public void confirmSellWeapon() {
@@ -1061,54 +1179,6 @@ public class StoryManager {
             ui.updatePlayersWeapons(null);
             ui.saveGame();
         } else weaponShop();
-    }
-
-    public void talkBlackSmith2() {
-        ui.displayTextSlowly("The blacksmith advises: \"There's one more thing you should know. " +
-                "The witch who wanders along the river is known for her trickery.\nBe cautious and stay alert when you encounter her.\"");
-        ui.setChoicesAndNextPositions("\"I got it\"", "Leave", "", "", "blackSmithHouse", "crossRoad", "", "");
-    }
-
-    public void acceptBlackSmithQuest() {
-        gameData.blackSmithQuestActive = true;
-        gameData.isTakenTorch = true;
-        ui.displayTextSlowly("The blacksmith hands you a torch along with a flint. " +
-                "He warns you about the darkness inside the goblin cave and advises you to use the torch to light your way.");
-        ui.setChoicesAndNextPositions("Continue", "", "", "", "blackSmithHouse", "", "", "");
-        ui.saveGame();
-    }
-
-    public void buyArmor(Armor armor) {
-        if (ui.updatePlayersCoins(-(armor.getValue() - (gameData.player.getArmor() != null ? gameData.player.getArmor().getValue() : 0)))) {
-            ui.updatePlayersArmor(armor);
-            ui.saveGame();
-        }
-        armorShop();
-    }
-
-    public void confirmSellArmor() {
-        ui.displayTextSlowly("Are you sure to sell your " + gameData.player.getArmor().getName() + " for " + (gameData.player.getArmor().getValue() - 1) + " coins???");
-        ui.setChoicesAndNextPositions("Yes", "No", "", "", "sellArmor", "armorShop", "", "");
-    }
-
-    public void sellArmor() {
-        ui.updatePlayersCoins(gameData.player.getArmor().getValue() - 1);
-        gameData.player.removeArmor();
-        ui.updatePlayersArmor(null);
-        armorShop();
-        ui.saveGame();
-    }
-
-    public void takeArmor() {
-        gameData.isTakenArmor = true;
-        gameData.ironArmor = new Armor_IronArmor();
-        gameData.silverArmor = new Armor_SilverArmor();
-        gameData.goldenArmor = new Armor_GoldenArmor();
-        ui.updatePlayersArmor(gameData.ironArmor);
-
-        ui.displayTextSlowly("The BlackSmith: \"Take this " + gameData.player.getArmor().getName() + " .Maybe it could help you.\"");
-        ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "talkBlackSmith1", "talkBlackSmith2", "", "");
-        ui.saveGame();
     }
 
     public void goblinCave() {
@@ -1174,7 +1244,7 @@ public class StoryManager {
                     }
                 }, 2000);
             } else {
-                ui.image.setImageResource(R.drawable.dark_screen);
+                ui.image.setImageResource(R.drawable.black_screen);
                 ui.darkUI();
                 ui.displayTextSlowly("As you venture deeper into the goblin cave, the oppressive darkness engulfs your senses.\n" +
                         "Suddenly, a creepy noise echoes through the chamber. The source of the sound is growing ever nearer.\n" +
@@ -1203,11 +1273,14 @@ public class StoryManager {
                     ui.image.setImageResource(R.drawable.inside_cave_painting);
                     ui.displayTextSlowly("As you venture deeper into the cave, you come across a painting on the wall depicting a mountain.");
                     ui.setChoicesAndNextPositions("Leave", "", "", "", "goblinCave", "", "", "");
+                    if (gameData.timeLoop)
+                        ui.setChoice2("Kill your self", "endYourLife");
                 }
             } else {
                 ui.displayTextSlowly("As you continue deeper into the cave, you find that there is not much to discover.\n" +
                         "The darkness surrounds you, revealing no hidden treasures or significant sights.");
                 ui.setChoicesAndNextPositions("Leave", "", "", "", "goblinCave", "", "", "");
+                if (gameData.timeLoop) ui.setChoice2("Kill your self", "endYourLife");
             }
         }
     }
@@ -1304,7 +1377,7 @@ public class StoryManager {
     }
 
     public void askWitchAboutReturnByDeath1() {
-        ui.displayTextSlowly("She hesitates before sharing that it is a forbidden art, steeped in legends and whispered stories." +
+        ui.displayTextSlowly("She hesitates before sharing that it is a forbidden art of dark magic, steeped in legends and whispered stories." +
                 "\"This is such a powerful ability but warns that it can be a curse as well.\"");
         ui.setChoicesAndNextPositions("Continue", "Leave", "", "", "askWitchAboutReturnByDeath2", "riverSide", "", "");
     }
@@ -1359,15 +1432,16 @@ public class StoryManager {
             public void run() {
                 ui.updatePlayersCoins(4);
                 ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
-                ui.saveGame();
             }
         }, 2000);
     }
 
     public void spareTheWitch() {
+        gameData.isSpareWitch = true;
         ui.image.setImageResource(R.drawable.river_side);
         ui.setChoicesAndNextPositions("Go North", "Go south", "Go East(cross the river on bridge)", "Go West", "northRiver", "southRiver", "jungle", "crossRoad");
         ui.displayTextSlowly("As you spare the witch's life, she quickly realizes the gravity of the situation and hastily retreats.");
+        ui.saveGame();
     }
 
     public void finishTheWitch() {
@@ -1384,7 +1458,6 @@ public class StoryManager {
         ui.updatePlayersHp(0);
         ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
         ui.continueTextSlowly("The witch enhances your strength, granting you a boost in power.\nYour maximum HP is increased by 3, and your base attack is enhanced by 1");
-        ui.saveGame();
     }
 
     public void learnPoisonBreeze() {
@@ -1393,7 +1466,6 @@ public class StoryManager {
         ui.updatePlayersSpells();
         ui.setChoicesAndNextPositions("Continue", "", "", "", " spareTheWitch", "", "", "");
         ui.continueTextSlowly("You learn the skill of Poison Breeze from the witch.\nAcquiring the ability to unleash a toxic cloud that deal " + gameData.poisonousEffect.getDamage() + " damage each round against your enemies.");
-        ui.saveGame();
     }
 
     public void northRiver() {
@@ -1473,7 +1545,7 @@ public class StoryManager {
     public void crossTheRiver() {
         if (gameData.isALiveRiverMonster && rand.nextBoolean()) {
             ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
-            ui.image.setImageResource(R.drawable.dark_screen);
+            ui.image.setImageResource(R.drawable.black_screen);
             ui.darkUI();
             soundManager.stopAllMusic();
             ui.displayTextSlowly("You bravely swim across the river.\n" +
@@ -1689,46 +1761,289 @@ public class StoryManager {
     }
 
     public void defeatDemonGeneral() {
-        ui.image.setImageResource(R.drawable.explosion);
+        gameData.position = "defeatDemonGeneral";
+        Glide.with(ui).load(R.drawable.explosion).into(ui.image);
+        gameData.player.setPlayerHP(1);
+        ui.updatePlayersHp(0);
         soundManager.explosion();
         ui.displayTextSlowly("As the final blow lands on the demon general, a powerful explosion obliterates the demon's hideout.\n" +
-                "After the explosion, you are left barely alive. " +
-                "Exhaustion overwhelms you, and you lose consciousness, unsure of what awaits you in this dangerous situation.");
-        ui.setChoicesAndNextPositions("...", "......", "", "", "wakeUpAfterFinalBattle", "wakeUpAfterFinalBattle", "", "");
+                "After the explosion, you are left barely alive. Exhaustion overwhelms you, and you lose consciousness, unsure of what awaits you in this dangerous situation.");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", "wakeUpAfterFinalBattle", "", "", "");
     }
 
     public void wakeUpAfterFinalBattle() {
-        ui.image.setImageResource(R.drawable.demon_hideout_after_battle);
-        ui.displayTextSlowly("As you slowly wake up, your eyes open to a scene of complete destruction.\n" +
-                "Among the debris, you spot a shining object—the demon sword.\n" +
-                "Feeling disoriented and weakened, you make an effort to get back to the town.");
-        gameData.player.setPlayerHP(1);
-        ui.updatePlayersHp(0);
+        ui.darkUI();
+        ui.image.setImageResource(R.drawable.black_screen);
+        soundManager.stopAllSoundEffect();
+        soundManager.windyField();
         Toast.makeText(ui.getApplicationContext(), "You have defeated the demon general!", Toast.LENGTH_SHORT).show();
-        ui.updatePlayersWeapons(new Weapon_DemonSword());
-        ui.setChoicesAndNextPositions("Leave", "", "", "", "townGate", "", "", "");
+        ui.displayTextSlowly("As you awaken, the aftermath of devastation surrounds you, and in your left hand, you hold the heart of the demon general.\n" +
+                "Its power beckons you, promising unimaginable strength and the ability to vanquish any foe in your path.\n" +
+                "Becoming an unstoppable force, capable of protecting not only yourself but also the innocent townsfolk, tempts you to consume the heart and embrace its dark power.");
+        ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ui.image.setImageResource(R.drawable.demon_hideout_after_battle);
+                ui.setChoicesAndNextPositions("Consume the heart", "Take the heart to find the way to deal with it.", "Destroy the heart", "", "consumeTheHeart1", "takeTheHeart", "destroyTheHeart", "");
+            }
+        }, 1500);
+    }
+
+    public void consumeTheHeart1() {
+        gameData.position = "consumeTheHeart1";
+        gameData.isDarknessConsume = true;
+        ui.saveGame();
+        ui.darkUI();
+        ui.image.setImageResource(R.drawable.black_screen);
+        soundManager.stopAllMusic();
+        soundManager.darkPower();
+        ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+        ui.displayTextSlowly("A surge of dark energy courses through your veins. " +
+                "You find yourself helplessly succumbing to the malevolent power within." +
+                "The darkness envelops you, leaving you trapped in its ominous grip." +
+                "Your consciousness slips away . . . . .\n");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<Weapon> weaponList = new ArrayList<>();
+                weaponList.add(new Weapon_DemonSword());
+                gameData.player.setPlayerHP(gameData.player.getPlayerMaxHP());
+                ui.image.setImageResource(R.drawable.blood_screen);
+                ui.continueTextSlowly("You regain awareness, find yourself surrounded by chaos.\n" +
+                        "The scent of fresh blood fills the air, mingling with the sounds of agonized screams echoing in your ears.");
+                ui.setChoicesAndNextPositions("Continue", "", "", "", "consumeTheHeart2", "", "", "");
+                soundManager.crowdScream();
+                gameData.isOpenTownGate = true;
+                if (gameData.timeLoop)
+                    ui.setChoice2("Try to kill your self", "endYourLife");
+            }
+        }, 4000);
+    }
+
+    public void consumeTheHeart2() {
+        ui.image.setImageResource(R.drawable.blood_screen);
+        ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+        if (gameData.isOpenTownGate) {
+            gameData.isOpenTownGate = false;
+            ui.displayTextSlowly("\"I'm Cedric, the guard of this town,\" he declared, his voice firm and resolute as he stood in your path raising his sword. " +
+                    "\"You have taken so many lives, and I cannot allow you to harm the innocent any further.\" . . .");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(ui).load(R.drawable.bloody_face).into(ui.image);
+                    soundManager.slashPeople();
+                    ui.setChoicesAndNextPositions("Continue", "", "", "", "consumeTheHeart2", "", "", "");
+                }
+            }, 5000);
+        } else if (gameData.isKnownTownSewer) {
+            gameData.isKnownTownSewer = false;
+            ui.displayTextSlowly("A familiar voice calls out amidst the chaos.\n\"Hey... it's me...e, your...your friend Lucas.\" " +
+                    "He stammered, fear evident in his voice as he stood before you. " +
+                    "\"You..you must regain control of your mind. Fight..fight the darkness within you and remember who you truly are.\" . . .");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(ui).load(R.drawable.bloody_face).into(ui.image);
+                    soundManager.slashPeople();
+                    ui.setChoicesAndNextPositions("Continue", "", "", "", "consumeTheHeart2", "", "", "");
+                }
+            }, 5500);
+        } else if (gameData.isTakenArmor) {
+            gameData.isTakenArmor = false;
+            ui.displayTextSlowly("\"It's me, Garret, the blacksmith." +
+                    "\"Please, please control your mind. I know there is darkness within you, but you are stronger than it. " +
+                    "You have the strength to overcome it. Please, I beg of you, spare the innocent and find your way back to the light.\" . . . ");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(ui).load(R.drawable.bloody_face).into(ui.image);
+                    soundManager.slashPeople();
+                    ui.setChoicesAndNextPositions("Continue", "", "", "", "consumeTheHeart2", "", "", "");
+                }
+            }, 5500);
+        } else {
+            ui.image.setImageResource(R.drawable.black_screen);
+            ui.displayTextSlowly("   .    .    .   ");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    soundManager.crow();
+                    ui.displayTextSlowly("As the darkness fully consumed you, the echoing screams of innocent lives faded into the background, replaced by the sinister cawing of crows.\n" +
+                            "With every step you took, the land trembled and the skies darkened, as your allegiance to darkness grew stronger.\n" +
+                            "The path of redemption seemed distant, as you embraced your new role as the demon king's servant, ready to unleash havoc upon the world.");
+                    ui.setChoicesAndNextPositions("Continue", "", "", "", "theEnd", "", "", "");
+                }
+            }, 3000);
+        }
+    }
+
+    public void endYourLife() {
+        ui.darkUI();
+        ui.image.setImageResource(R.drawable.dead_screen);
+        soundManager.stopAllMusic();
+        soundManager.endYourLife();
+        ui.displayTextSlowly("As you take your own life, hoping to utilize the ability to return by death and correct your mistake.");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", "windyField1", "", "", "");
+    }
+
+    public void takeTheHeart() {
+        gameData.position = "takeTheHeart";
+        gameData.isDarknessConsume = true;
+        ui.saveGame();
+        ui.image.setImageResource(R.drawable.demon_hideout_after_battle);
+        ui.darkUI();
+        soundManager.stopAllMusic();
+        ui.displayTextSlowly("You make the decision to take the heart with you to the town.\n" +
+                "It is a risky choice, but you hope that someone in the town might know how to handle such a powerful artifact. " +
+                "Wrapping it carefully in cloth, you secure it on your back, make your way back, hoping for a solution and a brighter future.");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", "takeTheHeartToRiverSide", "", "", "");
+    }
+
+    public void takeTheHeartToRiverSide() {
+        StringBuilder text = new StringBuilder("As you reach the riverside, you slowly realize that an overwhelming surge of darkness emanates from the heart you carry, engulfing your body.\n");
+        if (gameData.isSpareWitch) {
+            ui.image.setImageResource(R.drawable.river_side_with_witch);
+            text.append("Amidst the encroaching darkness, you spot the witch whom you spared earlier.");
+            ui.displayTextSlowly(text.toString());
+            ui.setChoicesAndNextPositions("Try to control it and ask the witch for help", "Give up", "", "", "askWitchForHelp1", "consumeTheHeart1", "", "");
+            if (gameData.timeLoop) ui.setChoice3("Try to kill your self", "endYourLife");
+        } else {
+            ui.image.setImageResource(R.drawable.river_side);
+            ui.displayTextSlowly(text.toString());
+            ui.setChoicesAndNextPositions("Continue", "", "", "", "consumeTheHeart1", "", "", "");
+            if (gameData.timeLoop) ui.setChoice2("Try to kill your self", "endYourLife");
+        }
+    }
+
+    public void askWitchForHelp1() {
+        ui.continueTextSlowly("You strive to control the malevolent force within, temporarily halting its consumption. " +
+                "You desperately call out to the witch, pleading for her assistance in this dire moment.\n" +
+                "The witch, sensing the urgency of the situation, presents you with two options.");
+        ui.setChoicesAndNextPositions("About Option 1", "About Option 2", "", "", "askWitchForHelpOption1", "", "", "");
+    }
+
+    public void askWitchForHelpOption1() {
+        ui.setChoicesAndNextPositions("Choose this", "About option 2", "Let the darkness consume you", "", "destroyAllTownArea", "askWitchForHelpOption2", "consumeTheHeart1", "");
+        StringBuilder text = new StringBuilder("Option one: she recognizes you as the hero the world needs and offers to save you. " +
+                "However, this would result in a powerful explosion that would obliterate everything in the area, including the town.");
+        if (gameData.timeLoop) {
+            text.append("\"I know that you would find a better way.\"");
+            ui.setChoice4("\"How could you know ???\"", "askWitchKnowAboutTheReturnByDeath");
+        }
+        ui.displayTextSlowly(text.toString());
+    }
+
+    public void askWitchForHelpOption2() {
+        ui.setChoicesAndNextPositions("Choose this", "About option 1", "Let the darkness consume you", "", "endYourLifeToSaveTheTown", "askWitchForHelpOption1", "consumeTheHeart1", "");
+        StringBuilder text = new StringBuilder("Option two: she proposes ending your life to carefully destroy the consuming darkness within you, ensuring that it doesn't spread further. " +
+                "\"This option comes at no cost, except for your own life.\"\n");
+        if (gameData.timeLoop) {
+            text.append("\"And one more thing, your ability to return by death is intertwined with the darkness itself. " +
+                    "While eradicate the darkness consuming you, that ability will be relinquished as well.\"");
+            ui.setChoice4("\"How could you know ???\"", "askWitchKnowAboutTheReturnByDeath");
+        }
+        ui.displayTextSlowly(text.toString());
+    }
+
+    public void askWitchKnowAboutTheReturnByDeath() {
+        ui.displayTextSlowly("She reveals that her keen senses and deep understanding of magic allowed her to detect the traces of your unique power. " +
+                "And silently observing your actions, the way you approached challenges, the uncanny knowledge you possessed, and the mysterious aura that surrounded you were all signs that hinted at your extraordinary ability.");
+    }
+
+    public void destroyAllTownArea() {
+        gameData.position = "destroyAllTownArea";
+        ui.saveGame();
+        ui.darkUI();
+        ui.image.setImageResource(R.drawable.black_screen);
+
+        ui.displayTextSlowly("Understanding the importance of your role as the world's hero, you accept the witch's offer to save you. " +
+                "The fate of the world rests on your shoulders, and you are determined to fulfill your destiny, even if it means sacrificing everything else.");
+        ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(ui).load(R.drawable.explosion).into(ui.image);
+                soundManager.explosion();
+                ui.continueTextSlowly("The witch harnesses her magic and channels a powerful spell to remove the darkness consuming you. " +
+                        "In a blinding explosion of energy, everything around you is obliterated, leaving only you lie fainted amidst the devastation.");
+                ui.setChoicesAndNextPositions("Continue", "", "", "", "wakeUpAfterDestructionTownArea", "", "", "");
+            }
+        }, 4500);
+    }
+
+    public void wakeUpAfterDestructionTownArea() {
+        ui.image.setImageResource(R.drawable.town_area_after_explosion);
+        ui.displayTextSlowly("As the force of the blast sends you into unconsciousness, you lose track of time. " +
+                "When you finally awaken, you find yourself in a desolate landscape. The town you once knew is no more, reduced to ruins and ashes. " +
+                "The sacrifice you made to save the world came at a great cost, and you must now find a way to navigate this new reality and rebuild what was lost.");
+        ui.setChoicesAndNextPositions("Continue your journey", "", "", "", "theEnd", "", "", "");
+        if (gameData.timeLoop) ui.setChoice2("Kill yourself to find a better way", "endYourLife");
+    }
+
+    public void endYourLifeToSaveTheTown() {
+        ui.saveGame();
+        ui.displayTextSlowly("Recognizing the dire consequences of the darkness consuming you, you trust the witch to end your life and destroy the darkness within. " +
+                "You understand that this sacrifice is necessary to protect the world from further harm. " +
+                "With a heavy heart, you accept your fate, knowing that your ultimate act of sacrifice will save countless lives.");
+        ui.setChoicesAndNextPositions("Continue", "", "", "", "theEnd", "", "", "");
+    }
+
+    public void destroyTheHeart() {
+        gameData.position = "destroyTheHeart";
+        gameData.isDarknessConsume = true;
+        ui.saveGame();
+
+        ui.darkUI();
+        ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+        ui.displayTextSlowly("With little strength remaining, you made the courageous choice to destroy the heart of the demon general rather than succumbing to its dark allure.\n" +
+                "As you cut the heart in half, you felt a surge of liberation and returned to the town, determined to bring an end to the darkness that had plagued the land.");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ui.setChoicesAndNextPositions("Continue", "", "", "", "townGate", "", "", "");
+                soundManager.slashPeople();
+            }
+        }, 2000);
+    }
+
+    public void restAfterDestroyTheHeart() {
+        ui.darkUI();
+        ui.image.setImageResource(R.drawable.black_screen);
+        ui.displayTextSlowly("To celebrate your triumph, the town threw a lively party where you indulged in excessive drinking.");
+        ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                soundManager.stopAllMusic();
+                ui.continueTextSlowly("As you lie on the bed now, you feel the familiar embrace of darkness once more. " +
+                        "Memories of the moment you cleaved the demon heart in half resurface, realizing that wiping away its blood from your left hand was not enough to sever the connection.");
+                ui.setChoicesAndNextPositions("Continue", "", "", "", "consumeTheHeart1", "", "", "");
+            }
+        }, 2000);
     }
 
     public void theEnd() {
         gameData.position = "theEnd";
         Glide.with(ui).load(R.drawable.the_end).into(ui.image);
         ui.darkUI();
+        soundManager.stopAllSoundEffect();
         soundManager.playTheEndMusic();
-        ui.displayTextSlowly("Thank you for playing the first version of the game!\n" +
+        ui.displayTextSlowly("Thank you for playing The Legend's Calling!\n\n" +
                 "Well done on your remarkable journey and accomplishments!\n" +
-                "I appreciate your support, and I hope to see you again in the future when the game is further developed.\n" +
+                "I appreciate your support, and I hope to see you again in the future when the game is further developed.\n\n" +
                 "Stay tuned for more updates and exciting adventures ahead!");
         ui.setChoicesAndNextPositions("Play again", "Quit game", "", "", "start", "quit", "", "");
     }
 
     public void deadScreen() {
         gameData.position = "timeLoop";
+        ui.saveGame();
         soundManager.stopAllMusic();
         soundManager.stopAllSoundEffect();
         ui.image.setImageResource(R.drawable.dead_screen);
-        ui.lightUI();
+        ui.darkUI();
         ui.displayTextSlowly("YOU DIED!!!!");
         ui.setChoicesAndNextPositions("Try again", "Quit game", "", "", "timeLoop", "quit", "", "");
-        ui.saveGame();
     }
 }

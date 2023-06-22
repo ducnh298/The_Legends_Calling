@@ -117,7 +117,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="5dp"
             android:layout_weight="7"
-            app:srcCompat="@drawable/dark_screen" />
+            app:srcCompat="@drawable/black_screen" />
 
         <TextView
             android:id="@+id/gameTextView"
@@ -130,7 +130,6 @@
             android:layout_weight="6"
             android:fontFamily="sans-serif"
             android:onClick="finishTexting"
-            android:text="This is text                                 asdasdasda sdasdasd dddd dddddd ddd ddss"
             android:textAlignment="viewStart"
             android:textColor="#FFFFFF"
             android:textSize="16sp" />

@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.bumptech.glide.Glide;
 import com.game.R;
 import com.game.controller.GameData;
 import com.game.controller.GameSaveManager;
@@ -115,18 +116,39 @@ public class GameScreen extends AppCompatActivity {
         this.gameScreen = this;
         gameSaveManager = new GameSaveManager(this);
 
-        String lastPosition = gameData.position;
-        if (lastPosition == null) {
-            darkUI();
-            storyManager.opening();
-        } else {
-            if (lastPosition.equals("timeLoop") || lastPosition.equals("windyField1") || lastPosition.equals("meetCarriage") || lastPosition.equals("rideCarriage")) {
-                baseLayout.setBackgroundColor(Color.parseColor("#aab865"));
-            } else startGameUI();
-
-            storyManager.selectPosition(lastPosition);
-        }
+        loadingScreen(gameData.position);
     }
+
+
+    public void loadingScreen(String nextPosition) {
+        darkUI();
+        Glide.with(this).load(R.drawable.loading_screen).into(image);
+        displayTextSlowly("\n\nGame is loading .  .  .  .  .  .  .  .");
+        setChoicesAndNextPositions("", "", "", "", "", "", "", "");
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (nextPosition == null || nextPosition.equals("opening")) {
+//                    storyManager.opening();
+                    startGameUI();
+                    gameData.isKnownTownSewer = true;
+                    gameData.isTakenArmor = true;
+                    gameData.isOpenTownGate = true;
+                    gameData.isAliveDemonGeneral = false;
+                    gameData.isSpareWitch = true;
+                    gameData.timeLoop = true;
+                    storyManager.defeatDemonGeneral();
+                } else {
+                    if (nextPosition.equals("timeLoop") || nextPosition.equals("windyField1") || nextPosition.equals("meetCarriage") || nextPosition.equals("rideCarriage")) {
+                        baseLayout.setBackgroundColor(Color.parseColor("#aab865"));
+                    } else startGameUI();
+                    storyManager.selectPosition(nextPosition);
+                }
+            }
+        }, 3000);
+    }
+
 
     public void restartGame() {
         Intent intent = new Intent(this, TitleScreen.class);
@@ -185,19 +207,11 @@ public class GameScreen extends AppCompatActivity {
         textView.setTextColor(Color.parseColor("#FFFFFF"));
     }
 
-    public void lightUI() {
-        tableLayout.setVisibility(View.INVISIBLE);
-        baseLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        textView.setTextColor(Color.parseColor("#000000"));
-    }
-
     public void startGameUI() {
         gameSaveManager.saveGame();
         textView.setTextColor(Color.parseColor("#000000"));
-        baseLayout.setBackgroundColor(Color.parseColor("fdfd96"));
+        baseLayout.setBackgroundColor(Color.parseColor("#fdfd96"));
         tableLayout.setVisibility(View.VISIBLE);
-        soundManager.stopAllSoundEffect();
-        soundManager.playBackGroundMusic();
         updatePlayersHp(0);
         updatePlayersWeapons(null);
         updatePlayersCoins(0);
@@ -253,7 +267,7 @@ public class GameScreen extends AppCompatActivity {
             if (weaponObtain != null)
                 selectedItemPosition = gameData.player.getWeaponList().size() - 1;
             else {
-                if (weaponSpinner.getSelectedItemPosition() > (gameData.player.getWeaponList().size()-1))
+                if (weaponSpinner.getSelectedItemPosition() > (gameData.player.getWeaponList().size() - 1))
                     selectedItemPosition = gameData.player.getWeaponList().size() - 1;
                 else selectedItemPosition = weaponSpinner.getSelectedItemPosition();
             }
@@ -262,7 +276,7 @@ public class GameScreen extends AppCompatActivity {
             adapter.setDropDownViewResource(R.layout.spinner_item);
             weaponSpinner.setAdapter(adapter);
             weaponSpinner.setSelection(selectedItemPosition);
-        } else{
+        } else {
             weaponSpinner.setAdapter(null);
             weaponSpinner.setVisibility(View.VISIBLE);
         }

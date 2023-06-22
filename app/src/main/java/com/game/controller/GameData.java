@@ -24,9 +24,9 @@ public class GameData implements Serializable {
 
     public String position, lastPosition;
     public boolean timeLoop, isTakenKnife, isTakenCoins, isAngryGuard, isOpenTownGate, isMeetDarkCave,
-            isBorrowSword, isKnownTownSewer,  isRestAtTent, isTakenCoinsInTent, isTakenLongSword, isTakenPower,
+            isBorrowSword, isKnownTownSewer, isRestAtTent, isTakenCoinsInTent, isTakenLongSword, isTakenPower,
             blackSmithQuestActive, isTakenTorch, isLightTorch, isTakenArmor,
-            witchQuestActive, isTakenGoblinEar, isTakenApple,
+            witchQuestActive, isTakenGoblinEar, isTakenApple, isSpareWitch, isDarknessConsume,
             isAliveWolf, isALiveGoblin, isALiveRiverMonster, isDefeatedEvilWitch, isAliveShadowSerpent, isAliveDemonGeneral;
     public int youngManRequestReward, appleOnTree, coinsOnTree;
 
@@ -39,9 +39,9 @@ public class GameData implements Serializable {
         this.timeLoop = timeLoop;
         player = new Player(25);
 
-        isTakenKnife = isTakenCoins = isAngryGuard = isOpenTownGate = isMeetDarkCave = isBorrowSword = isKnownTownSewer = isTakenLongSword = isTakenPower = false;
-        isRestAtTent = isTakenCoinsInTent = blackSmithQuestActive = isTakenTorch = isLightTorch = isTakenArmor = false;
-        witchQuestActive = isTakenGoblinEar = isTakenApple = isDefeatedEvilWitch = false;
+        isTakenKnife = isTakenCoins = isTakenTorch = isTakenLongSword = isTakenArmor = isTakenCoinsInTent = isTakenGoblinEar = isTakenApple = isTakenPower = false;
+        isAngryGuard = isOpenTownGate = isMeetDarkCave = isLightTorch = isBorrowSword = isKnownTownSewer = isRestAtTent = false;
+        blackSmithQuestActive = witchQuestActive = isDefeatedEvilWitch = isSpareWitch = isDarknessConsume = false;
         isAliveWolf = isALiveGoblin = isALiveRiverMonster = isAliveShadowSerpent = isAliveDemonGeneral = true;
         youngManRequestReward = 0;
         appleOnTree = 3;

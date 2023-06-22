@@ -17,7 +17,7 @@ public class SoundManager {
     private GameScreen gameScreen;
     private SoundPool soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
     public MediaPlayer titleMusic;
-    private MediaPlayer bgMusic, battleMusic, drivingHighWaySound, openDoorSound, rainingSound, windySound, theTownSound, insideCaveSound, demonHideoutSound;
+    private MediaPlayer bgMusic, battleMusic, drivingHighWaySound, openDoorSound, rainingSound, windySound, theTownSound, insideCaveSound, demonHideoutSound, crowdScreamSound, crowSound, crowdCheerSound;
     private int[] battleMusicList = {R.raw.battle_music_1, R.raw.battle_music_2};
     private int[] backGroundMusicList = {R.raw.back_ground_music_1, R.raw.back_ground_music_2};
     private int[] swordSounds;
@@ -25,7 +25,7 @@ public class SoundManager {
     public Integer clickSoundId, obtainWeaponSoundId, healthUpSoundId, coinsSoundId,
             takeShoeOffSoundId, dropBagSoundId, lyingBedSoundId, wakeUpVoiceId,
             horseWagonSoundId, runningInGrassSoundId, horseSoundId,
-            townGateDoorSoundId, anvilSoundId, lightFireSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId,
+            townGateDoorSoundId, anvilSoundId, lightFireSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId, darkPowerSoundId, slashPeopleSoundId, endYourLifeSoundId,
             sword1soundId, sword2soundId, sword3soundId, sword4soundId, spellFireSoundId, spellLightningSoundId, spellWaterSoundId, spellPoisonBreezeSoundId,
             wolfSoundId, goblinSoundId, riverMonsterSoundId, evilWitchSoundId, shadowSerpentSoundId, demonGeneralSoundId;
     private Map<Integer, Integer> playingSoundEffect = new HashMap<>();
@@ -43,6 +43,8 @@ public class SoundManager {
         this.gameScreen = gameScreen;
         this.handler = gameScreen.handler;
         this.rand = gameScreen.rand;
+
+        clickSoundId = soundPool.load(gameScreen, R.raw.click, 1);
 
         drivingHighWaySound = MediaPlayer.create(gameScreen, R.raw.driving_highway);
         drivingHighWaySound.setLooping(true);
@@ -69,29 +71,12 @@ public class SoundManager {
             }
         });
 
-        clickSoundId = soundPool.load(gameScreen, R.raw.click, 1);
         obtainWeaponSoundId = soundPool.load(gameScreen, R.raw.obtain_weapon, 1);
         healthUpSoundId = soundPool.load(gameScreen, R.raw.health_up, 1);
         coinsSoundId = soundPool.load(gameScreen, R.raw.coin, 1);
 
-        takeShoeOffSoundId = soundPool.load(gameScreen, R.raw.shoes_take_off, 1);
-        dropBagSoundId = soundPool.load(gameScreen, R.raw.drop_bag, 1);
-        lyingBedSoundId = soundPool.load(gameScreen, R.raw.lying_on_bed, 1);
-        wakeUpVoiceId = soundPool.load(gameScreen, R.raw.wake_up_voice, 1);
-        horseWagonSoundId = soundPool.load(gameScreen, R.raw.carriage, 1);
-        runningInGrassSoundId = soundPool.load(gameScreen, R.raw.running_in_grass, 1);
-        horseSoundId = soundPool.load(gameScreen, R.raw.horse_stop, 1);
-
-        townGateDoorSoundId = soundPool.load(gameScreen, R.raw.town_gate_door, 1);
         theTownSound = MediaPlayer.create(gameScreen, R.raw.the_town);
         theTownSound.setLooping(true);
-
-        anvilSoundId = soundPool.load(gameScreen, R.raw.anvil_sound, 1);
-        lightFireSoundId = soundPool.load(gameScreen, R.raw.light_fire, 1);
-        underWaterSoundId = soundPool.load(gameScreen, R.raw.underwater, 1);
-        hitTreeSoundId = soundPool.load(gameScreen, R.raw.hit_tree, 1);
-        eatingAppleSoundId = soundPool.load(gameScreen, R.raw.eating_apple, 1);
-        magicMountainSoundId = soundPool.load(gameScreen, R.raw.magic_mountain, 1);
 
         battleMusic = MediaPlayer.create(gameScreen, battleMusicList[rand.nextInt(battleMusicList.length)]);
         battleMusic.setLooping(true);
@@ -105,25 +90,22 @@ public class SoundManager {
         insideCaveSound.setLooping(true);
         demonHideoutSound = MediaPlayer.create(gameScreen, R.raw.demon_hideout);
         demonHideoutSound.setLooping(true);
-
-        sword1soundId = soundPool.load(gameScreen, R.raw.sword_1, 1);
-        sword2soundId = soundPool.load(gameScreen, R.raw.sword_2, 1);
-        sword3soundId = soundPool.load(gameScreen, R.raw.sword_3, 1);
-        sword4soundId = soundPool.load(gameScreen, R.raw.sword_4, 1);
-        swordSounds = new int[]{sword1soundId, sword2soundId, sword3soundId, sword4soundId};
+        explosionSoundId = soundPool.load(gameScreen, R.raw.explosion, 1);
 
         wolfSoundId = soundPool.load(gameScreen, R.raw.wolf_howling, 1);
         goblinSoundId = soundPool.load(gameScreen, R.raw.goblin_roar, 1);
         riverMonsterSoundId = soundPool.load(gameScreen, R.raw.river_monster_roar, 1);
         evilWitchSoundId = soundPool.load(gameScreen, R.raw.evil_witch_laugh, 1);
-        shadowSerpentSoundId = soundPool.load(gameScreen, R.raw.shadow_serpent_sound, 1);
-        demonGeneralSoundId = soundPool.load(gameScreen, R.raw.demon_general_laugh, 1);
-        explosionSoundId = soundPool.load(gameScreen, R.raw.explosion, 1);
 
-        spellFireSoundId = soundPool.load(gameScreen, R.raw.spell_fire, 1);
-        spellLightningSoundId = soundPool.load(gameScreen, R.raw.spell_lightning, 1);
-        spellWaterSoundId = soundPool.load(gameScreen, R.raw.spell_water, 1);
-        spellPoisonBreezeSoundId = soundPool.load(gameScreen, R.raw.spell_poison_breeze, 1);
+        darkPowerSoundId = soundPool.load(gameScreen, R.raw.dark_power, 1);
+        crowdScreamSound = MediaPlayer.create(gameScreen, R.raw.crowd_scream);
+        crowdScreamSound.setLooping(true);
+        endYourLifeSoundId = soundPool.load(gameScreen, R.raw.end_your_life, 1);
+        crowSound = MediaPlayer.create(gameScreen, R.raw.crow);
+        crowSound.setLooping(true);
+
+        crowdCheerSound = MediaPlayer.create(gameScreen, R.raw.crowd_cheer);
+        crowdCheerSound.setLooping(true);
 
         titleMusic = MediaPlayer.create(gameScreen, R.raw.title_music);
         titleMusic.setLooping(true);
@@ -137,6 +119,15 @@ public class SoundManager {
     }
 
     public void playBackGroundMusic() {
+        if (townGateDoorSoundId == null) {
+            townGateDoorSoundId = soundPool.load(gameScreen, R.raw.town_gate_door, 1);
+            anvilSoundId = soundPool.load(gameScreen, R.raw.anvil_sound, 1);
+            lightFireSoundId = soundPool.load(gameScreen, R.raw.light_fire, 1);
+            underWaterSoundId = soundPool.load(gameScreen, R.raw.underwater, 1);
+            hitTreeSoundId = soundPool.load(gameScreen, R.raw.hit_tree, 1);
+            eatingAppleSoundId = soundPool.load(gameScreen, R.raw.eating_apple, 1);
+            magicMountainSoundId = soundPool.load(gameScreen, R.raw.magic_mountain, 1);
+        }
         if (!bgMusic.isPlaying()) {
             stopAllMusic();
             new Handler().postDelayed(new Runnable() {
@@ -184,6 +175,12 @@ public class SoundManager {
             insideCaveSound.pause();
         if (demonHideoutSound.isPlaying())
             demonHideoutSound.pause();
+        if (crowdScreamSound.isPlaying())
+            crowdScreamSound.pause();
+        if (crowSound.isPlaying())
+            crowSound.pause();
+        if (crowdCheerSound.isPlaying())
+            crowdCheerSound.pause();
     }
 
     public void click() {
@@ -191,6 +188,20 @@ public class SoundManager {
     }
 
     public void obtainWeapon() {
+        if (swordSounds == null) {
+            sword1soundId = soundPool.load(gameScreen, R.raw.sword_1, 1);
+            sword2soundId = soundPool.load(gameScreen, R.raw.sword_2, 1);
+            sword3soundId = soundPool.load(gameScreen, R.raw.sword_3, 1);
+            sword4soundId = soundPool.load(gameScreen, R.raw.sword_4, 1);
+            swordSounds = new int[]{sword1soundId, sword2soundId, sword3soundId, sword4soundId};
+        }
+        if (spellFireSoundId == null) {
+            spellFireSoundId = soundPool.load(gameScreen, R.raw.spell_fire, 1);
+            spellLightningSoundId = soundPool.load(gameScreen, R.raw.spell_lightning, 1);
+            spellWaterSoundId = soundPool.load(gameScreen, R.raw.spell_water, 1);
+            spellPoisonBreezeSoundId = soundPool.load(gameScreen, R.raw.spell_poison_breeze, 1);
+
+        }
         soundPool.play(obtainWeaponSoundId, 1f, 1f, 1, 0, 1f);
     }
 
@@ -212,6 +223,10 @@ public class SoundManager {
 
     public void drivingHighWay() {
         drivingHighWaySound.start();
+        takeShoeOffSoundId = soundPool.load(gameScreen, R.raw.shoes_take_off, 1);
+        dropBagSoundId = soundPool.load(gameScreen, R.raw.drop_bag, 1);
+        lyingBedSoundId = soundPool.load(gameScreen, R.raw.lying_on_bed, 1);
+        wakeUpVoiceId = soundPool.load(gameScreen, R.raw.wake_up_voice, 1);
     }
 
     public void openingDoor() {
@@ -232,6 +247,9 @@ public class SoundManager {
     }
 
     public void bedRoom() {
+        horseWagonSoundId = soundPool.load(gameScreen, R.raw.carriage, 1);
+        runningInGrassSoundId = soundPool.load(gameScreen, R.raw.running_in_grass, 1);
+        horseSoundId = soundPool.load(gameScreen, R.raw.horse_stop, 1);
         if (openDoorSound.isPlaying())
             openDoorSound.pause();
         stopAllSoundEffect();
@@ -321,6 +339,10 @@ public class SoundManager {
     }
 
     public void demonHideout() {
+        if (shadowSerpentSoundId == null) {
+            shadowSerpentSoundId = soundPool.load(gameScreen, R.raw.shadow_serpent_sound, 1);
+            demonGeneralSoundId = soundPool.load(gameScreen, R.raw.demon_general_laugh, 1);
+        }
         if (!demonHideoutSound.isPlaying()) {
             stopAllMusic();
             demonHideoutSound.start();
@@ -351,11 +373,46 @@ public class SoundManager {
     }
 
     public void demonGeneral() {
-        soundPool.play(demonGeneralSoundId, 1.0f, 1.0f, 1, 1, 1f);
+        soundPool.play(demonGeneralSoundId, 1.0f, 1.0f, 1, 0, 1f);
     }
 
     public void explosion() {
-        soundPool.play(explosionSoundId, 1.0f, 1.0f, 1, 0, 0.6f);
+        soundPool.play(explosionSoundId, 1.0f, 1.0f, 1, 0, 1f);
+    }
+
+    public void darkPower() {
+        soundPool.play(darkPowerSoundId, 1.0f, 1.0f, 1, 0, 1f);
+    }
+
+    public void slashPeople() {
+        soundPool.play(slashPeopleSoundId, 1.0f, 1.0f, 1, 0, 1f);
+    }
+
+    public void endYourLife() {
+        soundPool.play(endYourLifeSoundId, 1.0f, 1.0f, 1, 0, 1f);
+    }
+
+    public void crowdScream() {
+        if (slashPeopleSoundId == null)
+            slashPeopleSoundId = soundPool.load(gameScreen, R.raw.slash_people, 1);
+        if (!crowdScreamSound.isPlaying()) {
+            stopAllMusic();
+            crowdScreamSound.start();
+        }
+    }
+
+    public void crow() {
+        if (!crowSound.isPlaying()) {
+            stopAllMusic();
+            crowSound.start();
+        }
+    }
+
+    public void crowdCheer() {
+        if (!crowdCheerSound.isPlaying()) {
+            stopAllMusic();
+            crowdCheerSound.start();
+        }
     }
 
     public void stopSoundEffect(Integer id) {

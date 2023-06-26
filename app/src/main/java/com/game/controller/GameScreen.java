@@ -123,7 +123,9 @@ public class GameScreen extends AppCompatActivity {
     public void loadingScreen(String nextPosition) {
         darkUI();
         Glide.with(this).load(R.drawable.loading_screen).into(image);
-        displayTextSlowly("\n\nGame is loading .  .  .  .  .  .  .  .");
+        displayText("\n\nGame is loading...\n\n" +
+                "The game includes an auto-save feature, ensuring that your progress is saved automatically at certain checkpoints. " +
+                "You can focus on enjoying the game without worrying about manually saving your progress.");
         setChoicesAndNextPositions("", "", "", "", "", "", "", "");
 
         handler.postDelayed(new Runnable() {
@@ -131,14 +133,6 @@ public class GameScreen extends AppCompatActivity {
             public void run() {
                 if (nextPosition == null || nextPosition.equals("opening")) {
                     storyManager.opening();
-//                    startGameUI();
-//                    gameData.isKnownTownSewer = true;
-//                    gameData.isTakenArmor = true;
-//                    gameData.isOpenTownGate = true;
-//                    gameData.isAliveDemonGeneral = false;
-//                    gameData.isSpareWitch = true;
-//                    gameData.timeLoop = true;
-//                    storyManager.defeatDemonGeneral();
                 } else {
                     if (nextPosition.equals("timeLoop") || nextPosition.equals("windyField1") || nextPosition.equals("meetCarriage") || nextPosition.equals("rideCarriage")) {
                         baseLayout.setBackgroundColor(Color.parseColor("#aab865"));
@@ -146,7 +140,7 @@ public class GameScreen extends AppCompatActivity {
                     storyManager.selectPosition(nextPosition);
                 }
             }
-        }, 3500);
+        }, 4000);
     }
 
 

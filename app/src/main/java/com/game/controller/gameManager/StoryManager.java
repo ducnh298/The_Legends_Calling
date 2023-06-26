@@ -1130,8 +1130,8 @@ public class StoryManager {
         Weapon currentWeapon;
         if (gameData.player.getWeaponList().size() > 0) {
             currentWeapon = gameData.player.getWeaponList().get(ui.weaponSpinner.getSelectedItemPosition());
-            ui.displayTextSlowly("He offers to enhance your weapon for an additional fee, or you can opt to sell your weapon for a good price and buy a new one.");
-            ui.setChoice1("Buy new weapon", "");
+            ui.displayTextSlowly("He offers to enhance your weapon for an additional fee, or you can opt to sell your weapon for a good price.");
+            ui.setChoice1("", "");
             ui.setChoice2("Sell your " + currentWeapon.getName() + " for " + (currentWeapon.getValue() - 1) + " coins", "confirmSellWeapon");
             if (currentWeapon.canUpgrade())
                 ui.setChoice3("Enhance your " + currentWeapon.getName() + " (" + currentWeapon.getEnhanceCost() + " coins)", "enhanceWeapon");
@@ -1879,7 +1879,7 @@ public class StoryManager {
                 @Override
                 public void run() {
                     soundManager.crow();
-                   ui.setChoicesAndNextPositions("Continue", "", "", "", "theEnd", "", "", "");
+                   ui.setChoicesAndNextPositions("The end", "", "", "", "theEnd", "", "", "");
                 }
             }, 2500);
         }
@@ -1984,7 +1984,7 @@ public class StoryManager {
         ui.displayTextSlowly("As the force of the blast sends you into unconsciousness, you lose track of time. " +
                 "When you finally awaken, you find yourself in a desolate landscape. The town you once knew is no more, reduced to ruins and ashes. " +
                 "The sacrifice you made to save the world came at a great cost, and you must now find a way to navigate this new reality and rebuild what was lost.");
-        ui.setChoicesAndNextPositions("Continue your journey", "", "", "", "theEnd", "", "", "");
+        ui.setChoicesAndNextPositions("Continue your journey (The end)", "", "", "", "theEnd", "", "", "");
         if (gameData.timeLoop) ui.setChoice2("Kill yourself to find a better way", "endYourLife");
     }
 
@@ -1994,7 +1994,7 @@ public class StoryManager {
         ui.displayTextSlowly("Recognizing the dire consequences of the darkness consuming you, you trust the witch to end your life and destroy the darkness within. " +
                 "You understand that this sacrifice is necessary to protect the world from further harm. " +
                 "With a heavy heart, you accept your fate, knowing that your ultimate act of sacrifice will save countless lives.");
-        ui.setChoicesAndNextPositions("Continue", "", "", "", "theEnd", "", "", "");
+        ui.setChoicesAndNextPositions("The end", "", "", "", "theEnd", "", "", "");
     }
 
     public void destroyTheHeart() {

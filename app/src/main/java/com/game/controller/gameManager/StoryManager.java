@@ -1,4 +1,4 @@
-package com.game.controller;
+package com.game.controller.gameManager;
 
 import android.graphics.Color;
 import android.os.Handler;
@@ -6,8 +6,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.game.R;
-import com.game.model.Armor;
-import com.game.model.Weapon;
+import com.game.model.GameData;
+import com.game.model.armors.Armor;
+import com.game.model.weapons.Weapon;
 import com.game.model.armors.Armor_GoldenArmor;
 import com.game.model.armors.Armor_IronArmor;
 import com.game.model.armors.Armor_SilverArmor;
@@ -18,7 +19,7 @@ import com.game.model.spells.Spell_WaterSurge;
 import com.game.model.weapons.Weapon_DemonSword;
 import com.game.model.weapons.Weapon_Knife;
 import com.game.model.weapons.Weapon_LongSword;
-import com.game.view.GameScreen;
+import com.game.controller.GameScreen;
 
 import java.util.ArrayList;
 import java.util.List;

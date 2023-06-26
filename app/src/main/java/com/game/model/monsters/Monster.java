@@ -1,4 +1,6 @@
-package com.game.model;
+package com.game.model.monsters;
+
+import com.game.model.effect.Effect;
 
 import java.io.Serializable;
 import java.util.LinkedList;

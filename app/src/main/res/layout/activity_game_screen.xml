@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#EDE9C1"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-    tools:context=".view.GameScreen">
+    tools:context=".controller.GameScreen">
 
     <TableLayout
         android:id="@+id/tableLayout"

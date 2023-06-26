@@ -1,7 +1,5 @@
 package com.game.model.monsters;
 
-import com.game.model.Monster;
-
 public class Monster_EvilWitch extends Monster {
     public Monster_EvilWitch(double difficultRate) {
         super("Evil Witch", 8, 0, 1, difficultRate);

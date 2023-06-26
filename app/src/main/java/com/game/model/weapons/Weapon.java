@@ -1,4 +1,4 @@
-package com.game.model;
+package com.game.model.weapons;
 
 import java.io.Serializable;
 

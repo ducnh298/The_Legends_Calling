@@ -1,4 +1,4 @@
-package com.game.view;
+package com.game.controller;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,13 +22,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
 import com.game.R;
-import com.game.controller.GameData;
-import com.game.controller.GameSaveManager;
-import com.game.controller.SoundManager;
-import com.game.controller.StoryManager;
-import com.game.model.Armor;
-import com.game.model.Spell;
-import com.game.model.Weapon;
+import com.game.model.GameData;
+import com.game.controller.gameManager.GameSaveManager;
+import com.game.controller.gameManager.SoundManager;
+import com.game.controller.gameManager.StoryManager;
+import com.game.model.armors.Armor;
+import com.game.model.spells.Spell;
+import com.game.model.weapons.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;

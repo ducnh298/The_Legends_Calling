@@ -1,4 +1,4 @@
-package com.game.view;
+package com.game.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.game.R;
-import com.game.controller.GameData;
-import com.game.controller.GameSaveManager;
-import com.game.controller.SoundManager;
+import com.game.model.GameData;
+import com.game.controller.gameManager.GameSaveManager;
+import com.game.controller.gameManager.SoundManager;
 import com.game.model.Difficulty;
 
 public class TitleScreen extends AppCompatActivity {

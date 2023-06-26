@@ -1,10 +1,11 @@
-package com.game.controller;
+package com.game.controller.gameManager;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.game.view.GameScreen;
-import com.game.view.TitleScreen;
+import com.game.model.GameData;
+import com.game.controller.GameScreen;
+import com.game.controller.TitleScreen;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

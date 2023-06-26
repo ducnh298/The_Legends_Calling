@@ -119,13 +119,6 @@ public class SoundManager {
         titleMusic.setLooping(true);
     }
 
-    public void pauseBackGroundMusic() {
-        if (bgMusic.isPlaying()) {
-            bgMusic.pause();
-            positionBgMusic = battleMusic.getCurrentPosition();
-        }
-    }
-
     public void playBackGroundMusic() {
         if (!bgMusic.isPlaying()) {
             stopAllMusic();
@@ -199,11 +192,9 @@ public class SoundManager {
             spellLightningSoundId = soundPool.load(gameScreen, R.raw.spell_lightning, 1);
             spellWaterSoundId = soundPool.load(gameScreen, R.raw.spell_water, 1);
             spellPoisonBreezeSoundId = soundPool.load(gameScreen, R.raw.spell_poison_breeze, 1);
-
         }
         soundPool.play(obtainWeaponSoundId, 1f, 1f, 1, 0, 1f);
     }
-
     public void healthUp() {
         soundPool.play(healthUpSoundId, 1f, 1f, 1, 0, 1f);
     }
@@ -219,7 +210,6 @@ public class SoundManager {
     public void sword() {
         soundPool.play(swordSounds[rand.nextInt(swordSounds.length)], 1f, 1f, 1, 0, 1f);
     }
-
     public void drivingHighWay() {
         drivingHighWaySound.start();
         takeShoeOffSoundId = soundPool.load(gameScreen, R.raw.shoes_take_off, 1);
@@ -227,13 +217,11 @@ public class SoundManager {
         lyingBedSoundId = soundPool.load(gameScreen, R.raw.lying_on_bed, 1);
         wakeUpVoiceId = soundPool.load(gameScreen, R.raw.wake_up_voice, 1);
     }
-
     public void openingDoor() {
         if (drivingHighWaySound.isPlaying())
             drivingHighWaySound.pause();
         openDoorSound.start();
     }
-
     public void getHome() {
         soundPool.play(takeShoeOffSoundId, 1f, 1f, 1, 0, 1.2f);
 
@@ -244,11 +232,7 @@ public class SoundManager {
             }
         }, 2000);
     }
-
     public void bedRoom() {
-        horseWagonSoundId = soundPool.load(gameScreen, R.raw.carriage, 1);
-        runningInGrassSoundId = soundPool.load(gameScreen, R.raw.running_in_grass, 1);
-        horseSoundId = soundPool.load(gameScreen, R.raw.horse_stop, 1);
         if (openDoorSound.isPlaying())
             openDoorSound.pause();
         stopAllSoundEffect();
@@ -268,6 +252,11 @@ public class SoundManager {
     }
 
     public void windyField() {
+        if(horseWagonSoundId==null){
+            horseWagonSoundId = soundPool.load(gameScreen, R.raw.carriage, 1);
+            runningInGrassSoundId = soundPool.load(gameScreen, R.raw.running_in_grass, 1);
+            horseSoundId = soundPool.load(gameScreen, R.raw.horse_stop, 1);
+        }
         if (!windySound.isPlaying()) {
             windySound.start();
         }
@@ -354,7 +343,7 @@ public class SoundManager {
 
     public void goblin(boolean loop) {
         if (loop) {
-            soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, 2, 1.3f);
+            playingSoundEffect.put(goblinSoundId,  soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, -1, 1.3f));
         } else
             soundPool.play(goblinSoundId, 1.0f, 1.0f, 1, 0, 1f);
     }

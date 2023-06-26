@@ -668,6 +668,7 @@ public class StoryManager {
     public void meetCarriage() {
         gameData.position = "meetCarriage";
         Glide.with(ui).load(R.drawable.carriage).into(ui.image);
+        soundManager.windyField();
         soundManager.stopAllSoundEffect();
         soundManager.horseWagonNear();
         ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
@@ -812,7 +813,6 @@ public class StoryManager {
     }
 
     public void talkGuard1() {
-        gameData.position = "talkGuard1";
         Glide.with(ui).load(R.drawable.guard).into(ui.image);
 
         ui.setChoicesAndNextPositions("", "Leave", "", "", "", "crossRoad", "", "");
@@ -840,7 +840,7 @@ public class StoryManager {
     }
 
     public void proveTrustWorthy1() {
-        ui.displayTextSlowly("The guard crosses his arms and looks at the coin you offered: \"A single coin won't be enough to prove your trustworthiness.\"");
+        ui.displayTextSlowly("The guard looks at the coin you offered: \"A single coin won't be enough to prove your trustworthiness.\"");
         ui.setChoicesAndNextPositions("Give him another", "Leave", "", "", "proveTrustWorthy2", "crossRoad", "", "");
     }
 
@@ -852,10 +852,10 @@ public class StoryManager {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    ui.updatePlayersCoins(-2);
                     gameData.isOpenTownGate = true;
-                    ui.setChoicesAndNextPositions("Enter the town", "Leave", "", "", "theTown", "crossRoad", "", "");
+                    ui.updatePlayersCoins(-2);
                     soundManager.townGateDoor();
+                    ui.setChoicesAndNextPositions("Enter the town", "Leave", "", "", "theTown", "crossRoad", "", "");
                     ui.saveGame();
                 }
             }, 2300);
@@ -892,7 +892,6 @@ public class StoryManager {
     }
 
     public void attackGuard() {
-        gameData.position = "attackGuard";
         gameData.isAngryGuard = true;
         Glide.with(ui).load(R.drawable.guard).into(ui.image);
         int hpLost = (int) Math.ceil(8 * gameData.difficultRate) - (gameData.player.getArmor() != null ? gameData.player.getArmor().getDamageReduced() : 0);
@@ -913,6 +912,7 @@ public class StoryManager {
     public void crossRoad() {
         gameData.position = "crossRoad";
         ui.image.setImageResource(R.drawable.cross_road);
+        soundManager.playBackGroundMusic();
 
         ui.displayTextSlowly("You find yourself at a crossroad, standing at the intersection of multiple paths.\n" +
                 "The choices laid out offering different directions to explore.");
@@ -921,6 +921,8 @@ public class StoryManager {
 
     public void northField() {
         gameData.position = "northField";
+        soundManager.playBackGroundMusic();
+
         ui.setChoicesAndNextPositions("Talk with the man", "Go East", "Go South", "", "talkYoungMan1", "northRiver", "crossRoad", "");
         if (gameData.isAliveWolf) {
             ui.image.setImageResource(R.drawable.north_field_with_man_wolf);
@@ -995,6 +997,7 @@ public class StoryManager {
 
     public void defeatWolf() {
         gameData.position = "defeatWolf";
+        soundManager.playBackGroundMusic();
         ui.image.setImageResource(R.drawable.north_field_with_man);
         ui.setChoicesAndNextPositions("", "", "", "", "", "", "", "");
         StringBuilder text = new StringBuilder("As the wolf collapses to the ground, its threat vanquished, the man approaches, gratitude evident in his eyes.\n");
@@ -1016,6 +1019,7 @@ public class StoryManager {
     public void townSewer() {
         gameData.position = "townSewer";
         ui.image.setImageResource(R.drawable.town_sewer);
+        soundManager.playBackGroundMusic();
 
         ui.displayTextSlowly("As you approach the sewer entrance, you notice that it is constructed from sturdy stone and its surprisingly cleanliness.");
         ui.setChoicesAndNextPositions("Go through the sewer", "Go East", "", "", "theTown", "northField", "", "");
@@ -1025,6 +1029,7 @@ public class StoryManager {
         gameData.position = "blackSmithHouse";
         Glide.with(ui).load(R.drawable.black_smith_house).into(ui.image);
         soundManager.anvil();
+        soundManager.theTown();
         ui.displayTextSlowly("As you approach the blacksmith shop, the sound of hammer striking metal echoes in the air.\n" +
                 "The skilled blacksmith can be seen diligently working at the forge.");
         ui.setChoicesAndNextPositions("Talk to the blacksmith", "Go South", "", "", "talkBlackSmith1", "theTown", "", "");
@@ -1088,12 +1093,12 @@ public class StoryManager {
     public void inquireGear() {
         StringBuilder text = new StringBuilder("You inquire about your current gear and allow the blacksmith to examine it.\n");
         if (gameData.player.getArmor() != null)
-            text.append("\"Your " + gameData.player.getArmor().getName() + " is in good condition and is capable of absorbing" + gameData.player.getArmor().getDamageReduced() + "damage from monster attacks.\n");
+            text.append("\"Your " + gameData.player.getArmor().getName() + " is capable of absorbing " + gameData.player.getArmor().getDamageReduced() + " damage from monster attacks.\n");
         if (gameData.player.getWeaponList().size() > 0) {
             for (Weapon weapon : gameData.player.getWeaponList()) {
-                text.append("Your " + weapon.getName() + " is assessed to have a maximum damage potential of " + weapon.getCriticalAttackDamage());
+                text.append("Your " + weapon.getName() + " is assessed to have a maximum damage of " + weapon.getCriticalAttackDamage());
                 if (weapon.canUpgrade())
-                    text.append(" and can be upgrade to increase its damage output.");
+                    text.append(" and can be enhance more.");
                 text.append("\n");
             }
         }
@@ -1182,12 +1187,11 @@ public class StoryManager {
     }
 
     public void goblinCave() {
-        if (gameData.position.equals("insideGoblinCave") || gameData.position.equals("deeperInsideGoblinCave"))
-            soundManager.playBackGroundMusic();
         if (!gameData.position.equals("lightTorch"))
             gameData.isLightTorch = false;
         gameData.position = "goblinCave";
         ui.image.setImageResource(R.drawable.goblin_cave);
+        soundManager.playBackGroundMusic();
         ui.displayTextSlowly("The cave is situated in the heart of a dense forest, surrounded by tall trees and vibrant green grass.\n" +
                 "Approaching the entrance of the cave, you see an ancient stone tunnel that leads further into the darkness.");
         ui.setChoicesAndNextPositions("Go inside the cave", "Go North", "Go East", "", "insideGoblinCave", "crossRoad", "southRiver", "");
@@ -1249,7 +1253,7 @@ public class StoryManager {
                 ui.displayTextSlowly("As you venture deeper into the goblin cave, the oppressive darkness engulfs your senses.\n" +
                         "Suddenly, a creepy noise echoes through the chamber. The source of the sound is growing ever nearer.\n" +
                         "Before you can react, a swift and deadly attack strikes your throat, leaving you helpless in the depths of the cave.");
-                soundManager.pauseBackGroundMusic();
+                soundManager.stopAllMusic();
                 soundManager.goblin(true);
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -1271,16 +1275,18 @@ public class StoryManager {
                     ui.setChoicesAndNextPositions("Take the long sword", "Leave", "", "", "takeLongSword", "goblinCave", "", "");
                 } else {
                     ui.image.setImageResource(R.drawable.inside_cave_painting);
-                    ui.displayTextSlowly("As you venture deeper into the cave, you come across a painting on the wall depicting a mountain.");
+                    ui.displayTextSlowly("As you venture deeper into the cave, you come across a painting on the wall depicting a mountain." +
+                            (gameData.timeLoop ? "A good place for using your ability without being seen." : ""));
                     ui.setChoicesAndNextPositions("Leave", "", "", "", "goblinCave", "", "", "");
                     if (gameData.timeLoop)
-                        ui.setChoice2("Kill your self", "endYourLife");
+                        ui.setChoice2("End your life", "endYourLife");
                 }
             } else {
                 ui.displayTextSlowly("As you continue deeper into the cave, you find that there is not much to discover.\n" +
-                        "The darkness surrounds you, revealing no hidden treasures or significant sights.");
+                        "The darkness surrounds you, revealing no hidden treasures or significant sights.\n" +
+                        (gameData.timeLoop ? "A good place for using your ability without being seen." : ""));
                 ui.setChoicesAndNextPositions("Leave", "", "", "", "goblinCave", "", "", "");
-                if (gameData.timeLoop) ui.setChoice2("Kill your self", "endYourLife");
+                if (gameData.timeLoop) ui.setChoice2("End your life", "endYourLife");
             }
         }
     }
@@ -1305,6 +1311,7 @@ public class StoryManager {
 
     public void riverSide() {
         gameData.position = "riverSide";
+        soundManager.playBackGroundMusic();
         if (!gameData.isDefeatedEvilWitch) {
             ui.image.setImageResource(R.drawable.river_side_with_witch);
             ui.displayTextSlowly("You find yourself by the riverside. In the distance, you notice a small wooden bridge that stretches across the river.\n" +
@@ -1408,6 +1415,7 @@ public class StoryManager {
     public void defeatTheWitch() {
         gameData.position = "defeatTheWitch";
         ui.image.setImageResource(R.drawable.defeated_witch);
+        soundManager.playBackGroundMusic();
         ui.setChoicesAndNextPositions("Spare her life", "Finish her", "Leave", "", "witchReward", "finishTheWitch", " spareTheWitch", "");
 
         ui.displayTextSlowly("\"Enough! Spare my life, I'll remove the spell casted on you and give you a reward,\" " +
@@ -1472,6 +1480,7 @@ public class StoryManager {
         soundManager.stopAllSoundEffect();
         gameData.lastPosition = gameData.position;
         gameData.position = "northRiver";
+        soundManager.playBackGroundMusic();
         if (gameData.lastPosition.equalsIgnoreCase("mountain")) {
             crossTheRiver();
         } else {
@@ -1526,9 +1535,9 @@ public class StoryManager {
     public void southRiver() {
         gameData.lastPosition = gameData.position;
         gameData.position = "southRiver";
+        soundManager.playBackGroundMusic();
         if (gameData.lastPosition.equalsIgnoreCase("demonHideout")) {
             crossTheRiver();
-            soundManager.playBackGroundMusic();
         } else {
             ui.image.setImageResource(R.drawable.south_river);
             if (gameData.isALiveRiverMonster) {
@@ -1569,10 +1578,9 @@ public class StoryManager {
     }
 
     public void jungle() {
-        if (gameData.position.equals("demonHideout"))
-            soundManager.playBackGroundMusic();
         gameData.position = "jungle";
         soundManager.stopAllSoundEffect();
+        soundManager.playBackGroundMusic();
         ui.image.setImageResource(R.drawable.jungle);
         ui.displayTextSlowly("You find yourself in a peaceful forest clearing, surrounded by tall, ancient trees.\n" +
                 "Shafts of sunlight casting a gentle glow on the lush grass beneath your feet.\n" +
@@ -1582,7 +1590,6 @@ public class StoryManager {
 
     public void hitTheAppleTree() {
         soundManager.hitTree();
-        gameData.position = "hitTheAppleTree";
         ui.setChoicesAndNextPositions("Hit the apple tree again", "Leave", "", "", "hitTheAppleTree", "jungle", "", "");
         int c1 = rand.nextInt(4);
         if (c1 % 2 == 0 && (gameData.appleOnTree > 0 || (!gameData.isDefeatedEvilWitch && gameData.witchQuestActive && !gameData.isTakenApple))) {
@@ -1647,7 +1654,7 @@ public class StoryManager {
     public void mountainTop() {
         gameData.position = "mountainTop";
         ui.image.setImageResource(R.drawable.mountain_top);
-        soundManager.pauseBackGroundMusic();
+        soundManager.stopAllMusic();
         soundManager.magicMountain();
         ui.displayTextSlowly("You climb the mountain, reaching the summit where a majestic stone gate awaits.\n" +
                 "Passing through, you enter a sacred space surrounded by five towering stone statues, their presence exuding ancient power.");
@@ -1816,7 +1823,7 @@ public class StoryManager {
                 soundManager.crowdScream();
                 gameData.isOpenTownGate = true;
                 if (gameData.timeLoop)
-                    ui.setChoice2("Try to kill your self", "endYourLife");
+                    ui.setChoice2("Try to end your life", "endYourLife");
             }
         }, 4000);
     }
@@ -1864,17 +1871,16 @@ public class StoryManager {
             }, 5500);
         } else {
             ui.image.setImageResource(R.drawable.black_screen);
-            ui.displayTextSlowly("   .    .    .   ");
+            ui.displayTextSlowly("As the darkness fully consumed you, the echoing screams of innocent lives faded into the background, replaced by the sinister cawing of crows.\n" +
+                    "With every step you took, the land trembled and the skies darkened, as your allegiance to darkness grew stronger.\n" +
+                    "The path of redemption seemed distant, as you embraced your new role as the demon king's servant, ready to unleash havoc upon the world.");
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     soundManager.crow();
-                    ui.displayTextSlowly("As the darkness fully consumed you, the echoing screams of innocent lives faded into the background, replaced by the sinister cawing of crows.\n" +
-                            "With every step you took, the land trembled and the skies darkened, as your allegiance to darkness grew stronger.\n" +
-                            "The path of redemption seemed distant, as you embraced your new role as the demon king's servant, ready to unleash havoc upon the world.");
-                    ui.setChoicesAndNextPositions("Continue", "", "", "", "theEnd", "", "", "");
+                   ui.setChoicesAndNextPositions("Continue", "", "", "", "theEnd", "", "", "");
                 }
-            }, 3000);
+            }, 2500);
         }
     }
 
@@ -1907,12 +1913,12 @@ public class StoryManager {
             text.append("Amidst the encroaching darkness, you spot the witch whom you spared earlier.");
             ui.displayTextSlowly(text.toString());
             ui.setChoicesAndNextPositions("Try to control it and ask the witch for help", "Give up", "", "", "askWitchForHelp1", "consumeTheHeart1", "", "");
-            if (gameData.timeLoop) ui.setChoice3("Try to kill your self", "endYourLife");
+            if (gameData.timeLoop) ui.setChoice3("Try to end your life", "endYourLife");
         } else {
             ui.image.setImageResource(R.drawable.river_side);
             ui.displayTextSlowly(text.toString());
             ui.setChoicesAndNextPositions("Continue", "", "", "", "consumeTheHeart1", "", "", "");
-            if (gameData.timeLoop) ui.setChoice2("Try to kill your self", "endYourLife");
+            if (gameData.timeLoop) ui.setChoice2("Try to end your life", "endYourLife");
         }
     }
 
@@ -1982,6 +1988,7 @@ public class StoryManager {
     }
 
     public void endYourLifeToSaveTheTown() {
+        gameData.position = "endYourLifeToSaveTheTown";
         ui.saveGame();
         ui.displayTextSlowly("Recognizing the dire consequences of the darkness consuming you, you trust the witch to end your life and destroy the darkness within. " +
                 "You understand that this sacrifice is necessary to protect the world from further harm. " +

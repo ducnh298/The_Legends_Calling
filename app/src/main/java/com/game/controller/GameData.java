@@ -32,15 +32,17 @@ public class GameData implements Serializable {
 
     public GameData(double difficultRate) {
         this.difficultRate = difficultRate;
-        setup(false);
+        setup(false, false, false);
     }
 
-    public void setup(boolean timeLoop) {
+    public void setup(boolean timeLoop, boolean isMeetDarkCave, boolean isKnownTownSewer) {
         this.timeLoop = timeLoop;
+        this.isMeetDarkCave = isMeetDarkCave;
+        this.isKnownTownSewer = isKnownTownSewer;
         player = new Player(25);
 
         isTakenKnife = isTakenCoins = isTakenTorch = isTakenLongSword = isTakenArmor = isTakenCoinsInTent = isTakenGoblinEar = isTakenApple = isTakenPower = false;
-        isAngryGuard = isOpenTownGate = isMeetDarkCave = isLightTorch = isBorrowSword = isKnownTownSewer = isRestAtTent = false;
+        isAngryGuard = isOpenTownGate = isLightTorch = isBorrowSword = isRestAtTent = false;
         blackSmithQuestActive = witchQuestActive = isDefeatedEvilWitch = isSpareWitch = isDarknessConsume = false;
         isAliveWolf = isALiveGoblin = isALiveRiverMonster = isAliveShadowSerpent = isAliveDemonGeneral = true;
         youngManRequestReward = 0;

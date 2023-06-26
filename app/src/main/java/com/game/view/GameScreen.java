@@ -197,7 +197,7 @@ public class GameScreen extends AppCompatActivity {
     }
 
     public void timeLoop() {
-        gameData.setup(true);
+        gameData.setup(true, gameData.isMeetDarkCave, gameData.isKnownTownSewer);
         darkUI();
     }
 
@@ -257,13 +257,13 @@ public class GameScreen extends AppCompatActivity {
     public void updatePlayersWeapons(Weapon weaponObtain) {
         int selectedItemPosition;
         if (weaponObtain != null) {
-            if (weaponSpinner.getVisibility() == View.INVISIBLE)
-                weaponSpinner.setVisibility(View.VISIBLE);
             soundManager.obtainWeapon();
             gameData.player.addWeapon(weaponObtain);
             Toast.makeText(getApplicationContext(), "You obtained the " + weaponObtain.getName() + "!!!", Toast.LENGTH_SHORT).show();
         }
         if (gameData.player.getWeaponList().size() > 0) {
+            if (weaponSpinner.getVisibility() == View.INVISIBLE)
+                weaponSpinner.setVisibility(View.VISIBLE);
             if (weaponObtain != null)
                 selectedItemPosition = gameData.player.getWeaponList().size() - 1;
             else {
@@ -278,7 +278,7 @@ public class GameScreen extends AppCompatActivity {
             weaponSpinner.setSelection(selectedItemPosition);
         } else {
             weaponSpinner.setAdapter(null);
-            weaponSpinner.setVisibility(View.VISIBLE);
+            weaponSpinner.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -303,13 +303,13 @@ public class GameScreen extends AppCompatActivity {
     }
 
     public void updatePlayersArmor(Armor armor) {
-        if (armor != null) {
+        if (gameData.player.getArmor() != null) {
             if (armorLabel.getVisibility() == View.INVISIBLE)
                 armorLabel.setVisibility(View.VISIBLE);
             gameData.player.setArmor(armor);
             armorLabel.setText(armor.getName());
             armorLabel.setTextColor(Color.parseColor(armor.getHexColorCode()));
-        } else armorLabel.setVisibility(View.INVISIBLE);
+        }
     }
 
     public boolean updatePlayersCoins(int coins) {

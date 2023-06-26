@@ -220,10 +220,10 @@ public class CombatManager {
             attackMonster(gameData.demonGeneral, useSpell);
             encounterMonster(gameData.demonGeneral);
         } else {
-            soundManager.playBackGroundMusic();
             gameData.isAliveDemonGeneral = false;
             gameData.demonGeneral = null;
             storyManager.defeatDemonGeneral();
+            soundManager.stopAllMusic();
             ui.saveGame();
         }
     }

@@ -6,8 +6,8 @@ import android.media.SoundPool;
 import android.os.Handler;
 
 import com.game.R;
-import com.game.view.GameScreen;
-import com.game.view.TitleScreen;
+import com.game.controller.activity.GameScreen;
+import com.game.controller.activity.TitleScreen;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,10 @@
 package com.game.model;
 
+import com.game.model.armors.Armor;
+import com.game.model.effect.Effect;
+import com.game.model.spells.Spell;
+import com.game.model.weapons.Weapon;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;

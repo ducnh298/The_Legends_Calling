@@ -13,12 +13,12 @@
         android:theme="@style/Theme.LegendsCalling"
         tools:targetApi="31">
         <activity
-            android:name=".view.GameScreen"
+            android:name=".controller.activity.GameScreen"
             android:exported="false"
             android:label="@string/title_activity_game_screen"
             android:theme="@style/Theme.LegendsCalling" />
         <activity
-            android:name=".view.TitleScreen"
+            android:name=".controller.activity.TitleScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,7 +1,5 @@
 package com.game.model.effect;
 
-import com.game.model.Effect;
-
 public class Effect_Poisonous extends Effect {
     public Effect_Poisonous() {
         super("Poisonous", 5, 2);

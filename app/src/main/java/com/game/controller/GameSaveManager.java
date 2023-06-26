@@ -3,8 +3,9 @@ package com.game.controller;
 import android.content.Context;
 import android.util.Log;
 
-import com.game.view.GameScreen;
-import com.game.view.TitleScreen;
+import com.game.model.GameData;
+import com.game.controller.activity.GameScreen;
+import com.game.controller.activity.TitleScreen;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -1,6 +1,5 @@
 package com.game.model.spells;
 
-import com.game.model.Spell;
 import com.game.model.effect.Effect_Poisonous;
 
 public class Spell_PoisonBreeze extends Spell {

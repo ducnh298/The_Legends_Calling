@@ -1,6 +1,5 @@
 package com.game.model.spells;
 
-import com.game.model.Spell;
 import com.game.model.effect.Effect_Paralyzed;
 
 public class Spell_LightningBolt extends Spell {

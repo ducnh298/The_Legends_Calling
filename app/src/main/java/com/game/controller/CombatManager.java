@@ -4,10 +4,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.game.R;
-import com.game.model.Effect;
-import com.game.model.Monster;
-import com.game.model.Spell;
-import com.game.model.Weapon;
+import com.game.model.GameData;
+import com.game.model.effect.Effect;
+import com.game.model.monsters.Monster;
+import com.game.model.spells.Spell;
+import com.game.model.weapons.Weapon;
 import com.game.model.monsters.Monster_DemonGeneral;
 import com.game.model.monsters.Monster_Goblin;
 import com.game.model.monsters.Monster_RiverMonster;
@@ -17,7 +18,7 @@ import com.game.model.spells.Spell_PoisonBreeze;
 import com.game.model.weapons.Weapon_Fist;
 import com.game.model.weapons.Weapon_LongSword;
 import com.game.model.weapons.Weapon_Trident;
-import com.game.view.GameScreen;
+import com.game.controller.activity.GameScreen;
 
 import java.util.Random;
 

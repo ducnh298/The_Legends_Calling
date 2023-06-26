@@ -1,4 +1,4 @@
-package com.game.model;
+package com.game.model.effect;
 
 import java.io.Serializable;
 

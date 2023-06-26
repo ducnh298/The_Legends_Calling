@@ -1,18 +1,17 @@
-package com.game.controller;
+package com.game.model;
 
-import com.game.model.Armor;
-import com.game.model.Effect;
-import com.game.model.Monster;
-import com.game.model.Player;
-import com.game.model.Spell;
-import com.game.model.Weapon;
+import com.game.model.armors.Armor;
+import com.game.model.effect.Effect;
+import com.game.model.monsters.Monster;
+import com.game.model.spells.Spell;
+import com.game.model.weapons.Weapon;
 import com.game.model.effect.Effect_Paralyzed;
 import com.game.model.effect.Effect_Poisonous;
 
 import java.io.Serializable;
 
 public class GameData implements Serializable {
-    double difficultRate = 1;
+    public double difficultRate = 1;
     public Player player;
     public Weapon fist;
     public Armor ironArmor, silverArmor, goldenArmor;

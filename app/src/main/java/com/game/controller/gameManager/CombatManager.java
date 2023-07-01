@@ -211,6 +211,7 @@ public class CombatManager {
 
             gameData.isAliveShadowSerpent = false;
             gameData.shadowSerpent = null;
+            gameData.position = "demonHideout";
             storyManager.insideDemonHideout();
             ui.saveGame();
         }

@@ -11,6 +11,7 @@ Welcome to The Legend's Calling, a captivating text-based adventure game where y
 - Multiple possibilities and outcomes based on the choices you make throughout the game, ensuring a personalized gaming experience.
 - Illustrating images that enhance the visual experience and immerse you in the game world.
 - Multiple endings based on your decisions, so replayability is encouraged!
+- Including an auto-save feature, ensuring that your progress is saved automatically at certain checkpoints. You can focus on enjoying the game without worrying about manually saving your progress.
 
 ## How to Play:
 - Download the APK file for the game from the following link: [Download The Legend's Calling](https://drive.google.com/drive/folders/1YYLOuTV018OVyOqXotnGS_UICEbQ3whC?usp=sharing)
@@ -22,6 +23,6 @@ Welcome to The Legend's Calling, a captivating text-based adventure game where y
   
 ## System Requirements
 - Operating System: Android 7 or higher
-- Storage: 80mb of storage space or more
+- Storage: 90mb of storage space or more
 
 ## Enjoy your adventure in The Legend's Calling and may your choices shape the fate of the realm!

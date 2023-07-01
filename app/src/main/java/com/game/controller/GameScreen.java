@@ -22,10 +22,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
 import com.game.R;
-import com.game.model.GameData;
 import com.game.controller.gameManager.GameSaveManager;
 import com.game.controller.gameManager.SoundManager;
 import com.game.controller.gameManager.StoryManager;
+import com.game.model.GameData;
 import com.game.model.armors.Armor;
 import com.game.model.spells.Spell;
 import com.game.model.weapons.Weapon;
@@ -251,7 +251,7 @@ public class GameScreen extends AppCompatActivity {
     public void updatePlayersWeapons(Weapon weaponObtain) {
         int selectedItemPosition;
         if (weaponObtain != null) {
-            soundManager.obtainWeapon();
+            soundManager.obtainItem();
             gameData.player.addWeapon(weaponObtain);
             Toast.makeText(getApplicationContext(), "You obtained the " + weaponObtain.getName() + "!!!", Toast.LENGTH_SHORT).show();
         }
@@ -297,9 +297,10 @@ public class GameScreen extends AppCompatActivity {
     }
 
     public void updatePlayersArmor(Armor armor) {
-        if (gameData.player.getArmor() != null) {
+        if (armor != null || gameData.player.getArmor() != null) {
             if (armorLabel.getVisibility() == View.INVISIBLE)
                 armorLabel.setVisibility(View.VISIBLE);
+            soundManager.obtainItem();
             gameData.player.setArmor(armor);
             armorLabel.setText(armor.getName());
             armorLabel.setTextColor(Color.parseColor(armor.getHexColorCode()));

@@ -22,7 +22,7 @@ public class SoundManager {
     private int[] backGroundMusicList = {R.raw.back_ground_music_1, R.raw.back_ground_music_2};
     private int[] swordSounds;
     private int positionBgMusic = 0, positionBattleMusic = 0;
-    public Integer clickSoundId, obtainWeaponSoundId, healthUpSoundId, coinsSoundId,
+    public Integer clickSoundId, obtainItemSoundId, healthUpSoundId, coinsSoundId,
             takeShoeOffSoundId, dropBagSoundId, lyingBedSoundId, wakeUpVoiceId,
             horseWagonSoundId, runningInGrassSoundId, horseSoundId,
             townGateDoorSoundId, anvilSoundId, lightFireSoundId, underWaterSoundId, hitTreeSoundId, eatingAppleSoundId, magicMountainSoundId, explosionSoundId, darkPowerSoundId, slashPeopleSoundId, endYourLifeSoundId,
@@ -71,7 +71,7 @@ public class SoundManager {
             }
         });
 
-        obtainWeaponSoundId = soundPool.load(gameScreen, R.raw.obtain_weapon, 1);
+        obtainItemSoundId = soundPool.load(gameScreen, R.raw.obtain_weapon, 1);
         healthUpSoundId = soundPool.load(gameScreen, R.raw.health_up, 1);
         coinsSoundId = soundPool.load(gameScreen, R.raw.coin, 1);
 
@@ -179,7 +179,7 @@ public class SoundManager {
         soundPool.play(clickSoundId, 0.5f, 0.5f, 1, 0, 1.5f);
     }
 
-    public void obtainWeapon() {
+    public void obtainItem() {
         if (swordSounds == null) {
             sword1soundId = soundPool.load(gameScreen, R.raw.sword_1, 1);
             sword2soundId = soundPool.load(gameScreen, R.raw.sword_2, 1);
@@ -193,7 +193,7 @@ public class SoundManager {
             spellWaterSoundId = soundPool.load(gameScreen, R.raw.spell_water, 1);
             spellPoisonBreezeSoundId = soundPool.load(gameScreen, R.raw.spell_poison_breeze, 1);
         }
-        soundPool.play(obtainWeaponSoundId, 1f, 1f, 1, 0, 1f);
+        soundPool.play(obtainItemSoundId, 1f, 1f, 1, 0, 1f);
     }
     public void healthUp() {
         soundPool.play(healthUpSoundId, 1f, 1f, 1, 0, 1f);

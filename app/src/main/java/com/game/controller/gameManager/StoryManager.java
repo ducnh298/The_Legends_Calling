@@ -1085,8 +1085,8 @@ public class StoryManager {
         gameData.goldenArmor = new Armor_GoldenArmor();
         ui.updatePlayersArmor(gameData.ironArmor);
 
-        ui.displayTextSlowly("\"Take this " + gameData.player.getArmor().getName() + " .Maybe it could help you.\n" +
-                "And my name is Garret. It's a pleasure to help you with your armor or weapon.\"");
+        ui.displayTextSlowly("\"Take this " + gameData.silverArmor.getName() + ". Maybe it could help you.\n" +
+                "My name is Garret. It's a pleasure to help you with your armor or weapon.\"");
         ui.setChoicesAndNextPositions("\"Thank you\"", "Leave", "", "", "talkBlackSmith1", "talkBlackSmith2", "", "");
         ui.saveGame();
     }
@@ -1103,7 +1103,7 @@ public class StoryManager {
                 text.append("\n");
             }
         }
-        ui.displayTextSlowly(text.toString());
+        ui.displayTextSlowly(text.toString()+"\"");
     }
 
     public void armorShop() {
@@ -1688,7 +1688,7 @@ public class StoryManager {
         gameData.isTakenPower = true;
         gameData.player.increasePlayerMaxHP(4);
         gameData.player.increaseBaseAttack(1);
-        soundManager.obtainWeapon();
+        soundManager.obtainItem();
         ui.updatePlayersHp(0);
         ui.continueTextSlowly("You feel an overwhelming surge of strength coursing through your veins as you embrace the power of enhanced strength.");
         ui.setChoicesAndNextPositions("Continue", "", "", "", "mountainTop", "", "", "");
@@ -1731,7 +1731,7 @@ public class StoryManager {
     public void takePower() {
         gameData.isTakenPower = true;
         gameData.player.addSpell(gameData.selectedSpell);
-        soundManager.obtainWeapon();
+        soundManager.obtainItem();
         ui.updatePlayersSpells();
         ui.continueTextSlowly("Congratulations! You have learned the formidable spell " + gameData.selectedSpell.getName());
         ui.setChoicesAndNextPositions("Continue", "", "", "", "mountainTop", "", "", "");
